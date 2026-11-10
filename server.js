@@ -221,7 +221,8 @@ function decorateVideo(v) {
   const settings = store.getSettings();
   const d = costs.decorate(settings, selectedAssets(v), v);
   const lib = store.getLibrary();
-  d.library = { characters: lib.characters.map((c) => ({ id: c.id, name: c.name, voiceId: c.voiceId, photos: c.photos || [] })), locations: lib.locations.map((l) => ({ id: l.id, name: l.name, photos: l.photos || [] })), narrators: lib.narrators, audio: lib.audio.map((a) => ({ id: a.id, name: a.name, tags: a.tags })) };
+  d.library = lib;
+  d.lookEffective = look.preset(look.forVideo(settings, v));
   return d;
 }
 
@@ -281,6 +282,13 @@ app.patch('/api/videos/:id', (req, res) => {
       if (typeof b.name === 'string' && b.name.trim()) vv.name = b.name.trim();
       if (b.budget != null && Number(b.budget) >= 0) vv.budget = Number(b.budget);
       if (b.movingProvider === 'gemini' || b.movingProvider === 'flow') vv.movingProvider = b.movingProvider;
+      if (['16:9', '9:16', '1:1'].includes(b.aspect)) { vv.aspect = b.aspect; if (vv.plan) vv.plan.aspect = b.aspect; }
+      if (b.resolution === '720p' || b.resolution === '1080p' || b.resolution === '') vv.resolution = b.resolution || null;
+      if (typeof b.look === 'string' && (b.look === '' || look.PRESETS[b.look])) vv.look = b.look || null;
+      if (typeof b.lookCustom === 'string') vv.lookCustom = b.lookCustom.trim().slice(0, 600);
+      if (typeof b.script === 'string' && b.script.trim()) vv.script = b.script.trim();
+      if (b.targetSeconds != null) vv.targetSeconds = Math.max(0, Number(b.targetSeconds) || 0);
+      if (typeof b.hardPlanning === 'boolean') vv.hardPlanning = b.hardPlanning;
       if (b.approved === false) vv.approved = false;
     });
     res.json(decorateVideo(v));
@@ -456,12 +464,23 @@ app.post('/api/videos/:id/shots/:sid/revise', async (req, res) => {
       if (Number(patch.duration) > 0) sh.duration = Math.round(Number(patch.duration) * 10) / 10;
       if (sh.tool === 'gemini' || sh.tool === 'flow') sh.duration = Math.min(8, Math.max(sh.duration, Math.ceil(claude.speechSeconds(sh.dialogue) * 2) / 2));
       sh.revisions = (sh.revisions || []).concat([{ note, answer: String(patch.answer_tr || ''), at: new Date().toISOString() }]);
-      Object.assign(sh, { image: null, raw: null, video: null, audio: null, manual: false, status: 'Bekliyor', error: null, fixNote: '', video_prompt_soft: null, video_prompt_soft_for: null, actualDuration: null, rawDuration: null });
+      Object.assign(sh, { image: sh.imageManual ? sh.image : null, raw: null, video: null, audio: null, manual: false, status: 'Bekliyor', error: null, fixNote: '', video_prompt_soft: null, video_prompt_soft_for: null, actualDuration: null, rawDuration: null });
       relayout(vv);
     });
     costs.record(v.id, sid, { servis: 'claude', model: usage.model, birim: 'token', miktar: usage.input_tokens + usage.output_tokens, girdi_token: usage.input_tokens, cikti_token: usage.output_tokens, ...costs.claudeCost(usage.model, usage), not: 'Düzeltme notu' });
     res.json({ ok: true, answer: String(patch.answer_tr || ''), video: decorateVideo(store.getVideo(v.id) || out) });
   } catch (err) { sendError(res, err); }
+});
+
+// Elle ilk kare görseli yükle
+app.post('/api/videos/:id/shots/:sid/image', rawBody('30mb'), async (req, res) => {
+  const v = getV(req, res);
+  if (!v) return;
+  const sid = Number(req.params.sid);
+  if (!v.shots.some((x) => x.id === sid)) return sendError(res, new Error('Çekim bulunamadı'), 404);
+  if (!req.body || !req.body.length) return sendError(res, new Error('Dosya boş.'));
+  if (jobs.isShotBusy(v.id, sid)) return sendError(res, new Error('Bu çekimde zaten bir iş çalışıyor.'));
+  try { await jobs.acceptUploadedImage(v.id, sid, req.body); res.json({ ok: true, video: decorateVideo(store.getVideo(v.id)) }); } catch (err) { sendError(res, err); }
 });
 
 app.post('/api/videos/:id/shots/:sid/upload', rawBody('2gb'), async (req, res) => {

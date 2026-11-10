@@ -63,9 +63,11 @@ Dış ses satırları ElevenLabs ile ayrı üretilip zamanına yerleştirilir. E
 
 Claude ayrıca **uyarılar** yazar: süreye sığmayan konuşmalar (Türkçe ≈ 2,5 kelime/sn), hedef süre aşımı, doğruluğu önemli metinler (ayet, hadis, istatistik → "kaynağını doğrulayın"), video filtresine takılabilecek ifadeler.
 
-## Onay ekranı
+## Video sayfası: üç adım
 
-Plan geldikten sonra hiçbir şey üretilmez. Zaman çizelgesinde bölümler ve çekimler sırayla; her çekimde süre, araç (açılır menüden değiştirilebilir), gerekçe, replik/dış ses/ekran yazısı (düzenlenebilir), promptlar (açılır) ve tahmini maliyet. Çekim silinip eklenebilir; ses katmanları (müzik / efekt / sessizlik; kütüphane veya üret) düzenlenebilir. Altta toplam tahmin ve **Onayla ve üret**.
+1. **Hazırlık** – senaryo (yeniden planlama), video ayarları (görüntü oranı, kalite 720p/1080p, görünüm, hareketli çekim aracı, bütçe) ve bu videonun karakterleri / mekânları / dış sesleri / müzik dosyaları (kütüphaneyle ortak; fotoğraf, tarif ve ses buradan değişir). Tarifler ve referans fotoğraflar üretim anında prompta eklenir, bu yüzden plan sonrası değişiklikler de bir sonraki üretimde geçerlidir.
+2. **Çekimler** – tek liste: her çekimde görsel/video önizleme, süre, araç, tarif, replikler; sağda **Üret / Yeniden üret**, **İlk kare yükle** (kendi görselinizi başlangıç karesi yaparsınız, yeniden üretimde korunur), **Klip yükle** ve **Düzeltme notu** (Türkçe not → Claude promptları yeniden yazar → çekim baştan üretilir; notlar hatırlanır). "promptlar ve adımlar" ile prompt düzenleme ve tek adım (görsel / ses / dış ses / video) üretimi. Üstte "Eksik çekimleri üret", dış araç paketi ve toplu klip yükleme.
+3. **Final** – ses katmanları (müzik / efekt / sessizlik; kütüphane dosyası ya da ElevenLabs) ve birleştirme / indirme.
 
 ## Üretim ve birleştirme
 
