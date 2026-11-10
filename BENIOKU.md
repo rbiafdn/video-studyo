@@ -80,8 +80,8 @@ Claude ayrıca **uyarılar** yazar: süreye sığmayan konuşmalar (Türkçe ≈
 
 ## Yedek ve başka bilgisayar
 
-- Kütüphane sayfası → **Yedek indir (zip)**: tüm videolar, kütüphane ve ayarlar tek zip. Diğer bilgisayarda projeyi GitHub'dan kurup aynı anahtarlarla  oluşturun, Kütüphane → **Yedek yükle (zip)** ile içeri alın (aynı kimlikli kayıtların üstüne yazar).
-- İki bilgisayarın aynı veriyi kullanması için  içinde  ile bulutla eşitlenen bir klasör verilebilir (OneDrive / Google Drive). Aynı anda iki yerde üretim yapmayın.
+- Kütüphane sayfası → **Yedek indir (zip)**: tüm videolar, kütüphane ve ayarlar tek zip. Diğer bilgisayarda projeyi GitHub'dan kurup aynı anahtarlarla .env oluşturun, Kütüphane → **Yedek yükle (zip)** ile içeri alın (aynı kimlikli kayıtların üstüne yazar).
+- İki bilgisayarın aynı veriyi kullanması için .env içinde DATA_DIR ile bulutla eşitlenen bir klasör verilebilir (OneDrive / Google Drive). Aynı anda iki yerde üretim yapmayın.
 
 ## Maliyet
 
