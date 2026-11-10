@@ -25,12 +25,13 @@
   .status-row { display: flex; gap: 12px; }
   .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--off); margin-right: 5px; vertical-align: middle; } .dot.on { background: var(--ok); }
   main { padding: 22px 28px 60px; }
-  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
   .page-head .meta { color: var(--muted); font-size: 13px; margin-top: 4px; }
   .crumb { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
-  .actions { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+  .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
   .grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 20px; align-items: start; }
+  .grid-setup { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
   .grid-lib { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; align-items: start; }
   .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; position: relative; transition: border-color .15s; }
@@ -56,50 +57,40 @@
   button.gold, .btn.gold { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); font-weight: 600; } button.gold:hover, .btn.gold:hover { background: var(--gold2); }
   button.ghost { background: transparent; } button.danger { color: var(--err); }
   button.xs, .btn.xs { font-size: 12px; padding: 5px 9px; border-radius: 7px; } button.big { font-size: 15px; padding: 12px 20px; }
-  button:disabled { opacity: .4; cursor: not-allowed; }
+  button:disabled, .btn.dis { opacity: .4; cursor: not-allowed; }
   .act { display: inline-flex; flex-direction: column; gap: 3px; } .est { font-size: 11px; color: var(--muted); white-space: nowrap; }
   .err { color: var(--err); font-size: 13px; white-space: pre-wrap; }
-  .warnbox { background: #2a2210; border: 1px solid #6a541f; border-radius: var(--r); padding: 14px 18px; margin-bottom: 16px; }
-  .warnbox h3 { color: var(--gold); margin-bottom: 6px; } .warnbox li { margin: 3px 0; }
+  .warnbox { background: #2a2210; border: 1px solid #6a541f; border-radius: var(--r); padding: 12px 18px; margin-bottom: 14px; }
+  .warnbox summary { cursor: pointer; color: var(--gold); font-weight: 600; } .warnbox li { margin: 3px 0; }
   .progress { height: 6px; background: var(--panel2); border-radius: 4px; overflow: hidden; border: 1px solid var(--line); } .progress i { display: block; height: 100%; background: var(--gold); } .progress i.over { background: var(--err); }
-  /* zaman çizelgesi */
+  /* adımlar */
+  .steps { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--line); }
+  .steps button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: var(--muted); padding: 10px 16px; font-size: 14px; }
+  .steps button.on { color: var(--gold); border-bottom-color: var(--gold); } .steps button b { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: var(--panel2); color: var(--ink); font-size: 12px; line-height: 20px; text-align: center; margin-right: 6px; } .steps button.on b { background: var(--gold); color: var(--gold-ink); }
+  /* çekim kartı */
   .section { margin: 18px 0 8px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; } .section b { font-size: 15px; }
-  .shot-row { display: grid; grid-template-columns: 70px 150px minmax(0, 1fr) 110px 40px; gap: 12px; align-items: start; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
-  .shot-row .time { font-size: 12px; color: var(--muted); } .shot-row .time b { color: var(--ink); font-size: 14px; display: block; }
-  .shot-row .desc { font-size: 13.5px; } .shot-row .reason { color: var(--muted); font-size: 12px; margin-top: 2px; }
-  .shot-row .lines { margin-top: 8px; display: grid; gap: 6px; }
+  .shot { display: grid; grid-template-columns: 170px minmax(0, 1fr) 250px; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+  .shot.busy { border-color: #6a541f; }
+  .shot .thumb { width: 100%; aspect-ratio: 16 / 9; background: #0f1116; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: var(--faint); font-size: 12px; }
+  .shot .thumb.v { aspect-ratio: 9 / 16; max-height: 300px; } .shot .thumb.sq { aspect-ratio: 1 / 1; } .shot .thumb img, .shot .thumb video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+  .shot .head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--muted); } .shot .head b { color: var(--ink); font-size: 15px; }
+  .shot .lines { margin-top: 8px; display: grid; gap: 6px; }
   .line { display: grid; grid-template-columns: 110px minmax(0, 1fr) 120px; gap: 8px; align-items: center; font-size: 13px; }
   .line .who { color: var(--muted); font-size: 12px; } .line.vo .who { color: var(--purple); } .line.txt .who { color: var(--teal); }
-  .shot-row .cost { text-align: right; font-size: 12.5px; } .shot-row .cost b { display: block; font-size: 14px; }
-  .adv { grid-column: 1 / -1; border-top: 1px dashed var(--line); padding-top: 10px; margin-top: 4px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .adv .full { grid-column: 1 / -1; }
-  .audio-row { display: grid; grid-template-columns: 90px 130px minmax(0, 1fr) 160px 40px; gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; }
-  .sticky-bar { position: sticky; bottom: 0; background: rgba(11,12,16,.95); border-top: 1px solid var(--line); padding: 12px 0; margin-top: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; backdrop-filter: blur(8px); }
-  /* üretim */
-  .ep-layout { display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 20px; align-items: start; }
-  .scene-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
-  .scene { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 10px; cursor: pointer; transition: border-color .15s; } .scene:hover { border-color: var(--line2); } .scene.sel { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold) inset; }
-  .thumb { width: 100%; aspect-ratio: 16 / 9; background: #0f1116; border-radius: 7px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: var(--faint); font-size: 12px; margin-bottom: 8px; position: relative; }
-  .thumb.v { aspect-ratio: 9 / 16; max-height: 240px; } .thumb.sq { aspect-ratio: 1 / 1; } .thumb img, .thumb video { width: 100%; height: 100%; object-fit: cover; }
-  .thumb .badge { position: absolute; left: 6px; top: 6px; } .thumb .busy { position: absolute; right: 6px; top: 6px; }
-  .scene .name { font-weight: 600; font-size: 13px; display: flex; justify-content: space-between; gap: 6px; align-items: center; }
-  .scene .sum { color: var(--muted); font-size: 12px; margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .scene .foot { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); margin-top: 6px; }
-  .detail { position: sticky; top: 70px; max-height: calc(100vh - 86px); overflow: auto; } .detail h3 { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-  .media { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; } .media > div { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
-  .media img, .media video { width: 100%; max-height: 240px; object-fit: contain; border-radius: 6px; background: #000; } .media audio { width: 100%; height: 34px; } .media .cap { font-size: 11px; color: var(--muted); margin-top: 4px; }
-  .cost-line { font-size: 12.5px; color: var(--muted); border-top: 1px dashed var(--line); margin-top: 12px; padding-top: 10px; }
-  .flowbox { border: 1px dashed #5a4420; border-radius: 10px; padding: 12px; margin-top: 12px; }
+  .shot .side { display: flex; flex-direction: column; gap: 8px; }
+  .shot .side .btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .shot .note { border: 1px dashed var(--line2); border-radius: 9px; padding: 8px; }
+  .shot .note textarea { min-height: 46px; }
+  .shot .adv { grid-column: 1 / -1; border-top: 1px dashed var(--line); padding-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .adv .full { grid-column: 1 / -1; }
+  .audio-row { display: grid; grid-template-columns: 90px 130px minmax(0, 1fr) 180px 40px; gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 16px; margin-bottom: 12px; }
   .photos { display: flex; gap: 6px; flex-wrap: wrap; } .photos img { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); cursor: pointer; } .photos .add { width: 56px; height: 56px; border: 1px dashed var(--line2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--faint); font-size: 11px; cursor: pointer; }
-  .lib-item { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+  .lib-item { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 10px; } .lib-item.used { border-color: #6a541f; }
   .lib-item .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .lib-item .full { grid-column: 1 / -1; }
   .spin { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--line2); border-top-color: var(--gold); border-radius: 50%; animation: sp 1s linear infinite; vertical-align: -2px; } @keyframes sp { to { transform: rotate(360deg); } }
   .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #22252e; border: 1px solid var(--line2); color: var(--ink); padding: 10px 16px; border-radius: 9px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; z-index: 50; } .toast.show { opacity: 1; }
   .empty { color: var(--muted); padding: 30px; text-align: center; border: 1px dashed var(--line); border-radius: var(--r); }
-  .vtabs { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; } .vtabs button { border: 0; border-radius: 0; background: transparent; } .vtabs button.on { background: var(--panel2); color: var(--gold); }
-  @media (max-width: 1100px) { .ep-layout, .grid-2 { grid-template-columns: 1fr; } .detail { position: static; max-height: none; } .shot-row { grid-template-columns: 60px 1fr; } .shot-row .cost, .shot-row .tool { grid-column: span 1; } }
-    .revbox{border:1px dashed var(--line);border-radius:10px;padding:10px}
-    .revbox textarea{width:100%;box-sizing:border-box}
+  @media (max-width: 1100px) { .grid-2, .grid-setup { grid-template-columns: 1fr; } .shot { grid-template-columns: 140px 1fr; } .shot .side { grid-column: 1 / -1; } }
 </style>
 </head>
 <body>
@@ -116,10 +107,10 @@
 (() => {
   const $ = (id) => document.getElementById(id);
   const app = $('app');
-  const S = { status: null, prices: null, voices: null, voicesError: null, settings: null, lib: null, videos: [], video: null, sel: null, adv: false, vtab: null, openAdv: new Set(), timer: null, lastJson: '', view: '' };
-  const SERVICE = { claude: 'Claude', gemini: 'Gemini', elevenlabs: 'ElevenLabs', fal: 'fal.ai', flow: 'Flow', ffmpeg: 'ffmpeg' };
-  const TOOL_NAMES = { avatar: 'Avatar (fal.ai)', gemini: 'Gemini (otomatik)', flow: 'Flow (elle)', seedance: 'Seedance (fal.ai)', text_card: 'Yazı kartı (ffmpeg)' };
-  const ASPECTS = { auto: 'Senaryodan (Shorts → dikey)', '16:9': '16:9 yatay (YouTube, TV)', '9:16': '9:16 dikey (Shorts, Reels)', '1:1': '1:1 kare' };
+  const S = { status: null, prices: null, voices: null, voicesError: null, settings: null, lib: null, looks: [], videos: [], video: null, step: null, openAdv: new Set(), drafts: {}, timer: null, lastJson: '', view: '' };
+  const SERVICE = { claude: 'Claude', gemini: 'Gemini', elevenlabs: 'ElevenLabs', fal: 'fal.ai', flow: 'Dış araç', ffmpeg: 'ffmpeg' };
+  const TOOL_NAMES = { avatar: 'Avatar (fal.ai)', gemini: 'Gemini (otomatik)', flow: 'Dış araç (elle)', seedance: 'Seedance (fal.ai)', text_card: 'Yazı kartı (ffmpeg)' };
+  const ASPECTS = { '9:16': '9:16 dikey (Shorts, Reels)', '16:9': '16:9 yatay (YouTube, TV)', '1:1': '1:1 kare' };
 
   // ---------- yardımcılar ----------
   async function api(path, opts) {
@@ -146,12 +137,12 @@
   const fmtT = (sec) => { sec = Math.max(0, Number(sec) || 0); const m = Math.floor(sec / 60), s = sec - m * 60; return m + ':' + (s < 10 ? '0' : '') + s.toFixed(1); };
   const keyMissing = (k) => !(S.status && S.status.keys && S.status.keys[k]);
   function missingReason(list) { const names = { anthropic: 'ANTHROPIC_API_KEY', gemini: 'GEMINI_API_KEY', elevenlabs: 'ELEVENLABS_API_KEY', fal: 'FAL_KEY' }; const miss = list.filter(keyMissing).map((k) => names[k]); return miss.length ? 'Eksik anahtar: ' + miss.join(', ') : ''; }
-  document.addEventListener('input', (e) => { if (e.target && e.target.id === 'revise-note') S.reviseDraft = e.target.value; });
   function isEditing() { const el = document.activeElement; return el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.tagName === 'SELECT'); }
   const vFile = (name, stamp, dl) => `/files/v/${S.video.id}/${name}?v=${stamp || 0}${dl ? '&download=1' : ''}`;
+  const nn = (id) => String(id).padStart(2, '0');
   function estLabel(item) {
     if (!item) return '';
-    if (item.servis === 'flow') return 'Flow kredisi (siteden harcanmaz)';
+    if (item.servis === 'flow') return 'dış araçta üretilir';
     if (item.servis === 'ffmpeg') return 'ücretsiz';
     if (item.servis === 'elevenlabs') return item.karakter != null ? '≈ ' + fmtNum(item.karakter) + ' karakter · ElevenLabs' : '≈ ' + fmtNum(item.kredi) + ' kredi · ElevenLabs';
     return '≈ ' + fmtUsd(item.usd) + ' · ' + (SERVICE[item.servis] || item.servis);
@@ -176,13 +167,13 @@
   }
   function voiceSelect(attrs, value, cls) {
     if (!S.voices) return `<input type="text" class="${cls || ''}" ${attrs} value="${esc(value || '')}" placeholder="ElevenLabs ses ID">`;
-    const opts = ['<option value="">— ses seçin —</option>'].concat(S.voices.map((v) => { const lab = [v.labels && v.labels.gender, v.labels && v.labels.accent].filter(Boolean).join(', '); return `<option value="${esc(v.voice_id)}" ${v.voice_id === value ? 'selected' : ''}>${esc(v.name)}${lab ? ' (' + esc(lab) + ')' : ''}</option>`; }));
+    const opts = ['<option value="">— ses yok (klibin kendi sesi) —</option>'].concat(S.voices.map((v) => { const lab = [v.labels && v.labels.gender, v.labels && v.labels.accent].filter(Boolean).join(', '); const paid = v.category && v.category !== 'premade' ? ' · ücretli plan' : ''; return `<option value="${esc(v.voice_id)}" ${v.voice_id === value ? 'selected' : ''}>${esc(v.name)}${lab ? ' (' + esc(lab) + ')' : ''}${paid}</option>`; }));
     if (value && !S.voices.some((v) => v.voice_id === value)) opts.push(`<option value="${esc(value)}" selected>${esc(value)}</option>`);
     return `<select class="${cls || ''}" ${attrs}>${opts.join('')}</select>`;
   }
-  function statusChip(st) { const cls = st === 'Hazır' ? 'ok' : /hata/i.test(st) ? 'err' : /Onay|Flow/.test(st) ? 'gold' : ''; return `<span class="chip ${cls}">${/Planlanıyor|Üretiliyor/.test(st) ? '<span class="spin"></span> ' : ''}${esc(st)}</span>`; }
+  function statusChip(st) { const cls = st === 'Hazır' ? 'ok' : /hata/i.test(st) ? 'err' : /bekleniyor|Onay/i.test(st) ? 'gold' : ''; return `<span class="chip ${cls}">${/Planlanıyor|Üretiliyor|üretiliyor|başlatılıyor|çevriliyor|ayrılıyor|yumuşatılıyor|indiriliyor|klibe ekleniyor/.test(st) ? '<span class="spin"></span> ' : ''}${esc(st)}</span>`; }
   const toolChip = (t) => `<span class="chip t-${esc(t)}">${esc(TOOL_NAMES[t] || t)}</span>`;
-  const toolSelect = (attrs, value) => `<select class="sm" ${attrs}>${Object.entries(TOOL_NAMES).map(([k, v]) => `<option value="${k}" ${k === value ? 'selected' : ''}>${v}</option>`).join('')}</select>`;
+  const toolSelect = (attrs, value) => `<select class="sm" ${attrs} style="width:auto">${Object.entries(TOOL_NAMES).map(([k, v]) => `<option value="${k}" ${k === value ? 'selected' : ''}>${v}</option>`).join('')}</select>`;
 
   // ---------- üst çubuk ----------
   async function loadStatus() {
@@ -213,8 +204,8 @@
     const h = location.hash.replace(/^#/, '') || '/';
     $('tab-videos').classList.toggle('on', !h.startsWith('/lib'));
     $('tab-lib').classList.toggle('on', h.startsWith('/lib'));
-    const m = h.match(/^\/v\/([\w-]+)$/);
-    if (m) return viewVideo(m[1]);
+    const m = h.match(/^\/v\/([\w-]+)(?:\/(setup|shots|final))?$/);
+    if (m) return viewVideo(m[1], m[2]);
     if (h.startsWith('/lib')) return viewLibrary();
     return viewHome();
   }
@@ -224,8 +215,7 @@
   async function viewHome() {
     S.view = 'home'; crumbs([{ label: 'Videolar' }]);
     try { await loadBase(); S.videos = await api('/api/videos'); } catch (e) { app.innerHTML = `<div class="err">${esc(e.message)}</div>`; return; }
-    const st = S.settings, lib = S.lib, r = missingReason(['anthropic']);
-    const assetBox = (kind, label) => lib[kind].length ? `<div class="small muted" style="margin-top:6px">${label}: ${lib[kind].map((x) => `<label class="check" style="margin-right:10px"><input type="checkbox" data-asset="${kind}" value="${esc(x.id)}" checked> ${esc(x.name)}</label>`).join('')}</div>` : '';
+    const st = S.settings, r = missingReason(['anthropic']);
     app.innerHTML = `
       <div class="grid-2">
         <section><h2>Videolar</h2><div class="cards" id="video-cards"></div></section>
@@ -233,27 +223,14 @@
           <div class="panel">
             <h3>Yeni video</h3>
             <label class="f">Ad (boşsa Claude senaryodan koyar)</label><input type="text" id="nv-name" placeholder="örn. Sarıkamış Yolunda">
-            <label class="f">Senaryo (serbest format: başlık, süre, müzik notları, bölümler, kamera tüyoları, dış ses, diyaloglar, ekran yazıları)</label><textarea class="tall" id="nv-script" placeholder="Senaryoyu olduğu gibi yapıştırın. Claude okuyup çekim listesi çıkarır."></textarea>
+            <label class="f">Senaryo (serbest format: başlık, süre, müzik notları, bölümler, dış ses, diyaloglar, ekran yazıları)</label><textarea class="tall" id="nv-script" placeholder="Senaryoyu olduğu gibi yapıştırın. Claude okuyup çekim listesi çıkarır."></textarea>
             <div class="row mt">
               <div style="flex:1"><label class="f">Hedef süre (sn, boş = senaryodan)</label><input type="number" id="nv-dur" min="0" step="1" placeholder="örn. 60"></div>
               <div style="flex:1"><label class="f">Bütçe (USD)</label><input type="number" id="nv-budget" value="${esc(st.defaultBudget)}" min="0" step="1"></div>
             </div>
-            <label class="f">Hareketli çekimler (kamera + oyunculuk)</label>
-            <select id="nv-provider"><option value="gemini" ${st.movingProvider !== 'flow' ? 'selected' : ''}>Gemini (otomatik) – ≈ $0.07 / sn</option><option value="flow" ${st.movingProvider === 'flow' ? 'selected' : ''}>Google Flow (elle; klibi siz yüklersiniz)</option></select>
-            <div class="row mt"><label class="check"><input type="checkbox" id="nv-hard"> Zor planlama (Opus ile – daha pahalı)</label></div>
-            <div class="mt"><label class="check"><input type="checkbox" id="nv-auto" checked> Kütüphanedeki karakter ve mekânları Claude senaryodaki isimlerle eşleştirsin</label>
-              <div id="nv-assets" style="display:none">${assetBox('characters', 'Karakterler')}${assetBox('locations', 'Mekânlar')}${assetBox('narrators', 'Dış ses')}</div></div>
             <div class="row mt"><span class="act"><button class="gold big" id="nv-start" ${r ? 'disabled' : ''}>Çekim listesini hazırla</button><span class="est" id="nv-est"></span></span><span class="small err">${esc(r)}</span></div>
-            <div class="small faint mt">Claude senaryoyu çekimlere böler ve her çekim için aracı seçer; onay ekranında görüp düzeltmeden para harcanmaz.</div>
+            <div class="small faint mt">Oran, kalite, görünüm, karakterler ve sesler bir sonraki adımda (Hazırlık) ayarlanır. Hiçbir şey siz "Üret" demeden üretilmez.</div>
           </div>
-          <details class="set"><summary>Ayarlar</summary><div class="body">
-            <label class="f">Varsayılan görüntü oranı</label><select id="st-aspect">${Object.entries(ASPECTS).map(([k, v]) => `<option value="${k}" ${k === st.aspect ? 'selected' : ''}>${v}</option>`).join('')}</select>
-            <label class="f">Görünüm (her görsel ve videoya otomatik eklenir)</label><select id="st-look">${(S.looks || []).map((l) => `<option value="${l.key}" ${l.key === (st.look || 'film') ? 'selected' : ''}>${esc(l.name)}</option>`).join('')}</select>
-            <label class="f">Görünüme ek (isteğe bağlı, İngilizce; örn. "1950s Anatolia, winter")</label><input type="text" id="st-look-custom" value="${esc(st.lookCustom || '')}">
-            <label class="f">Genel tarz notları (her videoda uygulanır)</label><textarea id="st-notes" placeholder="örn. Belgesel gerçekçiliğinde, sıcak ışık, 2000'ler Türkiye'si">${esc(st.notes)}</textarea>
-            <label class="f">Varsayılan bütçe (USD)</label><input type="number" id="st-budget" value="${esc(st.defaultBudget)}" min="0" step="1">
-            <div class="row mt"><button class="gold" id="st-save">Kaydet</button></div>
-          </div></details>
         </aside>
       </div>`;
     renderVideoCards(); updatePlanEst();
@@ -263,7 +240,7 @@
     $('video-cards').innerHTML = S.videos.length ? S.videos.map((v) => `
       <div class="card link" data-open="#/v/${esc(v.id)}">
         <div class="title">${esc(v.name)}</div>
-        <div class="sub">${statusChip(v.status)} &nbsp;${v.shotCount ? v.shotCount + ' çekim · ' : ''}${v.targetSeconds ? fmtDur(v.targetSeconds) + ' · ' : ''}${esc(v.aspect)}${v.warnings ? ' · <span style="color:var(--warn)">' + v.warnings + ' uyarı</span>' : ''}</div>
+        <div class="sub">${statusChip(v.status)} &nbsp;${v.shotCount ? v.shotCount + ' çekim · ' : ''}${v.targetSeconds ? fmtDur(v.targetSeconds) + ' · ' : ''}${esc(v.aspect)}</div>
         <div class="sub" style="margin-top:8px">${fmtUsd(v.toplam_usd)} / ${fmtUsd(v.budget)} · <span class="faint">${fmtDate(v.createdAt)}</span></div>
         <button class="xs ghost danger del" data-del-video="${esc(v.id)}" title="Videoyu sil">Sil</button>
       </div>`).join('') : '<div class="empty">Henüz video yok. Sağdan senaryoyu yapıştırıp "Çekim listesini hazırla" deyin.</div>';
@@ -271,7 +248,7 @@
   function updatePlanEst() {
     const el = $('nv-est'); if (!el || !S.prices) return;
     const P = S.prices.prices, m = S.prices.models, a = P.tahmin_varsayimlari || {};
-    const model = $('nv-hard').checked ? m.claudeHard : m.claude;
+    const model = m.claude;
     const len = $('nv-script').value.length + 1500;
     const target = Number($('nv-dur').value) || Math.max(30, Math.round(len / 12));
     const inTok = (a.plan_girdi_token_sabit || 1500) + 1200 + len * (a.plan_girdi_token_per_karakter || 0.35);
@@ -280,108 +257,167 @@
     el.textContent = 'Plan ≈ ' + fmtUsd((inTok / 1e6) * pr.girdi + (outTok / 1e6) * pr.cikti) + ' · ' + model;
   }
 
-  // ---------- KÜTÜPHANE ----------
+  // ---------- KÜTÜPHANE (kartlar; Hazırlık adımında da kullanılır) ----------
   async function viewLibrary() {
     S.view = 'lib'; crumbs([{ label: 'Kütüphane' }]);
     try { await loadBase(); } catch (e) { app.innerHTML = `<div class="err">${esc(e.message)}</div>`; return; }
+    const st = S.settings;
     app.innerHTML = `
-      <div class="page-head"><div><h1>Kütüphane</h1><div class="meta">Projeden bağımsız, tekrar kullanılabilir varlıklar. Claude senaryodaki isimleri bunlarla eşleştirir; Gemini referans fotoğrafları görsellere taşır.</div></div></div>
+      <div class="page-head"><div><h1>Kütüphane</h1><div class="meta">Tüm videolarda ortak varlıklar. Her videonun Hazırlık adımında da aynı kartlar görünür ve oradan düzenlenebilir.</div></div></div>
       ${S.voicesError ? `<div class="small err" style="margin-bottom:10px">${esc(S.voicesError)}</div>` : ''}
       <div class="grid-lib">
         <section class="panel"><h3>Karakterler</h3><div id="lib-characters"></div></section>
         <section class="panel"><h3>Mekânlar</h3><div id="lib-locations"></div></section>
         <section class="panel"><h3>Dış ses (anlatıcılar)</h3><div id="lib-narrators"></div></section>
         <section class="panel"><h3>Müzik / efekt dosyaları</h3><div id="lib-audio"></div></section>
-      </div>`;
+      </div>
+      <details class="set" open><summary>Yedek / başka bilgisayara taşıma</summary><div class="body">
+        <div class="row"><a class="btn" href="/api/backup">Yedek indir (zip)</a><label class="btn">Yedek yükle (zip)<input type="file" accept=".zip,application/zip" id="restore-file" hidden></label><span class="small muted">Tüm videolar, kütüphane ve ayarlar tek zip olur. Evdeki bilgisayarda projeyi GitHub'dan kurup aynı anahtarlarla <code>.env</code> oluşturun, sonra zip'i buradan yükleyin. Yükleme mevcut kayıtların üstüne yazar.</span></div>
+      </div></details>
+      <details class="set"><summary>Yeni videolar için varsayılan ayarlar</summary><div class="body">
+        <div class="lib-item"><div class="g2">
+          <div><label class="f">Görüntü oranı</label><select id="st-aspect"><option value="auto" ${st.aspect === 'auto' ? 'selected' : ''}>Senaryodan (Shorts → dikey)</option>${Object.entries(ASPECTS).map(([k, v]) => `<option value="${k}" ${k === st.aspect ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
+          <div><label class="f">Görünüm</label><select id="st-look">${(S.looks || []).map((l) => `<option value="${l.key}" ${l.key === (st.look || 'film') ? 'selected' : ''}>${esc(l.name)}</option>`).join('')}</select></div>
+          <div><label class="f">Görünüme ek (İngilizce)</label><input type="text" id="st-look-custom" value="${esc(st.lookCustom || '')}" placeholder="1950s Anatolia, winter"></div>
+          <div><label class="f">Varsayılan bütçe (USD)</label><input type="number" id="st-budget" value="${esc(st.defaultBudget)}" min="0" step="1"></div>
+          <div class="full"><label class="f">Genel tarz notları (Claude her planda okur)</label><textarea id="st-notes">${esc(st.notes)}</textarea></div>
+          <div class="full row"><button class="xs gold" id="st-save">Kaydet</button></div>
+        </div></div>
+      </div></details>`;
     renderLib();
   }
   const photoStrip = (kind, it) => `<div class="photos">${(it.photos || []).map((p) => `<img src="/files/lib/${esc(p)}" title="Kaldırmak için tıklayın" data-pdel="${kind}:${esc(it.id)}:${esc(p)}">`).join('')}${(it.photos || []).length < 4 ? `<div class="add" data-padd="${kind}:${esc(it.id)}">+ foto</div><input type="file" accept="image/*" data-pfile="${kind}:${esc(it.id)}" hidden>` : ''}</div>`;
-  function renderLib() {
-    const lib = S.lib;
-    $('lib-characters').innerHTML = lib.characters.map((c) => `<div class="lib-item" data-lib="characters:${esc(c.id)}"><div class="g2">
-        <div><label class="f">Ad</label><input type="text" class="sm" data-lf="name" value="${esc(c.name)}"></div>
-        <div><label class="f">ElevenLabs sesi</label>${voiceSelect('data-lf="voiceId"', c.voiceId, 'sm')}</div>
-        <div class="full"><label class="f">Kısa tarif (yaş, görünüş, kıyafet; İngilizce önerilir)</label><textarea class="sm" data-lf="description">${esc(c.description || '')}</textarea></div>
-        <div><label class="f">Ses notu (isteğe bağlı)</label><input type="text" class="sm" data-lf="voiceNote" value="${esc(c.voiceNote || '')}" placeholder="örn. tok, kısık"></div>
-        <div><label class="f">Referans fotoğraflar (1–4)</label>${photoStrip('characters', c)}</div>
-        <div class="full row"><button class="xs gold" data-lsave="characters:${esc(c.id)}">Kaydet</button><button class="xs ghost danger" data-ldel="characters:${esc(c.id)}">Sil</button></div>
-      </div></div>`).join('') + `<div class="row mt"><input type="text" id="new-characters" placeholder="Yeni karakter adı" style="flex:1"><button class="xs" data-ladd="characters">Ekle</button></div>`;
-    $('lib-locations').innerHTML = lib.locations.map((l) => `<div class="lib-item" data-lib="locations:${esc(l.id)}"><div class="g2">
-        <div><label class="f">Ad</label><input type="text" class="sm" data-lf="name" value="${esc(l.name)}"></div>
-        <div><label class="f">Referans fotoğraflar (1–4)</label>${photoStrip('locations', l)}</div>
-        <div class="full"><label class="f">Tarif</label><textarea class="sm" data-lf="description">${esc(l.description || '')}</textarea></div>
-        <div class="full row"><button class="xs gold" data-lsave="locations:${esc(l.id)}">Kaydet</button><button class="xs ghost danger" data-ldel="locations:${esc(l.id)}">Sil</button></div>
-      </div></div>`).join('') + `<div class="row mt"><input type="text" id="new-locations" placeholder="Yeni mekân adı" style="flex:1"><button class="xs" data-ladd="locations">Ekle</button></div>`;
-    $('lib-narrators').innerHTML = lib.narrators.map((n) => `<div class="lib-item" data-lib="narrators:${esc(n.id)}"><div class="g2">
-        <div><label class="f">Ad</label><input type="text" class="sm" data-lf="name" value="${esc(n.name)}"></div>
-        <div><label class="f">ElevenLabs sesi</label>${voiceSelect('data-lf="voiceId"', n.voiceId, 'sm')}</div>
-        <div class="full row"><button class="xs gold" data-lsave="narrators:${esc(n.id)}">Kaydet</button><button class="xs ghost danger" data-ldel="narrators:${esc(n.id)}">Sil</button></div>
-      </div></div>`).join('') + `<div class="row mt"><input type="text" id="new-narrators" placeholder="Yeni anlatıcı adı (örn. Anlatıcı)" style="flex:1"><button class="xs" data-ladd="narrators">Ekle</button></div>`;
-    $('lib-audio').innerHTML = lib.audio.map((a) => `<div class="lib-item" data-lib="audio:${esc(a.id)}"><div class="g2">
-        <div><label class="f">Ad</label><input type="text" class="sm" data-lf="name" value="${esc(a.name)}"></div>
-        <div><label class="f">Etiketler (Claude bunlarla eşleştirir)</label><input type="text" class="sm" data-lf="tags" value="${esc(a.tags || '')}" placeholder="gergin keman, çello-piyano"></div>
-        <div class="full"><audio controls preload="none" src="/files/lib/${esc(a.file)}" style="width:100%;height:32px"></audio><div class="small faint">${fmtDur(a.duration)}</div></div>
-        <div class="full row"><button class="xs gold" data-lsave="audio:${esc(a.id)}">Kaydet</button><button class="xs ghost danger" data-ldel="audio:${esc(a.id)}">Sil</button></div>
-      </div></div>`).join('') + `<div class="lib-item" style="border-style:dashed"><div class="g2">
+  function libCard(kind, it, used) {
+    const cls = `lib-item ${used ? 'used' : ''}`, tag = used ? ' <span class="chip gold">bu videoda</span>' : '';
+    if (kind === 'characters') return `<div class="${cls}" data-lib="characters:${esc(it.id)}"><div class="g2">
+        <div><label class="f">Ad${tag}</label><input type="text" class="sm" data-lf="name" value="${esc(it.name)}"></div>
+        <div><label class="f">Ses (ElevenLabs)</label>${voiceSelect('data-lf="voiceId"', it.voiceId, 'sm')}</div>
+        <div class="full"><label class="f">Tarif (yaş, yüz, kıyafet; İngilizce önerilir). Üretimde fotoğraflarla birlikte kullanılır.</label><textarea class="sm" data-lf="description">${esc(it.description || '')}</textarea></div>
+        <div><label class="f">Ses notu</label><input type="text" class="sm" data-lf="voiceNote" value="${esc(it.voiceNote || '')}" placeholder="örn. tok, kısık"></div>
+        <div><label class="f">Referans fotoğraflar (1–4)</label>${photoStrip('characters', it)}</div>
+        <div class="full row"><button class="xs gold" data-lsave="characters:${esc(it.id)}">Kaydet</button><button class="xs ghost danger" data-ldel="characters:${esc(it.id)}">Sil</button></div></div></div>`;
+    if (kind === 'locations') return `<div class="${cls}" data-lib="locations:${esc(it.id)}"><div class="g2">
+        <div><label class="f">Ad${tag}</label><input type="text" class="sm" data-lf="name" value="${esc(it.name)}"></div>
+        <div><label class="f">Referans fotoğraflar (1–4)</label>${photoStrip('locations', it)}</div>
+        <div class="full"><label class="f">Tarif</label><textarea class="sm" data-lf="description">${esc(it.description || '')}</textarea></div>
+        <div class="full row"><button class="xs gold" data-lsave="locations:${esc(it.id)}">Kaydet</button><button class="xs ghost danger" data-ldel="locations:${esc(it.id)}">Sil</button></div></div></div>`;
+    if (kind === 'narrators') return `<div class="${cls}" data-lib="narrators:${esc(it.id)}"><div class="g2">
+        <div><label class="f">Ad${tag}</label><input type="text" class="sm" data-lf="name" value="${esc(it.name)}"></div>
+        <div><label class="f">Ses (ElevenLabs)</label>${voiceSelect('data-lf="voiceId"', it.voiceId, 'sm')}</div>
+        <div class="full row"><button class="xs gold" data-lsave="narrators:${esc(it.id)}">Kaydet</button><button class="xs ghost danger" data-ldel="narrators:${esc(it.id)}">Sil</button></div></div></div>`;
+    return `<div class="${cls}" data-lib="audio:${esc(it.id)}"><div class="g2">
+        <div><label class="f">Ad</label><input type="text" class="sm" data-lf="name" value="${esc(it.name)}"></div>
+        <div><label class="f">Etiketler (Claude bunlarla eşleştirir)</label><input type="text" class="sm" data-lf="tags" value="${esc(it.tags || '')}" placeholder="gergin keman, çello-piyano"></div>
+        <div class="full"><audio controls preload="none" src="/files/lib/${esc(it.file)}" style="width:100%;height:32px"></audio><div class="small faint">${fmtDur(it.duration)}</div></div>
+        <div class="full row"><button class="xs gold" data-lsave="audio:${esc(it.id)}">Kaydet</button><button class="xs ghost danger" data-ldel="audio:${esc(it.id)}">Sil</button></div></div></div>`;
+  }
+  function renderLib(usedNames) {
+    const lib = S.lib, u = usedNames || { characters: new Set(), locations: new Set(), narrators: new Set() };
+    const sortUsed = (arr, set) => arr.slice().sort((a, b) => (set.has(b.name) ? 1 : 0) - (set.has(a.name) ? 1 : 0));
+    const adder = (kind, ph) => `<div class="row mt"><input type="text" id="new-${kind}" placeholder="${ph}" style="flex:1"><button class="xs" data-ladd="${kind}">Ekle</button></div>`;
+    if ($('lib-characters')) $('lib-characters').innerHTML = sortUsed(lib.characters, u.characters).map((c) => libCard('characters', c, u.characters.has(c.name))).join('') + adder('characters', 'Yeni karakter adı');
+    if ($('lib-locations')) $('lib-locations').innerHTML = sortUsed(lib.locations, u.locations).map((l) => libCard('locations', l, u.locations.has(l.name))).join('') + adder('locations', 'Yeni mekân adı');
+    if ($('lib-narrators')) $('lib-narrators').innerHTML = sortUsed(lib.narrators, u.narrators).map((n) => libCard('narrators', n, u.narrators.has(n.name))).join('') + adder('narrators', 'Yeni anlatıcı adı (örn. Anlatıcı)');
+    if ($('lib-audio')) $('lib-audio').innerHTML = lib.audio.map((a) => libCard('audio', a)).join('') + `<div class="lib-item" style="border-style:dashed"><div class="g2">
         <div><label class="f">Ad</label><input type="text" id="na-name" class="sm" placeholder="örn. Gergin keman"></div>
         <div><label class="f">Etiketler</label><input type="text" id="na-tags" class="sm" placeholder="gergin keman, minör"></div>
-        <div class="full"><label class="btn xs">mp3 seç ve yükle<input type="file" accept="audio/*" id="na-file" hidden></label></div>
-      </div></div>`;
+        <div class="full"><label class="btn xs">mp3 seç ve yükle<input type="file" accept="audio/*" id="na-file" hidden></label></div></div></div>`;
   }
 
-  // ---------- VİDEO ----------
-  async function viewVideo(id) {
+  // ---------- VİDEO SAYFASI ----------
+  async function viewVideo(id, step) {
     S.view = 'video';
     try { await loadBase(); S.video = await api('/api/videos/' + id); } catch (e) { location.hash = '#/'; toast(e.message); return; }
-    if (!S.sel || !S.video.shots.some((s) => s.id === S.sel)) S.sel = S.video.shots.length ? S.video.shots[0].id : null;
-    S.adv = false; S.openAdv = new Set(); S.vtab = S.video.approved ? 'prod' : 'plan';
+    if (S.video.library) S.lib = S.video.library;
+    S.step = step || (S.video.shots.length ? 'shots' : 'setup'); S.openAdv = new Set();
     crumbs([{ label: 'Videolar', href: '#/' }, { label: S.video.name || 'Video' }]);
     S.lastJson = '';
-    app.innerHTML = `<div class="page-head" id="v-head"></div><div id="v-plan"></div><div id="v-body"></div>`;
+    app.innerHTML = `<div class="page-head" id="v-head"></div><div class="steps" id="v-steps"></div><div id="v-body"></div>`;
     updateVideo(true);
-    S.timer = setInterval(async () => { if (S.view !== 'video') return; try { S.video = await api('/api/videos/' + id); updateVideo(false); } catch { /* sessiz */ } }, 3000);
+    S.timer = setInterval(async () => { if (S.view !== 'video') return; try { S.video = await api('/api/videos/' + id); if (S.video.library) S.lib = S.video.library; updateVideo(false); } catch { /* sessiz */ } }, 3000);
+  }
+  function videoStatusText(v) {
+    const anyBusy = v.shots.some((s) => s.busy) || v.producing || v.assembling;
+    const missing = v.shots.filter((s) => !s.video).length;
+    return v.planning ? 'Planlanıyor' : v.planError && !v.shots.length ? 'Plan hatası' : !v.shots.length ? 'Plan yok' : v.final ? 'Hazır' : anyBusy ? 'Üretiliyor' : v.shots.some((s) => s.tool === 'flow' && !s.raw && !s.video) ? 'Klip bekleniyor' : v.shots.some((s) => s.error) ? 'Hata var' : missing ? (v.shots.length - missing) + '/' + v.shots.length + ' çekim hazır' : 'Birleştirmeye hazır';
   }
   function updateVideo(force) {
     const v = S.video;
     const json = JSON.stringify(v);
     if (!force && json === S.lastJson) return;
-    const editing = !force && isEditing();
+    if (!force && isEditing()) return; // yazarken ezme; kutudan çıkınca güncellenir
     S.lastJson = json;
     const m = v.maliyet || { toplam_usd: 0 };
     const pct = v.budget > 0 ? Math.min(100, (m.toplam_usd / v.budget) * 100) : 0;
-    const anyBusy = v.shots.some((s) => s.busy) || v.producing || v.assembling;
-    const missing = v.shots.filter((s) => !s.video).length;
     const planDur = v.shots.reduce((n, s) => n + (s.duration || 0), 0);
-    const st = v.planning ? 'Planlanıyor' : v.planError && !v.shots.length ? 'Plan hatası' : !v.shots.length ? 'Plan yok' : v.final ? 'Hazır' : anyBusy ? 'Üretiliyor' : !v.approved ? 'Onay bekliyor' : v.shots.some((s) => s.tool === 'flow' && !s.raw && !s.video) ? 'Flow bekleniyor' : v.shots.some((s) => s.error) ? 'Hata var' : missing ? (v.shots.length - missing) + '/' + v.shots.length + ' çekim hazır' : 'Birleştirmeye hazır';
     $('v-head').innerHTML = `
       <div style="min-width:280px">
-        <div class="crumb"><a href="#/">Videolar</a> / ${statusChip(st)}</div>
+        <div class="crumb"><a href="#/">Videolar</a> / ${statusChip(videoStatusText(v))}</div>
         <h1>${esc(v.name || 'Video')}</h1>
-        <div class="meta">${v.shots.length} çekim${v.plan ? ' · plan ' + fmtDur(planDur) + (v.plan.target_duration ? ' / hedef ' + fmtDur(v.plan.target_duration) : '') + ' · ' + esc(v.plan.aspect) + ' · ' + esc(v.plan.model || '') : ''}</div>
+        <div class="meta">${v.shots.length ? v.shots.length + ' çekim · ' + fmtDur(planDur) + ' · ' : ''}${esc((v.plan && v.plan.aspect) || v.aspect)} · ${esc(v.resolution || '720p')}${v.lookEffective ? ' · ' + esc(v.lookEffective.name) : ''}</div>
         <div class="row" style="margin-top:8px;gap:8px"><div class="progress" style="width:200px"><i class="${m.toplam_usd > v.budget ? 'over' : ''}" style="width:${pct}%"></i></div><span class="small"><b>${fmtUsd(m.toplam_usd)}</b> / ${fmtUsd(v.budget)}</span></div>
         <div class="row" style="margin-top:6px;gap:6px;flex-wrap:wrap">${spentChips(m)}</div>
       </div>
       <div class="actions">
-        ${v.shots.length && !v.planning ? `<div class="vtabs"><button class="${S.vtab === 'plan' ? 'on' : ''}" data-vtab="plan">Plan / onay</button><button class="${S.vtab === 'prod' ? 'on' : ''}" data-vtab="prod">Üretim</button></div>` : ''}
         ${v.final ? `<a class="btn gold" href="${vFile(v.final, v.finalAt, true)}" download="${esc((v.name || 'video').replace(/[^\w\-ğüşöçıİĞÜŞÖÇ ]+/g, '').trim())}.mp4">Final videoyu indir</a>` : ''}
-        <span class="act"><button class="ghost" id="btn-replan" ${v.planning || anyBusy ? 'disabled' : ''}>Yeniden planla</button><span class="est">${v.tahmin ? estLabel(v.tahmin.plan) : ''}</span></span>
         <button class="ghost danger" id="btn-del">Sil</button>
       </div>`;
-    $('v-plan').innerHTML = v.planning ? `<div class="panel" style="margin-bottom:16px"><span class="spin"></span> &nbsp;Claude senaryoyu okuyup çekim listesi çıkarıyor${v.hardPlanning ? ' (zor planlama)' : ''}… 1-4 dakika sürebilir, sayfa kendini yeniler.</div>`
-      : v.planError ? `<div class="panel" style="margin-bottom:16px"><div class="err">${esc(v.planError)}</div></div>` : '';
-    if (!v.shots.length || v.planning) { $('v-body').innerHTML = ''; return; }
-    if (editing && S.vtab === 'plan') return; // onay ekranında yazarken ezme
-    if (S.vtab === 'plan') renderPlan(); else renderProd(editing);
+    const steps = [['setup', '1', 'Hazırlık'], ['shots', '2', 'Çekimler'], ['final', '3', 'Final']];
+    $('v-steps').innerHTML = steps.map(([k, n, l]) => `<button class="${S.step === k ? 'on' : ''}" data-step="${k}" ${k !== 'setup' && !v.shots.length ? 'disabled' : ''}><b>${n}</b>${l}</button>`).join('');
+    if (S.step === 'setup') renderSetup(); else if (S.step === 'shots') renderShots(); else renderFinal();
   }
 
-  // --- Onay ekranı (zaman çizelgesi) ---
-  function renderPlan() {
+  // --- 1. Hazırlık ---
+  function renderSetup() {
+    const v = S.video, st = S.settings;
+    const used = { characters: new Set(v.shots.flatMap((s) => s.characters || [])), locations: new Set(v.shots.map((s) => s.location).filter(Boolean)), narrators: new Set(v.shots.flatMap((s) => (s.voiceover || []).map((d) => d.narrator))) };
+    const r = missingReason(['anthropic']);
+    $('v-body').innerHTML = `
+      <div class="grid-setup">
+        <div class="panel">
+          <h3>Senaryo</h3>
+          <textarea class="tall" id="sc-script">${esc(v.script || '')}</textarea>
+          <div class="row mt">
+            <div style="flex:1"><label class="f">Hedef süre (sn, boş = senaryodan)</label><input type="number" id="sc-dur" min="0" step="1" value="${v.targetSeconds || ''}"></div>
+            <div style="flex:1"><label class="f">Ad</label><input type="text" id="sc-name" value="${esc(v.name || '')}"></div>
+          </div>
+          <div class="row mt"><label class="check"><input type="checkbox" id="sc-hard" ${v.hardPlanning ? 'checked' : ''}> Zor planlama (Opus, daha pahalı)</label></div>
+          ${v.planning ? `<div class="mt"><span class="spin"></span> &nbsp;Claude çekim listesini çıkarıyor… 1-4 dakika sürebilir, sayfa kendini yeniler.</div>` : v.planError ? `<div class="err mt">${esc(v.planError)}</div>` : ''}
+          <div class="row mt"><span class="act"><button class="gold big" id="btn-plan" ${r || v.planning ? 'disabled' : ''} title="${esc(r)}">${v.shots.length ? 'Yeniden planla' : 'Çekim listesini hazırla'}</button><span class="est">${v.tahmin ? estLabel(v.tahmin.plan) : ''}${v.shots.length ? ' · mevcut çekim listesi silinir' : ''}</span></span></div>
+        </div>
+        <div class="panel">
+          <h3>Video ayarları</h3>
+          <label class="f">Görüntü oranı (boy)</label><select data-vs="aspect">${Object.entries(ASPECTS).map(([k, l]) => `<option value="${k}" ${k === ((v.plan && v.plan.aspect) || v.aspect) ? 'selected' : ''}>${l}</option>`).join('')}</select>
+          <label class="f">Video kalitesi (Gemini)</label><select data-vs="resolution"><option value="720p" ${(v.resolution || '720p') === '720p' ? 'selected' : ''}>720p · ≈ $0.07 / sn</option><option value="1080p" ${v.resolution === '1080p' ? 'selected' : ''}>1080p · ≈ $0.10 / sn</option></select>
+          <label class="f">Görünüm (her görsel ve videoya otomatik eklenir)</label><select data-vs="look"><option value="" ${!v.look ? 'selected' : ''}>Varsayılan (${esc((S.looks.find((l) => l.key === (st.look || 'film')) || {}).name || 'film')})</option>${S.looks.map((l) => `<option value="${l.key}" ${v.look === l.key ? 'selected' : ''}>${esc(l.name)}</option>`).join('')}</select>
+          <label class="f">Görünüme ek (İngilizce, isteğe bağlı)</label><input type="text" data-vs="lookCustom" value="${esc(v.lookCustom || '')}" placeholder="${esc(st.lookCustom || '1950s Anatolia, winter')}">
+          <label class="f">Hareketli çekimler (kamera + oyunculuk)</label><select data-vs="movingProvider"><option value="gemini" ${v.movingProvider !== 'flow' ? 'selected' : ''}>Gemini (otomatik)</option><option value="flow" ${v.movingProvider === 'flow' ? 'selected' : ''}>Dış araç (elle: Google Flow, Kling, Runway…)</option></select>
+          <label class="f">Bütçe (USD)</label><input type="number" data-vs="budget" value="${esc(v.budget)}" min="0" step="1">
+          <div class="small faint mt">Değişiklikler anında kaydedilir. Oran değişirse yeni üretilen görseller o orana göre çıkar.</div>
+        </div>
+      </div>
+      <h2 class="mt" style="margin-top:22px">Bu videonun karakterleri, mekânları ve sesleri</h2>
+      <div class="small muted" style="margin-bottom:10px">Kütüphaneyle ortaktır. Sarı çerçeveliler bu videoda geçiyor. Fotoğraf ve tarif değişince bir sonraki üretimde kullanılır; mevcut görseli yenilemek için çekimde "Yeniden üret" deyin.${S.voicesError ? ' <span class="err">' + esc(S.voicesError) + '</span>' : ''}</div>
+      <div class="grid-lib">
+        <section class="panel"><h3>Karakterler</h3><div id="lib-characters"></div></section>
+        <section class="panel"><h3>Mekânlar</h3><div id="lib-locations"></div></section>
+        <section class="panel"><h3>Dış ses (anlatıcılar)</h3><div id="lib-narrators"></div></section>
+        <section class="panel"><h3>Müzik / efekt dosyaları</h3><div id="lib-audio"></div></section>
+      </div>`;
+    renderLib(used);
+  }
+
+  // --- 2. Çekimler ---
+  const thumbClass = () => { const a = (S.video.plan && S.video.plan.aspect) || S.video.aspect; return a === '9:16' ? 'thumb v' : a === '1:1' ? 'thumb sq' : 'thumb'; };
+  function renderShots() {
     const v = S.video;
-    const warns = (v.plan.warnings || []), qs = (v.plan.questions || []);
+    const warns = (v.plan && v.plan.warnings) || [], qs = (v.plan && v.plan.questions) || [];
     let html = '';
-    if (warns.length || qs.length) html += `<div class="warnbox">${warns.length ? `<h3>Uyarılar</h3><ul style="margin:0;padding-left:18px">${warns.map((w) => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}${qs.length ? `<h3 style="margin-top:8px">Claude'un soruları</h3><ul style="margin:0;padding-left:18px">${qs.map((q) => `<li>${esc(q)}</li>`).join('')}</ul><div class="small muted" style="margin-top:6px">Cevaplamak için ilgili çekimi düzenleyin (karakter/mekân adı, araç) ya da senaryoya not ekleyip yeniden planlatın.</div>` : ''}</div>`;
-    html += `<div class="small muted" style="margin-bottom:6px">Her çekimde aracı değiştirebilir, replik ve promptları düzenleyebilir, çekim silip ekleyebilirsiniz. Alanlar kutudan çıkınca kaydedilir. Hiçbir şey üretilmedi; "Onayla ve üret" ile başlar.</div>`;
-    const sections = v.plan.sections || [];
+    if (warns.length || qs.length) html += `<details class="warnbox"><summary>${warns.length} uyarı${qs.length ? ', ' + qs.length + ' soru' : ''} (Claude)</summary>${warns.length ? `<ul style="margin:6px 0 0;padding-left:18px">${warns.map((w) => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}${qs.length ? `<ul style="margin:6px 0 0;padding-left:18px">${qs.map((q) => `<li>${esc(q)}</li>`).join('')}</ul>` : ''}</details>`;
+    const est = v.tahmin && v.tahmin.tumunu, hasFlow = v.shots.some((s) => s.tool === 'flow'), anyBusy = v.shots.some((s) => s.busy) || v.producing;
+    html += `<div class="bar"><div><b>Kalan üretim tahmini: ${estTotal(est)}</b><div class="small muted">Her çekimi tek tek "Üret" ile ya da hepsini birden üretebilirsiniz. Beğenmediğinizi notla yeniden üretin.</div></div>
+      <div class="row">${hasFlow ? `<a class="btn xs" href="/api/videos/${v.id}/pack">Dış araç paketini indir</a><label class="btn xs">Klipleri toplu yükle<input type="file" accept="video/*,.mp4,.mov,.webm" id="bulk-clips" multiple hidden></label>` : ''}<button class="gold" id="btn-produce" ${anyBusy || missingReason(['gemini']) ? 'disabled' : ''}>Eksik çekimleri üret</button></div></div>`;
+    const sections = (v.plan && v.plan.sections) || [];
     const bySection = new Map();
     for (const s of v.shots) { if (!bySection.has(s.section_id)) bySection.set(s.section_id, []); bySection.get(s.section_id).push(s); }
     const ids = [...new Set([...sections.map((s) => s.id), ...bySection.keys()])];
@@ -389,115 +425,99 @@
       const sec = sections.find((s) => s.id === secId) || { id: secId, name: 'Bölüm ' + secId };
       const shots = bySection.get(secId) || [];
       html += `<div class="section"><b>${esc(sec.name)}</b><span class="small muted">${shots.length ? fmtT(shots[0].start) + ' – ' + fmtT(shots[shots.length - 1].start + shots[shots.length - 1].duration) : ''}${sec.color_grade && sec.color_grade !== 'none' ? ' · renk: ' + esc(sec.color_note || sec.color_grade) : ''}${sec.music_note ? ' · müzik: ' + esc(sec.music_note) : ''}</span><button class="xs ghost" data-addshot="${secId}" data-after="${shots.length ? shots[shots.length - 1].id : 0}">+ çekim</button></div>`;
-      for (const s of shots) html += shotRow(s);
+      for (const s of shots) html += shotCard(s);
     }
-    // ses katmanları
-    html += `<div class="section"><b>Ses katmanları</b><span class="small muted">müzik / efekt / sessizlik · konuşma olan yerde müzik otomatik kısılır</span><button class="xs ghost" id="btn-addaudio">+ katman</button></div>`;
-    html += (v.audio || []).map((a, i) => `<div class="audio-row" data-ai="${i}">
-      <select class="sm" data-af="type"><option value="music" ${a.type === 'music' ? 'selected' : ''}>müzik</option><option value="sfx" ${a.type === 'sfx' ? 'selected' : ''}>efekt</option><option value="silence" ${a.type === 'silence' ? 'selected' : ''}>sessizlik</option></select>
-      <div class="row" style="gap:4px;flex-wrap:nowrap"><input type="number" class="sm" data-af="start" value="${esc(a.start)}" step="0.5" min="0" style="width:62px"><span class="faint">–</span><input type="number" class="sm" data-af="end" value="${esc(a.end)}" step="0.5" min="0" style="width:62px"></div>
-      <input type="text" class="sm" data-af="description" value="${esc(a.description)}" placeholder="açıklama / üretim promptu" ${a.type === 'silence' ? 'disabled' : ''}>
-      <select class="sm" data-af="source" ${a.type === 'silence' ? 'disabled' : ''}>${(() => { const src = String(a.source || ''); const isLib = src.startsWith('library:'); const tag = src.slice(8).trim().toLowerCase(); const files = S.lib.audio || []; let matched = isLib ? files.find((f) => (f.tags || '').toLowerCase().includes(tag) || f.name.toLowerCase().includes(tag)) : null; if (isLib && !matched) matched = files.find((f) => tag.split(/[\s,]+/).some((w) => w.length > 2 && ((f.tags || '').toLowerCase().includes(w) || f.name.toLowerCase().includes(w)))); return `<option value="generate" ${!matched ? 'selected' : ''}>üret (ElevenLabs)${isLib && !matched ? ' · kütüphanede "' + esc(src.slice(8)) + '" yok' : ''}</option>` + files.map((f) => `<option value="${esc('library:' + f.name)}" ${matched && matched.id === f.id ? 'selected' : ''}>kütüphane: ${esc(f.name)}</option>`).join(''); })()}</select>
-      <button class="xs ghost danger" data-adel="${i}">✕</button></div>`).join('') || '<div class="small faint">Ses katmanı yok.</div>';
-    const est = v.tahmin && v.tahmin.tumunu;
-    html += `<div class="sticky-bar"><div><b>Toplam tahmini üretim maliyeti: ${estTotal(est)}</b><div class="small muted">Çekimler + dış ses + müzik/efekt üretimi · plan süresi ${fmtDur(v.shots.reduce((n, s) => n + s.duration, 0))}${v.plan.target_duration ? ' / hedef ' + fmtDur(v.plan.target_duration) : ''}</div></div>
-      <span class="act"><button class="gold big" id="btn-produce" ${missingReason(['gemini', 'elevenlabs', 'fal']) ? 'disabled' : ''} title="${esc(missingReason(['gemini', 'elevenlabs', 'fal']))}">${v.approved ? 'Eksikleri üret' : 'Onayla ve üret'}</button><span class="est">bitince final video otomatik birleşir</span></span></div>`;
     $('v-body').innerHTML = html;
   }
-  function shotRow(s) {
-    const open = S.openAdv.has(s.id);
+  function shotCard(s) {
+    const open = S.openAdv.has(s.id), busy = !!s.busy, tool = s.tool;
+    const need = { avatar: ['gemini', 'elevenlabs', 'fal'], gemini: ['gemini'], flow: ['gemini'], seedance: ['gemini', 'fal'], text_card: [] }[tool] || [];
+    const miss = missingReason(need);
     const lines = [];
     for (const [i, d] of (s.dialogue || []).entries()) lines.push(`<div class="line"><span class="who">${esc(d.speaker)}</span><input type="text" class="sm" data-sline="${s.id}:dialogue:${i}:line" value="${esc(d.line)}"><input type="text" class="sm" data-sline="${s.id}:dialogue:${i}:emotion" value="${esc(d.emotion || '')}" placeholder="duygu"></div>`);
     for (const [i, d] of (s.voiceover || []).entries()) lines.push(`<div class="line vo"><span class="who">Dış ses · ${esc(d.narrator)}</span><input type="text" class="sm" data-sline="${s.id}:voiceover:${i}:line" value="${esc(d.line)}"><input type="text" class="sm" data-sline="${s.id}:voiceover:${i}:style" value="${esc(d.style || '')}" placeholder="üslup"></div>`);
     for (const [i, d] of (s.onscreen_text || []).entries()) lines.push(`<div class="line txt"><span class="who">Yazı · ${esc(d.style)}</span><textarea class="sm" data-sline="${s.id}:onscreen_text:${i}:text" style="min-height:36px">${esc(d.text)}</textarea><span class="small faint">${esc(d.start)}s · ${esc(d.duration)}s</span></div>`);
-    const t = s.tahminToplam;
-    return `<div class="shot-row" data-shot="${s.id}">
-      <div class="time"><b>#${s.id}</b>${fmtT(s.start)}<br><input type="number" class="sm" data-sf="${s.id}:duration" value="${esc(s.duration)}" step="0.5" min="1" style="width:62px;margin-top:4px" title="süre (sn)"></div>
-      <div class="tool">${toolSelect(`data-sf="${s.id}:tool"`, s.tool)}<div class="small faint" style="margin-top:4px">${s.suggested_tool && s.suggested_tool !== 'motion' && s.suggested_tool !== s.tool ? 'Claude: ' + esc(TOOL_NAMES[s.suggested_tool] || s.suggested_tool) : ''}${esc(s.camera || '')}</div></div>
-      <div><div class="desc"><input type="text" class="sm" data-sf="${s.id}:description" value="${esc(s.description)}"></div><div class="reason">${esc(s.tool_reason)}${s.characters && s.characters.length ? ' · ' + esc(s.characters.join(', ')) : ''}${s.location ? ' · ' + esc(s.location) : ''}</div><div class="lines">${lines.join('')}</div></div>
-      <div class="cost"><b>${t ? estTotal(t) : ''}</b><button class="xs ghost" data-adv="${s.id}">${open ? 'promptları gizle' : 'promptlar'}</button></div>
-      <div><button class="xs ghost danger" data-sdel="${s.id}" title="Çekimi sil">✕</button></div>
+    const media = s.video ? `<video controls playsinline preload="metadata" src="${vFile(s.video, s.videoAt)}#t=0.3"></video>` : s.raw ? `<video controls playsinline preload="metadata" src="${vFile(s.raw, s.rawAt)}#t=0.3"></video>` : s.image ? `<img src="${vFile(s.image, s.imageAt)}" alt="">` : '<span>henüz üretilmedi</span>';
+    const stKey = Object.keys(s.tahmin || {}).filter((k) => !((k === 'image' && s.image) || (k === 'audio' && s.audio) || (k === 'voiceover' && s.voFiles && s.voFiles.length) || (k === 'video' && (s.video || s.raw)) || (k === 'fixvoice' && s.video)));
+    const estMissing = stepEst(s, stKey), estAll = stepEst(s, Object.keys(s.tahmin || {}));
+    const waitingClip = tool === 'flow' && !s.raw && !s.video;
+    const draft = S.drafts[s.id] || '';
+    const revs = s.revisions || [];
+    return `<div class="shot ${busy ? 'busy' : ''}" data-shot="${s.id}">
+      <div>
+        <div class="${thumbClass()}">${media}</div>
+        <div class="row small" style="margin-top:6px;gap:6px">${statusChip(s.status || 'Bekliyor')}${s.manual ? '<span class="chip">klip elle</span>' : ''}${s.imageManual ? '<span class="chip">kare elle</span>' : ''}</div>
+        ${s.audio ? `<audio controls preload="none" src="${vFile(s.audio, s.audioAt)}" style="width:100%;height:28px;margin-top:6px"></audio>` : ''}
+        ${(s.voFiles || []).map((vo) => `<audio controls preload="none" src="${vFile(vo.file, s.voAt)}" style="width:100%;height:28px;margin-top:6px" title="dış ses"></audio>`).join('')}
+      </div>
+      <div>
+        <div class="head"><b>#${s.id}</b><span>${fmtT(s.start)}</span><span>süre <input type="number" class="sm" data-sf="${s.id}:duration" value="${esc(s.duration)}" step="0.5" min="1" style="width:64px"> sn</span>${toolSelect(`data-sf="${s.id}:tool"`, tool)}${s.camera ? `<span class="faint">${esc(s.camera)}</span>` : ''}</div>
+        <input type="text" class="sm" data-sf="${s.id}:description" value="${esc(s.description)}" style="margin-top:8px">
+        <div class="small muted" style="margin-top:4px">${esc(s.tool_reason)}${s.characters && s.characters.length ? ' · ' + esc(s.characters.join(', ')) : ''}${s.location ? ' · ' + esc(s.location) : ''}</div>
+        <div class="lines">${lines.join('')}</div>
+        ${s.error ? `<div class="err mt">${esc(s.error)}</div>` : ''}
+        ${s.fixNote ? `<div class="small muted mt">${esc(s.fixNote)}</div>` : ''}
+        ${waitingClip && s.image ? `<div class="row mt small"><span class="muted">Dış araç:</span><a class="btn xs" href="${vFile(s.image, s.imageAt, true)}" download="cekim-${nn(s.id)}.jpg">Görseli indir</a><button class="xs" data-copy="${s.id}">Promptu kopyala</button><a href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">Flow</a><a href="https://app.klingai.com" target="_blank" rel="noopener">Kling</a><a href="https://app.runwayml.com" target="_blank" rel="noopener">Runway</a><span class="faint">klibi cekim-${nn(s.id)}.mp4 adıyla kaydedip yükleyin</span></div>` : ''}
+        <div class="row mt" style="gap:12px"><button class="xs ghost" data-adv="${s.id}">${open ? 'ayrıntıları gizle' : 'promptlar ve adımlar'}</button><button class="xs ghost danger" data-sdel="${s.id}">Çekimi sil</button></div>
+      </div>
+      <div class="side">
+        <div class="btns">
+          <span class="act"><button class="xs gold" data-act="${s.video ? 'all' : 'auto'}" data-sid="${s.id}" ${busy || miss ? 'disabled' : ''} title="${esc(miss)}">${s.video ? 'Yeniden üret' : waitingClip && s.image ? 'Görseli yenile' : 'Üret'}</button><span class="est">${esc(s.video ? estAll : estMissing)}</span></span>
+          <label class="btn xs ${busy ? 'dis' : ''}">İlk kare yükle<input type="file" accept="image/*" data-imgup="${s.id}" hidden ${busy ? 'disabled' : ''}></label>
+          <label class="btn xs ${busy ? 'dis' : ''}">Klip yükle<input type="file" accept="video/*,.mp4,.mov,.webm" data-upload="${s.id}" hidden ${busy ? 'disabled' : ''}></label>
+        </div>
+        <div class="note">
+          <label class="f" style="margin-top:0">Düzeltme notu <span class="faint">(Türkçe, yönetmene söyler gibi)</span></label>
+          <textarea class="sm" data-note="${s.id}" placeholder="örn. kadın solda otursun, adam ona dönük konuşsun, daha loş olsun" ${busy ? 'disabled' : ''}>${esc(draft)}</textarea>
+          <div class="row" style="margin-top:6px"><button class="xs" data-revise="${s.id}" ${busy || keyMissing('anthropic') ? 'disabled' : ''}>Notla yeniden üret</button><span class="est">${esc(estAll)}</span></div>
+          ${revs.length ? `<div class="small" style="margin-top:6px;opacity:.8">${revs.map((r) => `<div>• <b>${esc(r.note)}</b>${r.answer ? ` <span class="faint">→ ${esc(r.answer)}</span>` : ''}</div>`).join('')}</div>` : ''}
+        </div>
+        <div class="small faint">Bu çekim: ${fmtUsd(s.maliyet ? s.maliyet.toplam_usd : 0)}</div>
+      </div>
       ${open ? `<div class="adv">
-        <div class="full"><label class="f">Görsel promptu (ilk kare)</label><textarea class="sm" data-sf="${s.id}:image_prompt">${esc(s.image_prompt)}</textarea></div>
-        ${s.tool !== 'avatar' && s.tool !== 'text_card' ? `<div class="full"><label class="f">Video promptu</label><textarea class="sm" data-sf="${s.id}:video_prompt">${esc(s.video_prompt)}</textarea></div>` : ''}
+        <div class="full"><label class="f">Görsel promptu (ilk kare) · karakter ve mekân tarifleri üretimde otomatik eklenir</label><textarea class="sm" data-sf="${s.id}:image_prompt">${esc(s.image_prompt)}</textarea></div>
+        ${tool !== 'avatar' && tool !== 'text_card' ? `<div class="full"><label class="f">Video promptu</label><textarea class="sm" data-sf="${s.id}:video_prompt">${esc(s.video_prompt)}</textarea></div>` : ''}
         ${s.video_prompt_soft && s.video_prompt_soft_for === s.video_prompt ? `<div class="full"><label class="f">Yumuşatılmış prompt (Gemini filtresi için, otomatik)</label><div class="sm" style="white-space:pre-wrap;opacity:.75">${esc(s.video_prompt_soft)}</div></div>` : ''}
-        ${s.tool === 'avatar' ? `<div class="full"><label class="f">Hareket promptu (isteğe bağlı)</label><input type="text" class="sm" data-sf="${s.id}:motion_prompt" value="${esc(s.motion_prompt || '')}"></div>` : ''}
-        <div><label class="f">Karakterler (virgülle)</label><input type="text" class="sm" data-sf="${s.id}:characters" value="${esc((s.characters || []).join(', '))}"></div>
+        ${tool === 'avatar' ? `<div class="full"><label class="f">Hareket promptu (isteğe bağlı)</label><input type="text" class="sm" data-sf="${s.id}:motion_prompt" value="${esc(s.motion_prompt || '')}"></div>` : ''}
+        <div><label class="f">Karakterler (virgülle, kütüphane adları)</label><input type="text" class="sm" data-sf="${s.id}:characters" value="${esc((s.characters || []).join(', '))}"></div>
         <div><label class="f">Mekân</label><input type="text" class="sm" data-sf="${s.id}:location" value="${esc(s.location || '')}"></div>
+        <div class="full row" style="align-items:flex-start">
+          ${tool !== 'text_card' ? actBtn(s, s.image ? 'Görseli yeniden üret' : 'Görseli üret', 'image', busy || !!missingReason(['gemini']), stepEst(s, ['image'])) : ''}
+          ${tool === 'avatar' ? actBtn(s, s.audio ? 'Sesi yeniden üret' : 'Sesi üret', 'audio', busy || !!missingReason(['elevenlabs']), stepEst(s, ['audio'])) : ''}
+          ${(s.voiceover || []).length ? actBtn(s, s.voFiles && s.voFiles.length ? 'Dış sesi yeniden üret' : 'Dış sesi üret', 'voiceover', busy || !!missingReason(['elevenlabs']), stepEst(s, ['voiceover'])) : ''}
+          ${tool !== 'flow' ? actBtn(s, s.video || s.raw ? 'Videoyu yeniden üret' : 'Videoyu üret', 'video', busy || !!missingReason(tool === 'avatar' || tool === 'seedance' ? ['fal'] : tool === 'gemini' ? ['gemini'] : []), stepEst(s, tool === 'gemini' ? ['video', 'fixvoice'] : ['video'])) : ''}
+          ${(tool === 'gemini' || tool === 'flow') && s.raw ? actBtn(s, 'Sesi yeniden işle', 'fixvoice', busy, stepEst(s, ['fixvoice'])) : ''}
+        </div>
+        ${tool === 'gemini' || tool === 'flow' ? `<div class="full"><label class="check"><input type="checkbox" data-sf="${s.id}:fixVoice" ${s.fixVoice !== false ? 'checked' : ''}> Klibin sesini karakterin sabit sesine çevir (tek konuşan varsa, ses seçiliyse)</label></div>` : ''}
         <div class="full small muted">Tahmin kalemleri: ${Object.values(s.tahmin || {}).map(estLabel).join(' · ')}</div>
       </div>` : ''}
     </div>`;
   }
-
-  // --- Üretim ekranı ---
-  const thumbClass = () => (S.video.plan.aspect === '9:16' ? 'thumb v' : S.video.plan.aspect === '1:1' ? 'thumb sq' : 'thumb');
-  function shotText(s) { if (s.dialogue && s.dialogue.length) return s.dialogue.map((d) => d.speaker + ': "' + d.line + '"').join(' · '); if (s.voiceover && s.voiceover.length) return 'Dış ses: ' + s.voiceover.map((d) => d.line).join(' '); return s.description; }
-  function renderProd(editing) {
-    const v = S.video;
-    if (!$('scene-grid')) $('v-body').innerHTML = `<div class="ep-layout"><div><div class="scene-grid" id="scene-grid"></div><div class="panel" id="audio-box" style="margin-top:16px"></div><div class="panel" id="final-box" style="margin-top:16px"></div></div><aside class="panel detail" id="scene-detail"></aside></div>`;
-    $('scene-grid').innerHTML = v.shots.map((s) => {
-      const media = s.video ? `<video muted preload="metadata" src="${vFile(s.video, s.videoAt)}#t=0.5"></video>` : s.image ? `<img src="${vFile(s.image, s.imageAt)}" alt="">` : '<span>henüz üretilmedi</span>';
-      const st = s.error ? 'err' : s.video ? 'ok' : /Flow/.test(s.status || '') ? 'gold' : '';
-      return `<div class="scene ${s.id === S.sel ? 'sel' : ''}" data-sel="${s.id}"><div class="${thumbClass()}">${media}<span class="chip badge t-${esc(s.tool)}">${esc(TOOL_NAMES[s.tool].split(' ')[0])}</span>${s.busy ? '<span class="busy spin"></span>' : ''}</div>
-        <div class="name"><span>#${s.id}</span><span class="chip ${st}">${esc(s.status || 'Bekliyor')}</span></div><div class="sum">${esc(shotText(s))}</div>
-        <div class="foot"><span>${fmtT(s.start)} · ${fmtDur(s.actualDuration || s.duration)}</span><span>${fmtUsd(s.maliyet ? s.maliyet.toplam_usd : 0)}</span></div></div>`;
-    }).join('');
-    // ses katmanları
-    const layers = v.audio || [];
-    $('audio-box').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="margin:0">Ses katmanları</h3><span class="act"><button class="xs" id="btn-genaudio" ${v.producing ? 'disabled' : ''}>Eksik müzik/efektleri üret</button><span class="est">${estTotal(v.tahmin && v.tahmin.katmanlar)}</span></span></div>
-      ${layers.length ? layers.map((a) => `<div class="small" style="margin-top:6px"><span class="chip">${esc(a.type)}</span> ${fmtT(a.start)}–${fmtT(a.end)} · ${esc(a.description)} · <span class="muted">${a.type === 'silence' ? 'müzik kapalı' : a.file ? (a.file.startsWith('lib:') ? 'kütüphane' : 'üretildi') : esc(a.status || 'bekliyor')}</span>${a.error ? ` <span class="err">${esc(a.error)}</span>` : ''}${a.note ? ` <span class="faint">${esc(a.note)}</span>` : ''}</div>`).join('') : '<div class="small faint mt">Ses katmanı yok.</div>'}`;
-    const allHave = v.shots.length && v.shots.every((s) => s.video);
-    $('final-box').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="margin:0">Final video</h3><span class="row"><span class="small muted">${v.assembling ? '<span class="spin"></span> ' : ''}${esc(v.finalStatus || 'Tüm çekimler bitince otomatik birleştirilir.')}${v.final && v.finalDuration ? ' · ' + fmtDur(v.finalDuration) : ''}</span><button class="xs" id="btn-assemble" ${!allHave || v.assembling || v.producing ? 'disabled' : ''}>${v.final ? 'Finali yenile' : 'Birleştir'}</button></span></div>
-      ${v.finalError ? `<div class="err">${esc(v.finalError)}</div>` : ''}${v.final ? `<div class="row mt"><video controls playsinline src="${vFile(v.final, v.finalAt)}" style="max-height:360px;max-width:100%;border-radius:8px;background:#000"></video></div>` : ''}`;
-    if (!editing) renderDetail();
-  }
-  const actBtn = (label, act, disabled, title, est, gold) => `<span class="act"><button class="xs ${gold ? 'gold' : ''}" data-act="${act}" ${disabled ? 'disabled' : ''} title="${esc(title || '')}">${label}</button><span class="est">${esc(est || '')}</span></span>`;
+  const actBtn = (s, label, act, disabled, est) => `<span class="act"><button class="xs" data-act="${act}" data-sid="${s.id}" ${disabled ? 'disabled' : ''}>${label}</button><span class="est">${esc(est || '')}</span></span>`;
   function stepEst(s, keys) { const items = keys.map((k) => (s.tahmin || {})[k]).filter(Boolean); if (!items.length) return ''; if (items.length === 1) return estLabel(items[0]); const sum = { usd: 0, kredi: 0 }; for (const i of items) { sum.usd += i.usd || 0; sum.kredi += i.kredi || 0; } return estTotal(sum); }
-  function renderDetail() {
-    const v = S.video; const s = v.shots.find((x) => x.id === S.sel);
-    if (!s) { $('scene-detail').innerHTML = '<div class="muted">Bir çekim seçin.</div>'; return; }
-    const busy = !!s.busy, tool = s.tool;
-    const need = { avatar: ['gemini', 'elevenlabs', 'fal'], gemini: ['gemini', 'elevenlabs'], flow: ['gemini', 'elevenlabs'], seedance: ['gemini', 'fal'], text_card: [] }[tool];
-    const dis = (keys) => busy || !!missingReason(keys);
-    let f = `<h3><span>Çekim #${s.id} ${toolChip(tool)}</span><span class="small muted">${busy ? '<span class="spin"></span> ' : ''}${esc(s.status || 'Bekliyor')}</span></h3>
-      <div class="muted small" style="margin-bottom:6px">${esc(s.description)} · ${fmtT(s.start)} · ${fmtDur(s.actualDuration || s.duration)}${s.camera ? ' · ' + esc(s.camera) : ''}</div>`;
-    if (s.dialogue && s.dialogue.length) f += `<div class="small" style="margin-top:6px">${s.dialogue.map((d) => '<b>' + esc(d.speaker) + '</b>' + (d.emotion ? ' <span class="faint">(' + esc(d.emotion) + ')</span>' : '') + ': "' + esc(d.line) + '"').join('<br>')}</div>`;
-    if (s.voiceover && s.voiceover.length) f += `<div class="small" style="margin-top:6px;color:var(--purple)">Dış ses: ${esc(s.voiceover.map((d) => d.line).join(' '))}</div>`;
-    const media = [];
-    if (s.image) media.push(`<div><img src="${vFile(s.image, s.imageAt)}" alt=""><div class="cap">İlk kare</div></div>`);
-    if (s.audio) media.push(`<div><audio controls src="${vFile(s.audio, s.audioAt)}"></audio><div class="cap">Diyalog sesi</div></div>`);
-    for (const vo of s.voFiles || []) media.push(`<div><audio controls src="${vFile(vo.file, s.voAt)}"></audio><div class="cap">Dış ses</div></div>`);
-    if (s.video) media.push(`<div><video controls playsinline src="${vFile(s.video, s.videoAt)}"></video><div class="cap">Video${s.manual ? ' · elle yüklendi' : ''}${s.fixNote ? ' · ' + esc(s.fixNote) : ''}</div></div>`);
-    else if (s.raw) media.push(`<div><video controls playsinline src="${vFile(s.raw, s.rawAt)}"></video><div class="cap">Ham klip</div></div>`);
-    if (media.length) f += `<div class="media">${media.join('')}</div>`;
-    if (s.error) f += `<div class="err mt">${esc(s.error)}</div>`;
-    const hasAll = !!s.video;
-    const missingKeys = ['image', 'audio', 'voiceover', 'video', 'fixvoice'].filter((k) => (s.tahmin || {})[k] && !((k === 'image' && s.image) || (k === 'audio' && s.audio) || (k === 'voiceover' && s.voFiles && s.voFiles.length) || (k === 'video' && (s.video || s.raw)) || (k === 'fixvoice' && s.video)));
-    f += `<div class="row mt" style="align-items:flex-start">
-      ${actBtn(hasAll ? 'Çekimi yeniden üret' : 'Bu çekimi üret', hasAll ? 'all' : 'auto', dis(need) || (tool === 'flow' && !s.raw && !!s.image && !hasAll), missingReason(need), stepEst(s, hasAll ? Object.keys(s.tahmin || {}) : missingKeys), true)}
-      <label class="btn xs">Elle klip yükle<input type="file" accept="video/*,.mp4,.mov,.webm" data-upload="${s.id}" hidden ${busy ? 'disabled' : ''}></label>
-      <button class="xs ghost" id="btn-adv">${S.adv ? 'Adımları gizle' : 'Adımlar'}</button></div>`;
-    if (tool !== 'text_card') {
-      const revs = s.revisions || [];
-      f += `<div class="mt revbox"><label class="f">Düzeltme notu <span class="faint">(Türkçe, yönetmene söyler gibi: "kadın solda otursun, adam ona dönük konuşsun")</span></label>
-        <textarea class="sm" id="revise-note" rows="2" ${busy ? 'disabled' : ''}>${esc(S.reviseDraft || '')}</textarea>
-        <div class="row" style="margin-top:6px"><button class="xs gold" id="btn-revise" ${busy || keyMissing('claude') ? 'disabled' : ''}>Notla yeniden üret</button><span class="small muted">Claude promptları nota göre yeniden yazar, çekim baştan üretilir (${esc(stepEst(s, Object.keys(s.tahmin || {})) || 'tahmin yok')}).</span></div>
-        ${revs.length ? '<div class="small mt" style="opacity:.8">' + revs.map((r) => '<div>• <b>' + esc(r.note) + '</b>' + (r.answer ? ' <span class="faint">→ ' + esc(r.answer) + '</span>' : '') + '</div>').join('') + '</div>' : ''}</div>`;
-    }
-    if (tool === 'flow') f += `<div class="flowbox"><b>Google Flow (elle)</b> <span class="est">Flow kredisi (siteden harcanmaz)</span><p class="small muted">1) İlk kare görselini indirin. 2) Promptu kopyalayın. 3) Flow'da görseli yükleyip promptla video üretin. 4) İndirdiğiniz klibi "Elle klip yükle" ile buraya yükleyin; tek konuşan varsa sesi karakter sesine çevrilir.</p>
-      <div class="row">${s.image ? `<a class="btn xs" href="${vFile(s.image, s.imageAt, true)}" download="cekim-${s.id}.jpg">Görseli indir</a>` : '<span class="small muted">Önce görseli üretin (Adımlar → Görsel).</span>'}<button class="xs" data-copy="${s.id}">Promptu kopyala</button><a class="btn xs" href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">Flow'u aç</a></div></div>`;
-    if (S.adv) {
-      const b = [];
-      if (tool !== 'text_card') b.push(actBtn(s.image ? 'Görseli yeniden üret' : 'Görseli üret', 'image', dis(['gemini']), missingReason(['gemini']), stepEst(s, ['image'])));
-      if (tool === 'avatar') b.push(actBtn(s.audio ? 'Sesi yeniden üret' : 'Sesi üret', 'audio', dis(['elevenlabs']), missingReason(['elevenlabs']), stepEst(s, ['audio'])));
-      if (s.voiceover && s.voiceover.length) b.push(actBtn(s.voFiles && s.voFiles.length ? 'Dış sesi yeniden üret' : 'Dış sesi üret', 'voiceover', dis(['elevenlabs']), missingReason(['elevenlabs']), stepEst(s, ['voiceover'])));
-      if (tool !== 'flow') b.push(actBtn(s.video || s.raw ? 'Videoyu yeniden üret' : 'Videoyu üret', 'video', dis(tool === 'avatar' ? ['fal'] : tool === 'seedance' ? ['fal'] : tool === 'gemini' ? ['gemini'] : []), '', stepEst(s, tool === 'gemini' ? ['video', 'fixvoice'] : ['video'])));
-      if ((tool === 'gemini' || tool === 'flow') && s.raw) b.push(actBtn('Sesi yeniden işle', 'fixvoice', dis([]), '', stepEst(s, ['fixvoice'])));
-      f += `<div class="row mt" style="align-items:flex-start;border-top:1px dashed var(--line);padding-top:10px">${b.join('')}</div>`;
-      if (tool === 'gemini' || tool === 'flow') f += `<div class="mt"><label class="check"><input type="checkbox" data-sf="${s.id}:fixVoice" ${s.fixVoice !== false ? 'checked' : ''}> Klibin sesini karakterin sabit sesine çevir (tek konuşan varsa)</label></div>`;
-    }
-    f += `<div class="cost-line">Bu çekim: <b>${esc(spent(s.maliyet))}</b></div>`;
-    $('scene-detail').innerHTML = f;
+
+  // --- 3. Final ---
+  function renderFinal() {
+    const v = S.video, layers = v.audio || [];
+    const allHave = v.shots.length && v.shots.every((s) => s.video);
+    const audioRows = layers.map((a, i) => `<div class="audio-row" data-ai="${i}">
+      <select class="sm" data-af="type"><option value="music" ${a.type === 'music' ? 'selected' : ''}>müzik</option><option value="sfx" ${a.type === 'sfx' ? 'selected' : ''}>efekt</option><option value="silence" ${a.type === 'silence' ? 'selected' : ''}>sessizlik</option></select>
+      <div class="row" style="gap:4px;flex-wrap:nowrap"><input type="number" class="sm" data-af="start" value="${esc(a.start)}" step="0.5" min="0" style="width:62px"><span class="faint">–</span><input type="number" class="sm" data-af="end" value="${esc(a.end)}" step="0.5" min="0" style="width:62px"></div>
+      <div><input type="text" class="sm" data-af="description" value="${esc(a.description)}" placeholder="açıklama / üretim promptu" ${a.type === 'silence' ? 'disabled' : ''}><div class="small muted" style="margin-top:3px">${a.type === 'silence' ? 'müzik kapalı' : a.file ? (a.file.startsWith('lib:') ? 'kütüphaneden hazır' : 'üretildi') : esc(a.status || 'henüz üretilmedi')}${a.error ? ` <span class="err">${esc(a.error)}</span>` : ''}</div></div>
+      <select class="sm" data-af="source" ${a.type === 'silence' ? 'disabled' : ''}>${(() => { const src = String(a.source || ''); const isLib = src.startsWith('library:'); const tag = src.slice(8).trim().toLowerCase(); const files = S.lib.audio || []; let matched = isLib ? files.find((f) => (f.tags || '').toLowerCase().includes(tag) || f.name.toLowerCase().includes(tag)) : null; if (isLib && !matched) matched = files.find((f) => tag.split(/[\s,]+/).some((w) => w.length > 2 && ((f.tags || '').toLowerCase().includes(w) || f.name.toLowerCase().includes(w)))); return `<option value="generate" ${!matched ? 'selected' : ''}>üret (ElevenLabs)</option>` + files.map((f) => `<option value="${esc('library:' + f.name)}" ${matched && matched.id === f.id ? 'selected' : ''}>kütüphane: ${esc(f.name)}</option>`).join(''); })()}</select>
+      <button class="xs ghost danger" data-adel="${i}">✕</button></div>`).join('') || '<div class="small faint">Ses katmanı yok.</div>';
+    $('v-body').innerHTML = `
+      <div class="panel" style="margin-bottom:16px">
+        <div class="row" style="justify-content:space-between"><h3 style="margin:0">Ses katmanları <span class="small muted">müzik / efekt / sessizlik · konuşma olan yerde müzik otomatik kısılır</span></h3>
+          <span class="row"><button class="xs ghost" id="btn-addaudio">+ katman</button><span class="act"><button class="xs" id="btn-genaudio" ${v.producing ? 'disabled' : ''}>Eksik müzik/efektleri üret</button><span class="est">${estTotal(v.tahmin && v.tahmin.katmanlar)}</span></span></span></div>
+        <div class="mt">${audioRows}</div>
+        <div class="small faint mt">Kendi mp3'lerinizi Hazırlık → Müzik / efekt dosyaları'na yükleyip buradan "kütüphane" olarak seçebilirsiniz; ElevenLabs'ten üretmek kredi harcar.</div>
+      </div>
+      <div class="panel">
+        <div class="row" style="justify-content:space-between"><h3 style="margin:0">Final video</h3><span class="row"><span class="small muted">${v.assembling ? '<span class="spin"></span> ' : ''}${esc(v.finalStatus || (allHave ? 'Tüm çekimler hazır.' : v.shots.filter((s) => !s.video).length + ' çekim henüz hazır değil.'))}${v.final && v.finalDuration ? ' · ' + fmtDur(v.finalDuration) : ''}</span><button class="xs gold" id="btn-assemble" ${!allHave || v.assembling || v.producing ? 'disabled' : ''}>${v.final ? 'Finali yenile' : 'Birleştir'}</button></span></div>
+        ${v.finalError ? `<div class="err mt">${esc(v.finalError)}</div>` : ''}
+        ${v.final ? `<div class="row mt"><video controls playsinline src="${vFile(v.final, v.finalAt)}" style="max-height:420px;max-width:100%;border-radius:8px;background:#000"></video></div><div class="row mt"><a class="btn gold" href="${vFile(v.final, v.finalAt, true)}" download="${esc((v.name || 'video').replace(/[^\w\-ğüşöçıİĞÜŞÖÇ ]+/g, '').trim())}.mp4">Final videoyu indir</a></div>` : ''}
+      </div>`;
   }
 
   // ---------- olaylar ----------
@@ -506,56 +526,59 @@
     const rows = [...document.querySelectorAll('.audio-row')].map((r) => ({ type: r.querySelector('[data-af=type]').value, start: Number(r.querySelector('[data-af=start]').value), end: Number(r.querySelector('[data-af=end]').value), description: r.querySelector('[data-af=description]').value, source: r.querySelector('[data-af=source]').value }));
     S.video = await api(`/api/videos/${S.video.id}/audio`, { method: 'PATCH', json: { audio: rows } }); S.lastJson = '';
   }
+  const refresh = () => updateVideo(true);
   app.addEventListener('click', async (ev) => {
     const t = ev.target;
     const padd = t.closest('[data-padd]'); if (padd) { const inp = padd.parentElement.querySelector('input[data-pfile]'); if (inp) inp.click(); return; }
     const open = t.closest('[data-open]'); if (open && !t.closest('button')) { location.hash = open.dataset.open; return; }
-    const sel = t.closest('[data-sel]'); if (sel) { S.sel = Number(sel.dataset.sel); S.adv = false; renderProd(false); return; }
     const pdel = t.closest('img[data-pdel]');
-    if (pdel) { const [kind, id, name] = pdel.dataset.pdel.split(':'); if (!confirm('Fotoğraf kaldırılsın mı?')) return; try { const it = await api(`/api/library/${kind}/${id}/photo/${name}`, { method: 'DELETE' }); S.lib[kind] = S.lib[kind].map((x) => (x.id === it.id ? it : x)); renderLib(); } catch (e) { toast(e.message); } return; }
+    if (pdel) { const [kind, id, name] = pdel.dataset.pdel.split(':'); if (!confirm('Fotoğraf kaldırılsın mı?')) return; try { const it = await api(`/api/library/${kind}/${id}/photo/${name}`, { method: 'DELETE' }); S.lib[kind] = S.lib[kind].map((x) => (x.id === it.id ? it : x)); if (S.view === 'video') refresh(); else renderLib(); } catch (e) { toast(e.message); } return; }
     const btn = t.closest('button'); if (!btn) return;
     try {
       if (btn.id === 'nv-start') {
         const script = $('nv-script').value.trim(); if (!script) return toast('Senaryoyu yapıştırın.');
         btn.disabled = true;
-        const auto = $('nv-auto').checked;
-        const pick = (kind) => [...document.querySelectorAll(`input[data-asset="${kind}"]:checked`)].map((x) => x.value);
-        const v = await api('/api/videos', { method: 'POST', json: { name: $('nv-name').value.trim(), script, targetSeconds: Number($('nv-dur').value) || 0, hardPlanning: $('nv-hard').checked, budget: Number($('nv-budget').value), movingProvider: $('nv-provider').value, assets: { auto, characters: pick('characters'), locations: pick('locations'), narrators: pick('narrators') } } });
-        S.sel = null; location.hash = '#/v/' + v.id;
+        const v = await api('/api/videos', { method: 'POST', json: { name: $('nv-name').value.trim(), script, targetSeconds: Number($('nv-dur').value) || 0, budget: Number($('nv-budget').value), movingProvider: S.settings.movingProvider, assets: { auto: true } } });
+        location.hash = '#/v/' + v.id;
       } else if (btn.dataset.delVideo) { if (!confirm('Video ve dosyaları silinsin mi?')) return; await api('/api/videos/' + btn.dataset.delVideo, { method: 'DELETE' }); toast('Silindi'); viewHome(); }
-      else if (btn.id === 'st-save') { S.settings = await api('/api/settings', { method: 'PATCH', json: { aspect: $('st-aspect').value, notes: $('st-notes').value, defaultBudget: Number($('st-budget').value), look: $('st-look').value, lookCustom: $('st-look-custom').value } }); $('nv-budget').value = S.settings.defaultBudget; toast('Ayarlar kaydedildi'); }
-      else if (btn.dataset.ladd) { const kind = btn.dataset.ladd; const name = $('new-' + kind).value.trim(); if (!name) return toast('Ad yazın.'); const it = await api('/api/library/' + kind, { method: 'POST', json: { name } }); S.lib[kind].push(it); renderLib(); toast('Eklendi'); }
+      else if (btn.id === 'st-save') { S.settings = await api('/api/settings', { method: 'PATCH', json: { aspect: $('st-aspect').value, notes: $('st-notes').value, defaultBudget: Number($('st-budget').value), look: $('st-look').value, lookCustom: $('st-look-custom').value } }); toast('Ayarlar kaydedildi'); }
+      else if (btn.dataset.ladd) { const kind = btn.dataset.ladd; const name = $('new-' + kind).value.trim(); if (!name) return toast('Ad yazın.'); const it = await api('/api/library/' + kind, { method: 'POST', json: { name } }); S.lib[kind].push(it); if (S.view === 'video') refresh(); else renderLib(); toast('Eklendi'); }
       else if (btn.dataset.lsave) {
         const [kind, id] = btn.dataset.lsave.split(':'); const card = btn.closest('[data-lib]'); const body = {};
         for (const el of card.querySelectorAll('[data-lf]')) body[el.dataset.lf] = el.value;
         const it = await api(`/api/library/${kind}/${id}`, { method: 'PATCH', json: body }); S.lib[kind] = S.lib[kind].map((x) => (x.id === it.id ? it : x)); toast('Kaydedildi');
-      } else if (btn.dataset.ldel) { const [kind, id] = btn.dataset.ldel.split(':'); if (!confirm('Silinsin mi?')) return; await api(`/api/library/${kind}/${id}`, { method: 'DELETE' }); S.lib[kind] = S.lib[kind].filter((x) => x.id !== id); renderLib(); }
-      else if (btn.dataset.vtab) { S.vtab = btn.dataset.vtab; S.lastJson = ''; updateVideo(true); }
-      else if (btn.id === 'btn-produce') { await apiConfirm(`/api/videos/${S.video.id}/produce`); S.vtab = 'prod'; S.lastJson = ''; toast('Üretim başladı'); }
+      } else if (btn.dataset.ldel) { const [kind, id] = btn.dataset.ldel.split(':'); if (!confirm('Silinsin mi?')) return; await api(`/api/library/${kind}/${id}`, { method: 'DELETE' }); S.lib[kind] = S.lib[kind].filter((x) => x.id !== id); if (S.view === 'video') refresh(); else renderLib(); }
+      else if (btn.dataset.step) { S.step = btn.dataset.step; refresh(); }
+      else if (btn.id === 'btn-plan') {
+        if (S.video.shots.length && !confirm('Yeniden planlama mevcut çekim listesini ve üretilenlerin bağlantısını siler. Devam?')) return;
+        btn.disabled = true;
+        await api(`/api/videos/${S.video.id}`, { method: 'PATCH', json: { name: $('sc-name').value, script: $('sc-script').value, targetSeconds: Number($('sc-dur').value) || 0, hardPlanning: $('sc-hard').checked } });
+        await apiConfirm(`/api/videos/${S.video.id}/plan`, { script: $('sc-script').value, targetSeconds: Number($('sc-dur').value) || 0, hardPlanning: $('sc-hard').checked });
+        S.video = await api('/api/videos/' + S.video.id); refresh(); toast('Planlanıyor');
+      }
+      else if (btn.id === 'btn-produce') { await apiConfirm(`/api/videos/${S.video.id}/produce`); toast('Üretim başladı'); }
       else if (btn.id === 'btn-genaudio') { await apiConfirm(`/api/videos/${S.video.id}/audio/generate`); toast('Ses katmanları üretiliyor'); }
       else if (btn.id === 'btn-assemble') { await api(`/api/videos/${S.video.id}/assemble`, { method: 'POST', json: {} }); toast('Birleştirme başladı'); }
-      else if (btn.id === 'btn-replan') { if (S.video.shots.length && !confirm('Yeniden planlama mevcut çekim listesini siler. Devam?')) return; await apiConfirm(`/api/videos/${S.video.id}/plan`); S.vtab = 'plan'; toast('Yeniden planlanıyor'); }
       else if (btn.id === 'btn-del') { if (!confirm('Video ve dosyaları silinsin mi?')) return; await api('/api/videos/' + S.video.id, { method: 'DELETE' }); location.hash = '#/'; }
-      else if (btn.id === 'btn-adv') { S.adv = !S.adv; renderDetail(); }
-      else if (btn.id === 'btn-revise') {
-        const ta = $('revise-note'); const note = (ta && ta.value || '').trim();
+      else if (btn.dataset.revise) {
+        const sid = Number(btn.dataset.revise); const ta = document.querySelector(`textarea[data-note="${sid}"]`); const note = (ta && ta.value || '').trim();
         if (!note) { toast('Önce notu yazın.'); return; }
         btn.disabled = true; btn.textContent = 'Claude yeniden yazıyor…';
-        const r = await api(`/api/videos/${S.video.id}/shots/${S.sel}/revise`, { method: 'POST', json: { note } });
-        S.reviseDraft = ''; S.video = r.video; updateVideo(true); toast(r.answer || 'Çekim yeniden yazıldı');
-        await apiConfirm(`/api/videos/${S.video.id}/shots/${S.sel}/generate`, { step: 'auto' });
+        const r = await api(`/api/videos/${S.video.id}/shots/${sid}/revise`, { method: 'POST', json: { note } });
+        delete S.drafts[sid]; S.video = r.video; refresh(); toast(r.answer || 'Çekim yeniden yazıldı');
+        await apiConfirm(`/api/videos/${S.video.id}/shots/${sid}/generate`, { step: 'auto' });
       }
-      else if (btn.dataset.adv) { const id = Number(btn.dataset.adv); if (S.openAdv.has(id)) S.openAdv.delete(id); else S.openAdv.add(id); renderPlan(); }
-      else if (btn.dataset.sdel) { if (!confirm('Çekim silinsin mi?')) return; S.video = await api(`/api/videos/${S.video.id}/shots/${btn.dataset.sdel}`, { method: 'DELETE' }); S.lastJson = ''; renderPlan(); }
-      else if (btn.dataset.addshot) { S.video = await api(`/api/videos/${S.video.id}/shots`, { method: 'POST', json: { section_id: Number(btn.dataset.addshot), after: Number(btn.dataset.after) } }); S.lastJson = ''; renderPlan(); }
-      else if (btn.id === 'btn-addaudio') { const list = (S.video.audio || []).map((a) => ({ type: a.type, start: a.start, end: a.end, description: a.description, source: a.source })); const last = S.video.shots[S.video.shots.length - 1]; list.push({ type: 'music', start: 0, end: last ? last.start + last.duration : 30, description: 'Yeni müzik', source: 'generate' }); S.video = await api(`/api/videos/${S.video.id}/audio`, { method: 'PATCH', json: { audio: list } }); S.lastJson = ''; renderPlan(); }
-      else if (btn.dataset.adel != null) { const list = (S.video.audio || []).filter((_, i) => i !== Number(btn.dataset.adel)).map((a) => ({ type: a.type, start: a.start, end: a.end, description: a.description, source: a.source })); S.video = await api(`/api/videos/${S.video.id}/audio`, { method: 'PATCH', json: { audio: list } }); S.lastJson = ''; renderPlan(); }
-      else if (btn.dataset.copy) { const s = S.video.shots.find((x) => x.id === Number(btn.dataset.copy)); try { await navigator.clipboard.writeText(s.video_prompt || ''); toast('Prompt kopyalandı'); } catch { toast('Kopyalanamadı'); } }
-      else if (btn.dataset.act) { btn.disabled = true; await apiConfirm(`/api/videos/${S.video.id}/shots/${S.sel}/generate`, { step: btn.dataset.act }); toast('Başladı'); }
-    } catch (e) { toast(e.message); if (btn.dataset.act || btn.id === 'nv-start') btn.disabled = false; }
+      else if (btn.dataset.adv) { const id = Number(btn.dataset.adv); if (S.openAdv.has(id)) S.openAdv.delete(id); else S.openAdv.add(id); refresh(); }
+      else if (btn.dataset.sdel) { if (!confirm('Çekim silinsin mi?')) return; S.video = await api(`/api/videos/${S.video.id}/shots/${btn.dataset.sdel}`, { method: 'DELETE' }); refresh(); }
+      else if (btn.dataset.addshot) { S.video = await api(`/api/videos/${S.video.id}/shots`, { method: 'POST', json: { section_id: Number(btn.dataset.addshot), after: Number(btn.dataset.after) } }); refresh(); }
+      else if (btn.id === 'btn-addaudio') { const list = (S.video.audio || []).map((a) => ({ type: a.type, start: a.start, end: a.end, description: a.description, source: a.source })); const last = S.video.shots[S.video.shots.length - 1]; list.push({ type: 'music', start: 0, end: last ? last.start + last.duration : 30, description: 'Yeni müzik', source: 'generate' }); S.video = await api(`/api/videos/${S.video.id}/audio`, { method: 'PATCH', json: { audio: list } }); refresh(); }
+      else if (btn.dataset.adel != null) { const list = (S.video.audio || []).filter((_, i) => i !== Number(btn.dataset.adel)).map((a) => ({ type: a.type, start: a.start, end: a.end, description: a.description, source: a.source })); S.video = await api(`/api/videos/${S.video.id}/audio`, { method: 'PATCH', json: { audio: list } }); refresh(); }
+      else if (btn.dataset.copy) { const s = S.video.shots.find((x) => x.id === Number(btn.dataset.copy)); const lk = S.video.lookEffective ? ' ' + S.video.lookEffective.video : ''; try { await navigator.clipboard.writeText((s.video_prompt || '') + lk); toast('Prompt kopyalandı (görünüm ekiyle)'); } catch { toast('Kopyalanamadı'); } }
+      else if (btn.dataset.act) { btn.disabled = true; await apiConfirm(`/api/videos/${S.video.id}/shots/${btn.dataset.sid}/generate`, { step: btn.dataset.act }); toast('Başladı'); S.video = await api('/api/videos/' + S.video.id); refresh(); }
+    } catch (e) { toast(e.message); if (btn.dataset.act || btn.id === 'nv-start' || btn.id === 'btn-plan' || btn.dataset.revise) { btn.disabled = false; if (btn.dataset.revise) btn.textContent = 'Notla yeniden üret'; } }
   });
 
-  // alan kaydetme (focusout): çekim alanları, replik satırları, ses katmanları
+  // alan kaydetme (focusout): çekim alanları, replik satırları, ses katmanları, video ayarları
   app.addEventListener('focusout', async (ev) => {
     const el = ev.target;
     if (!el.dataset || S.view !== 'video') return;
@@ -568,13 +591,14 @@
         if (field === 'duration') val = Number(val);
         if (JSON.stringify(s[field]) === JSON.stringify(val)) return;
         await patchShot(Number(sid), { [field]: val });
-        if (field === 'duration' || field === 'tool') renderPlan(); else toast('Kaydedildi');
+        if (field === 'duration') refresh(); else toast('Kaydedildi');
       } else if (el.dataset.sline) {
         const [sid, list, idx, field] = el.dataset.sline.split(':');
         const s = S.video.shots.find((x) => x.id === Number(sid)); if (!s) return;
         const arr = JSON.parse(JSON.stringify(s[list] || [])); if (!arr[idx] || arr[idx][field] === el.value) return;
         arr[idx][field] = el.value; await patchShot(Number(sid), { [list]: arr }); toast('Kaydedildi');
       } else if (el.dataset.af) { await saveAudioLayers(); toast('Kaydedildi'); }
+      else if (el.dataset.vs && el.tagName !== 'SELECT') { const f = el.dataset.vs; const val = f === 'budget' ? Number(el.value) : el.value; if (String(S.video[f] == null ? '' : S.video[f]) === String(val)) return; S.video = await api(`/api/videos/${S.video.id}`, { method: 'PATCH', json: { [f]: val } }); S.lastJson = ''; toast('Kaydedildi'); }
     } catch (e) { toast(e.message); }
   });
   app.addEventListener('change', async (ev) => {
@@ -583,23 +607,45 @@
       if (el.dataset && el.dataset.sf && (el.tagName === 'SELECT' || el.type === 'checkbox')) {
         const [sid, field] = el.dataset.sf.split(':');
         await patchShot(Number(sid), { [field]: el.type === 'checkbox' ? el.checked : el.value });
-        if (S.vtab === 'plan') renderPlan(); else renderProd(false);
-        toast(field === 'tool' ? 'Araç değiştirildi' : 'Kaydedildi');
-      } else if (el.dataset && el.dataset.af && (el.tagName === 'SELECT')) { await saveAudioLayers(); renderPlan(); }
+        refresh(); toast(field === 'tool' ? 'Araç değiştirildi' : 'Kaydedildi');
+      } else if (el.dataset && el.dataset.vs && el.tagName === 'SELECT') { S.video = await api(`/api/videos/${S.video.id}`, { method: 'PATCH', json: { [el.dataset.vs]: el.value } }); refresh(); toast('Kaydedildi'); }
+      else if (el.dataset && el.dataset.af && (el.tagName === 'SELECT')) { await saveAudioLayers(); refresh(); }
       else if (el.dataset && el.dataset.upload) {
         const file = el.files && el.files[0]; if (!file) return; toast('Klip yükleniyor…');
-        await api(`/api/videos/${S.video.id}/shots/${el.dataset.upload}/upload`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'application/octet-stream' } }); toast('Klip yüklendi');
+        await api(`/api/videos/${S.video.id}/shots/${el.dataset.upload}/upload`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'application/octet-stream' } }); toast('Klip yüklendi'); S.video = await api('/api/videos/' + S.video.id); refresh();
+      } else if (el.dataset && el.dataset.imgup) {
+        const file = el.files && el.files[0]; if (!file) return; toast('İlk kare yükleniyor…');
+        const r = await api(`/api/videos/${S.video.id}/shots/${el.dataset.imgup}/image`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'image/jpeg' } }); S.video = r.video; refresh(); toast('İlk kare yüklendi; "Üret" deyince bu kareden devam eder');
+      } else if (el.id === 'bulk-clips') {
+        const files = Array.from(el.files || []); if (!files.length) return;
+        let ok = 0; const bad = [];
+        for (const file of files) {
+          const m = file.name.match(/(\d{1,3})/); const sid = m ? Number(m[1]) : NaN;
+          const sh = S.video.shots.find((x) => x.id === sid);
+          if (!sh) { bad.push(file.name); continue; }
+          toast(`Yükleniyor: ${file.name} → çekim #${sid}`);
+          try { await api(`/api/videos/${S.video.id}/shots/${sid}/upload`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'application/octet-stream' } }); ok++; } catch (e) { bad.push(file.name + ' (' + e.message + ')'); }
+        }
+        toast(`${ok} klip yüklendi${bad.length ? ' · eşleşmeyen: ' + bad.join(', ') : ''}`); S.video = await api('/api/videos/' + S.video.id); refresh();
       } else if (el.dataset && el.dataset.pfile) {
         const file = el.files && el.files[0]; if (!file) return; const [kind, id] = el.dataset.pfile.split(':'); toast('Fotoğraf yükleniyor…');
-        const it = await api(`/api/library/${kind}/${id}/photo`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'image/jpeg' } }); S.lib[kind] = S.lib[kind].map((x) => (x.id === it.id ? it : x)); renderLib(); toast('Fotoğraf eklendi');
+        const it = await api(`/api/library/${kind}/${id}/photo`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'image/jpeg' } }); S.lib[kind] = S.lib[kind].map((x) => (x.id === it.id ? it : x)); if (S.view === 'video') { S.video.library = S.lib; refresh(); } else renderLib(); toast('Fotoğraf eklendi');
+      } else if (el.id === 'restore-file') {
+        const file = el.files && el.files[0]; if (!file) return;
+        if (!confirm('Yedek yüklenecek; aynı kimlikli videolar ve kütüphane kayıtları üstüne yazılır. Devam?')) { el.value = ''; return; }
+        toast('Yedek yükleniyor… (' + Math.round(file.size / 1048576) + ' MB)');
+        const r = await api('/api/restore', { method: 'POST', body: file, headers: { 'Content-Type': 'application/zip' } }); toast('Yedek yüklendi: ' + r.videos + ' video'); await loadBase(); renderLib();
       } else if (el.id === 'na-file') {
         const file = el.files && el.files[0]; if (!file) return; const name = $('na-name').value.trim() || file.name.replace(/\.[^.]+$/, ''); toast('Yükleniyor…');
-        const it = await api(`/api/library/audio?name=${encodeURIComponent(name)}&tags=${encodeURIComponent($('na-tags').value.trim())}`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'audio/mpeg' } }); S.lib.audio.push(it); renderLib(); toast('Ses dosyası eklendi');
-      } else if (el.id === 'nv-auto') { $('nv-assets').style.display = el.checked ? 'none' : ''; }
-      else if (['nv-hard', 'nv-dur'].includes(el.id)) updatePlanEst();
+        const it = await api(`/api/library/audio?name=${encodeURIComponent(name)}&tags=${encodeURIComponent($('na-tags').value.trim())}`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'audio/mpeg' } }); S.lib.audio.push(it); if (S.view === 'video') { S.video.library = S.lib; refresh(); } else renderLib(); toast('Ses dosyası eklendi');
+      } else if (['nv-dur'].includes(el.id)) updatePlanEst();
     } catch (e) { toast(e.message); }
   });
-  app.addEventListener('input', (ev) => { if (['nv-script', 'nv-dur'].includes(ev.target.id)) updatePlanEst(); });
+  app.addEventListener('input', (ev) => {
+    const el = ev.target;
+    if (['nv-script', 'nv-dur'].includes(el.id)) updatePlanEst();
+    if (el.dataset && el.dataset.note) S.drafts[Number(el.dataset.note)] = el.value;
+  });
 
   (async () => { await loadStatus(); route(); setInterval(loadStatus, 60000); })();
 })();

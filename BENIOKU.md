@@ -55,7 +55,7 @@ Claude her çekim için şu araçlardan birini seçer ve Türkçe gerekçe yazar
 | Araç | Ne zaman | Nasıl |
 |---|---|---|
 | **Avatar (fal.ai)** | Sabit kamera, tek kişi, uzun konuşma | Görsel → ElevenLabs sesi (duygu etiketli) → dudak uyumlu video |
-| **Gemini (otomatik)** / **Flow (elle)** | Kamera hareketi + oyunculuk, güçlü duygu, iki kişi | Görsel → video (sesli); tek konuşan varsa ses Voice Changer ile karakter sesine çevrilir. En fazla 8 sn |
+| **Gemini (otomatik)** / **Dış araç (elle)** | Kamera hareketi + oyunculuk, güçlü duygu, iki kişi | Görsel → video (sesli); tek konuşan varsa ses Voice Changer ile karakter sesine çevrilir. En fazla 8 sn |
 | **Seedance (fal.ai)** | Konuşmasız hareket, atmosfer, geçiş | Görsel → sessiz video; ses katmanlardan gelir |
 | **Yazı kartı (ffmpeg)** | Açılış kancası, kapanış alıntısı | Siyah fon + yazı, yapay zeka yok, ücretsiz |
 
@@ -63,18 +63,25 @@ Dış ses satırları ElevenLabs ile ayrı üretilip zamanına yerleştirilir. E
 
 Claude ayrıca **uyarılar** yazar: süreye sığmayan konuşmalar (Türkçe ≈ 2,5 kelime/sn), hedef süre aşımı, doğruluğu önemli metinler (ayet, hadis, istatistik → "kaynağını doğrulayın"), video filtresine takılabilecek ifadeler.
 
-## Onay ekranı
+## Video sayfası: üç adım
 
-Plan geldikten sonra hiçbir şey üretilmez. Zaman çizelgesinde bölümler ve çekimler sırayla; her çekimde süre, araç (açılır menüden değiştirilebilir), gerekçe, replik/dış ses/ekran yazısı (düzenlenebilir), promptlar (açılır) ve tahmini maliyet. Çekim silinip eklenebilir; ses katmanları (müzik / efekt / sessizlik; kütüphane veya üret) düzenlenebilir. Altta toplam tahmin ve **Onayla ve üret**.
+1. **Hazırlık** – senaryo (yeniden planlama), video ayarları (görüntü oranı, kalite 720p/1080p, görünüm, hareketli çekim aracı, bütçe) ve bu videonun karakterleri / mekânları / dış sesleri / müzik dosyaları (kütüphaneyle ortak; fotoğraf, tarif ve ses buradan değişir). Tarifler ve referans fotoğraflar üretim anında prompta eklenir, bu yüzden plan sonrası değişiklikler de bir sonraki üretimde geçerlidir.
+2. **Çekimler** – tek liste: her çekimde görsel/video önizleme, süre, araç, tarif, replikler; sağda **Üret / Yeniden üret**, **İlk kare yükle** (kendi görselinizi başlangıç karesi yaparsınız, yeniden üretimde korunur), **Klip yükle** ve **Düzeltme notu** (Türkçe not → Claude promptları yeniden yazar → çekim baştan üretilir; notlar hatırlanır). "promptlar ve adımlar" ile prompt düzenleme ve tek adım (görsel / ses / dış ses / video) üretimi. Üstte "Eksik çekimleri üret", dış araç paketi ve toplu klip yükleme.
+3. **Final** – ses katmanları (müzik / efekt / sessizlik; kütüphane dosyası ya da ElevenLabs) ve birleştirme / indirme.
 
 ## Üretim ve birleştirme
 
-- Çekimler sırayla üretilir; Flow çekimleri "Flow bekleniyor" durumunda kalır (görseli indir → Flow'da üret → klibi yükle). Herhangi bir çekime "Elle klip yükle" ile kendi klibinizi koyabilirsiniz.
+- Çekimler sırayla üretilir. "Dış araç (elle)" çekimlerinde uygulama yalnızca ilk kareyi üretir ve "Klip bekleniyor" durumunda bekler: Final kutusundaki **Dış araç paketini indir** ile tüm bekleyen çekimlerin görselleri + promptları (görünüm ekiyle) tek zip gelir; Google Flow, Kling, Runway, Hailuo, Sora gibi herhangi bir araçta üretip klipleri cekim-NN.mp4 adıyla **Klipleri toplu yükle** ile geri verirsiniz (dosya adındaki sayı çekim numarasıdır). Tek çekim için "Elle klip yükle" de var.
 - Düzeltme notu: üretim ekranında her çekimin altında Türkçe not kutusu ("kadın solda otursun, adam ona dönük konuşsun"). Claude promptları ve süreyi nota göre yeniden yazar, önceki notları hatırlar; çekim baştan üretilir.
 - Gemini video filtresi: Gemini bir sahneyi reddederse (bağırma, tehdit, korkmuş kişi gibi ifadeler) Claude video promptunu otomatik yumuşatır (replik aynen kalır) ve bir kez daha dener; yine reddedilirse hata mesajı Avatar aracına geçmeyi ya da promptu düzenlemeyi önerir. 4,5 saniyeye sığan çekimler için 4 saniyelik (yarı fiyat) video istenir.
 - Müzik/efekt: kütüphaneden ya da ElevenLabs ile üretilir, süreye göre kırpılır, giriş/çıkış fade uygulanır.
 - Birleştirme (ffmpeg): tüm çekimler aynı çözünürlükte (siyah bant yok), 30 fps H.264 + AAC. Diyalog/klip sesi + dış ses + müzik + efekt karıştırılır; konuşma olan yerde müzik otomatik kısılır (sidechain ducking), "sessizlik" bölümlerinde müzik tamamen kapanır. Bölüm renk tonu (soğuk mavi, sıcak, siyah-beyaz…) uygulanır. Ekran yazıları zamanına göre bindirilir (kanca üst-orta büyük; kapanış kartı siyah fon, beyaz + altın, yavaş fade-in). Bölüm geçişlerinde ve sonda kararma.
 - Tüm çekimler bitince final otomatik birleşir; "Final videoyu indir" çıkar. Çekim değiştirdiyseniz "Finali yenile".
+
+## Yedek ve başka bilgisayar
+
+- Kütüphane sayfası → **Yedek indir (zip)**: tüm videolar, kütüphane ve ayarlar tek zip. Diğer bilgisayarda projeyi GitHub'dan kurup aynı anahtarlarla .env oluşturun, Kütüphane → **Yedek yükle (zip)** ile içeri alın (aynı kimlikli kayıtların üstüne yazar).
+- İki bilgisayarın aynı veriyi kullanması için .env içinde DATA_DIR ile bulutla eşitlenen bir klasör verilebilir (OneDrive / Google Drive). Aynı anda iki yerde üretim yapmayın.
 
 ## Maliyet
 
