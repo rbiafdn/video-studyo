@@ -261,6 +261,9 @@
         <section class="panel"><h3>Dış ses (anlatıcılar)</h3><div id="lib-narrators"></div></section>
         <section class="panel"><h3>Müzik / efekt dosyaları</h3><div id="lib-audio"></div></section>
       </div>
+      <details class="set" open><summary>Yedek / başka bilgisayara taşıma</summary><div class="body">
+        <div class="row"><a class="btn" href="/api/backup">Yedek indir (zip)</a><label class="btn">Yedek yükle (zip)<input type="file" accept=".zip,application/zip" id="restore-file" hidden></label><span class="small muted">Tüm videolar, kütüphane ve ayarlar tek zip olur. Evdeki bilgisayarda projeyi GitHub'dan kurup aynı anahtarlarla <code>.env</code> oluşturun, sonra zip'i buradan yükleyin. Yükleme mevcut kayıtların üstüne yazar.</span></div>
+      </div></details>
       <details class="set"><summary>Yeni videolar için varsayılan ayarlar</summary><div class="body">
         <div class="lib-item"><div class="g2">
           <div><label class="f">Görüntü oranı</label><select id="st-aspect"><option value="auto" ${st.aspect === 'auto' ? 'selected' : ''}>Senaryodan (Shorts → dikey)</option>${Object.entries(ASPECTS).map(([k, v]) => `<option value="${k}" ${k === st.aspect ? 'selected' : ''}>${v}</option>`).join('')}</select></div>
@@ -616,6 +619,11 @@
       } else if (el.dataset && el.dataset.pfile) {
         const file = el.files && el.files[0]; if (!file) return; const [kind, id] = el.dataset.pfile.split(':'); toast('Fotoğraf yükleniyor…');
         const it = await api(`/api/library/${kind}/${id}/photo`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'image/jpeg' } }); S.lib[kind] = S.lib[kind].map((x) => (x.id === it.id ? it : x)); if (S.view === 'video') { S.video.library = S.lib; refresh(); } else renderLib(); toast('Fotoğraf eklendi');
+      } else if (el.id === 'restore-file') {
+        const file = el.files && el.files[0]; if (!file) return;
+        if (!confirm('Yedek yüklenecek; aynı kimlikli videolar ve kütüphane kayıtları üstüne yazılır. Devam?')) { el.value = ''; return; }
+        toast('Yedek yükleniyor… (' + Math.round(file.size / 1048576) + ' MB)');
+        const r = await api('/api/restore', { method: 'POST', body: file, headers: { 'Content-Type': 'application/zip' } }); toast('Yedek yüklendi: ' + r.videos + ' video'); await loadBase(); renderLib();
       } else if (el.id === 'na-file') {
         const file = el.files && el.files[0]; if (!file) return; const name = $('na-name').value.trim() || file.name.replace(/\.[^.]+$/, ''); toast('Yükleniyor…');
         const it = await api(`/api/library/audio?name=${encodeURIComponent(name)}&tags=${encodeURIComponent($('na-tags').value.trim())}`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'audio/mpeg' } }); S.lib.audio.push(it); if (S.view === 'video') { S.video.library = S.lib; refresh(); } else renderLib(); toast('Ses dosyası eklendi');

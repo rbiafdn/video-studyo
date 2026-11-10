@@ -82,6 +82,31 @@ app.patch('/api/settings', (req, res) => {
     if (typeof b.lookCustom === 'string') st.lookCustom = b.lookCustom.trim().slice(0, 600);
   }));
 });
+// Yedek: tüm data/ klasörü (videolar, kütüphane, ayarlar) tek zip; başka bilgisayara taşımak için.
+const TAR = process.platform === 'win32' ? path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe') : 'tar';
+app.get('/api/backup', (req, res) => {
+  const zip = path.join(require('os').tmpdir(), `video-studyo-yedek-${Date.now()}.zip`);
+  const r = require('child_process').spawnSync(TAR, ['-a', '-cf', zip, '-C', store.DATA_DIR, '.'], { stdio: 'ignore' });
+  if (r.status !== 0 || !fs.existsSync(zip)) return sendError(res, new Error('Yedek zip oluşturulamadı (tar).'));
+  res.setHeader('Content-Disposition', `attachment; filename="video-studyo-yedek-${new Date().toISOString().slice(0, 10)}.zip"`);
+  res.sendFile(zip, () => { try { fs.unlinkSync(zip); } catch { /* yok */ } });
+});
+app.post('/api/restore', rawBody('4gb'), (req, res) => {
+  if (!req.body || !req.body.length) return sendError(res, new Error('Dosya boş.'));
+  const zip = path.join(require('os').tmpdir(), `video-studyo-restore-${Date.now()}.zip`);
+  fs.writeFileSync(zip, req.body);
+  try {
+    const list = require('child_process').spawnSync(TAR, ['-tf', zip], { encoding: 'utf8' });
+    if (list.status !== 0 || !/(^|\/)(videos|library|settings\.json)(\/|$)/m.test(list.stdout || '')) throw new Error('Bu dosya bir Video Stüdyo yedeği değil (videos/, library/ ya da settings.json yok).');
+    fs.mkdirSync(store.DATA_DIR, { recursive: true });
+    const r = require('child_process').spawnSync(TAR, ['-xf', zip, '-C', store.DATA_DIR], { stdio: 'ignore' });
+    if (r.status !== 0) throw new Error('Yedek açılamadı (tar).');
+    jobs.resetStaleFlags();
+    res.json({ ok: true, videos: store.listVideos().length });
+  } catch (err) { sendError(res, err); }
+  finally { try { fs.unlinkSync(zip); } catch { /* yok */ } }
+});
+
 app.get('/api/looks', (req, res) => res.json(look.list()));
 app.get('/api/looks/current', (req, res) => res.json(look.preset(store.getSettings())));
 

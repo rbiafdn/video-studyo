@@ -78,6 +78,11 @@ Claude ayrıca **uyarılar** yazar: süreye sığmayan konuşmalar (Türkçe ≈
 - Birleştirme (ffmpeg): tüm çekimler aynı çözünürlükte (siyah bant yok), 30 fps H.264 + AAC. Diyalog/klip sesi + dış ses + müzik + efekt karıştırılır; konuşma olan yerde müzik otomatik kısılır (sidechain ducking), "sessizlik" bölümlerinde müzik tamamen kapanır. Bölüm renk tonu (soğuk mavi, sıcak, siyah-beyaz…) uygulanır. Ekran yazıları zamanına göre bindirilir (kanca üst-orta büyük; kapanış kartı siyah fon, beyaz + altın, yavaş fade-in). Bölüm geçişlerinde ve sonda kararma.
 - Tüm çekimler bitince final otomatik birleşir; "Final videoyu indir" çıkar. Çekim değiştirdiyseniz "Finali yenile".
 
+## Yedek ve başka bilgisayar
+
+- Kütüphane sayfası → **Yedek indir (zip)**: tüm videolar, kütüphane ve ayarlar tek zip. Diğer bilgisayarda projeyi GitHub'dan kurup aynı anahtarlarla  oluşturun, Kütüphane → **Yedek yükle (zip)** ile içeri alın (aynı kimlikli kayıtların üstüne yazar).
+- İki bilgisayarın aynı veriyi kullanması için  içinde  ile bulutla eşitlenen bir klasör verilebilir (OneDrive / Google Drive). Aynı anda iki yerde üretim yapmayın.
+
 ## Maliyet
 
 - Birim fiyatlar `prices.json` dosyasında (`"tahmini": true` olanlar resmi sayfada bulunamayan değerlerdir; müzik fiyatı tahminidir). Dosya her okunuşta yenilenir.
