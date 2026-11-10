@@ -83,6 +83,7 @@ app.patch('/api/settings', (req, res) => {
   }));
 });
 app.get('/api/looks', (req, res) => res.json(look.list()));
+app.get('/api/looks/current', (req, res) => res.json(look.preset(store.getSettings())));
 
 // --- Kütüphane ------------------------------------------------------------------------------------
 const KINDS = ['characters', 'locations', 'narrators', 'audio'];
@@ -399,6 +400,38 @@ app.post('/api/videos/:id/shots/:sid/generate', (req, res) => {
   store.updateVideo(v.id, (vv) => { vv.approved = true; });
   jobs.runShot(v.id, sid, step);
   res.json({ ok: true });
+});
+
+// Dış araç paketi: klip bekleyen çekimlerin ilk kare görselleri + promptları tek zip (Windows tar.exe ile)
+app.get('/api/videos/:id/pack', (req, res) => {
+  const v = getV(req, res);
+  if (!v) return;
+  const dir = store.videoDir(v.id);
+  const packDir = path.join(dir, 'dis-arac');
+  fs.rmSync(packDir, { recursive: true, force: true });
+  fs.mkdirSync(packDir, { recursive: true });
+  const lines = [`${v.name || v.id} — dış araç paketi (${v.plan ? v.plan.aspect : v.aspect})`, 'Her çekim için: görseli başlangıç karesi olarak yükleyin, promptu yapıştırın, üretilen klibi "cekim-NN.mp4" adıyla kaydedip uygulamada "Klipleri toplu yükle" ile geri yükleyin.', ''];
+  let n = 0;
+  for (const sh of v.shots) {
+    if (sh.tool !== 'flow' || sh.video || sh.raw) continue;
+    const nn = String(sh.id).padStart(2, '0');
+    const img = sh.image ? store.videoFile(v.id, sh.image) : null;
+    if (img && fs.existsSync(img)) fs.copyFileSync(img, path.join(packDir, `cekim-${nn}.jpg`));
+    const prompt = look.videoPrompt(sh.video_prompt || '', store.getSettings());
+    fs.writeFileSync(path.join(packDir, `cekim-${nn}-prompt.txt`), prompt, 'utf8');
+    lines.push(`cekim-${nn}: ${sh.duration} sn · ${sh.description}${img ? '' : ' · (görsel henüz üretilmedi)'}`);
+    if ((sh.dialogue || []).length) lines.push('  Replik: ' + sh.dialogue.map((d) => `${d.speaker}: "${d.line}"`).join(' / '));
+    n++;
+  }
+  if (!n) return sendError(res, new Error('Klip bekleyen dış araç çekimi yok.'));
+  fs.writeFileSync(path.join(packDir, 'LISTE.txt'), lines.join('\n'), 'utf8');
+  const zip = path.join(dir, 'dis-arac-paketi.zip');
+  fs.rmSync(zip, { force: true });
+  const tar = process.platform === 'win32' ? path.join(process.env.SystemRoot || 'C:\\Windows', 'System32', 'tar.exe') : 'tar';
+  const r = require('child_process').spawnSync(tar, ['-a', '-cf', zip, '-C', packDir, '.'], { stdio: 'ignore' });
+  if (r.status !== 0 || !fs.existsSync(zip)) return sendError(res, new Error('Zip oluşturulamadı (tar).'));
+  res.setHeader('Content-Disposition', `attachment; filename="${(v.name || v.id).replace(/[^\w.-]+/g, '_')}-dis-arac.zip"`);
+  res.sendFile(zip);
 });
 
 // Türkçe düzeltme notuyla çekimi yeniden yazdır (Claude); çıktılar sıfırlanır, üretim ayrıca tetiklenir.

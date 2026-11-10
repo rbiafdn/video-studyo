@@ -55,7 +55,7 @@ Claude her çekim için şu araçlardan birini seçer ve Türkçe gerekçe yazar
 | Araç | Ne zaman | Nasıl |
 |---|---|---|
 | **Avatar (fal.ai)** | Sabit kamera, tek kişi, uzun konuşma | Görsel → ElevenLabs sesi (duygu etiketli) → dudak uyumlu video |
-| **Gemini (otomatik)** / **Flow (elle)** | Kamera hareketi + oyunculuk, güçlü duygu, iki kişi | Görsel → video (sesli); tek konuşan varsa ses Voice Changer ile karakter sesine çevrilir. En fazla 8 sn |
+| **Gemini (otomatik)** / **Dış araç (elle)** | Kamera hareketi + oyunculuk, güçlü duygu, iki kişi | Görsel → video (sesli); tek konuşan varsa ses Voice Changer ile karakter sesine çevrilir. En fazla 8 sn |
 | **Seedance (fal.ai)** | Konuşmasız hareket, atmosfer, geçiş | Görsel → sessiz video; ses katmanlardan gelir |
 | **Yazı kartı (ffmpeg)** | Açılış kancası, kapanış alıntısı | Siyah fon + yazı, yapay zeka yok, ücretsiz |
 
@@ -69,7 +69,7 @@ Plan geldikten sonra hiçbir şey üretilmez. Zaman çizelgesinde bölümler ve 
 
 ## Üretim ve birleştirme
 
-- Çekimler sırayla üretilir; Flow çekimleri "Flow bekleniyor" durumunda kalır (görseli indir → Flow'da üret → klibi yükle). Herhangi bir çekime "Elle klip yükle" ile kendi klibinizi koyabilirsiniz.
+- Çekimler sırayla üretilir. "Dış araç (elle)" çekimlerinde uygulama yalnızca ilk kareyi üretir ve "Klip bekleniyor" durumunda bekler: Final kutusundaki **Dış araç paketini indir** ile tüm bekleyen çekimlerin görselleri + promptları (görünüm ekiyle) tek zip gelir; Google Flow, Kling, Runway, Hailuo, Sora gibi herhangi bir araçta üretip klipleri  adıyla **Klipleri toplu yükle** ile geri verirsiniz (dosya adındaki sayı çekim numarasıdır). Tek çekim için "Elle klip yükle" de var.
 - Düzeltme notu: üretim ekranında her çekimin altında Türkçe not kutusu ("kadın solda otursun, adam ona dönük konuşsun"). Claude promptları ve süreyi nota göre yeniden yazar, önceki notları hatırlar; çekim baştan üretilir.
 - Gemini video filtresi: Gemini bir sahneyi reddederse (bağırma, tehdit, korkmuş kişi gibi ifadeler) Claude video promptunu otomatik yumuşatır (replik aynen kalır) ve bir kez daha dener; yine reddedilirse hata mesajı Avatar aracına geçmeyi ya da promptu düzenlemeyi önerir. 4,5 saniyeye sığan çekimler için 4 saniyelik (yarı fiyat) video istenir.
 - Müzik/efekt: kütüphaneden ya da ElevenLabs ile üretilir, süreye göre kırpılır, giriş/çıkış fade uygulanır.

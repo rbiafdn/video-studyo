@@ -117,8 +117,8 @@
   const $ = (id) => document.getElementById(id);
   const app = $('app');
   const S = { status: null, prices: null, voices: null, voicesError: null, settings: null, lib: null, videos: [], video: null, sel: null, adv: false, vtab: null, openAdv: new Set(), timer: null, lastJson: '', view: '' };
-  const SERVICE = { claude: 'Claude', gemini: 'Gemini', elevenlabs: 'ElevenLabs', fal: 'fal.ai', flow: 'Flow', ffmpeg: 'ffmpeg' };
-  const TOOL_NAMES = { avatar: 'Avatar (fal.ai)', gemini: 'Gemini (otomatik)', flow: 'Flow (elle)', seedance: 'Seedance (fal.ai)', text_card: 'Yazı kartı (ffmpeg)' };
+  const SERVICE = { claude: 'Claude', gemini: 'Gemini', elevenlabs: 'ElevenLabs', fal: 'fal.ai', flow: 'Dış araç', ffmpeg: 'ffmpeg' };
+  const TOOL_NAMES = { avatar: 'Avatar (fal.ai)', gemini: 'Gemini (otomatik)', flow: 'Dış araç (elle)', seedance: 'Seedance (fal.ai)', text_card: 'Yazı kartı (ffmpeg)' };
   const ASPECTS = { auto: 'Senaryodan (Shorts → dikey)', '16:9': '16:9 yatay (YouTube, TV)', '9:16': '9:16 dikey (Shorts, Reels)', '1:1': '1:1 kare' };
 
   // ---------- yardımcılar ----------
@@ -151,7 +151,7 @@
   const vFile = (name, stamp, dl) => `/files/v/${S.video.id}/${name}?v=${stamp || 0}${dl ? '&download=1' : ''}`;
   function estLabel(item) {
     if (!item) return '';
-    if (item.servis === 'flow') return 'Flow kredisi (siteden harcanmaz)';
+    if (item.servis === 'flow') return 'dış araçta üretilir (siteden harcanmaz)';
     if (item.servis === 'ffmpeg') return 'ücretsiz';
     if (item.servis === 'elevenlabs') return item.karakter != null ? '≈ ' + fmtNum(item.karakter) + ' karakter · ElevenLabs' : '≈ ' + fmtNum(item.kredi) + ' kredi · ElevenLabs';
     return '≈ ' + fmtUsd(item.usd) + ' · ' + (SERVICE[item.servis] || item.servis);
@@ -193,7 +193,7 @@
     } catch { /* sessiz */ }
   }
   async function loadVoices() { if (S.voices) return; if (keyMissing('elevenlabs')) { S.voicesError = 'ELEVENLABS_API_KEY tanımlı değil.'; return; } try { S.voices = await api('/api/voices'); S.voicesError = null; } catch (e) { S.voicesError = e.message; } }
-  async function loadBase() { [S.settings, S.lib, S.looks] = await Promise.all([api('/api/settings'), api('/api/library'), api('/api/looks').catch(() => [])]); await loadVoices(); }
+  async function loadBase() { [S.settings, S.lib, S.looks, S.lookCur] = await Promise.all([api('/api/settings'), api('/api/library'), api('/api/looks').catch(() => []), api('/api/looks/current').catch(() => null)]); S.lookVideo = S.lookCur ? S.lookCur.video : ''; await loadVoices(); }
   function crumbs(items) { $('crumbs').innerHTML = items.map((c, i) => (c.href && i < items.length - 1) ? `<a href="${c.href}">${esc(c.label)}</a>` : `<span>${esc(c.label)}</span>`).join(' <span class="faint">/</span> '); }
 
   // ---------- yönlendirme ----------
@@ -229,7 +229,7 @@
               <div style="flex:1"><label class="f">Bütçe (USD)</label><input type="number" id="nv-budget" value="${esc(st.defaultBudget)}" min="0" step="1"></div>
             </div>
             <label class="f">Hareketli çekimler (kamera + oyunculuk)</label>
-            <select id="nv-provider"><option value="gemini" ${st.movingProvider !== 'flow' ? 'selected' : ''}>Gemini (otomatik) – ≈ $0.07 / sn</option><option value="flow" ${st.movingProvider === 'flow' ? 'selected' : ''}>Google Flow (elle; klibi siz yüklersiniz)</option></select>
+            <select id="nv-provider"><option value="gemini" ${st.movingProvider !== 'flow' ? 'selected' : ''}>Gemini (otomatik) – ≈ $0.07 / sn</option><option value="flow" ${st.movingProvider === 'flow' ? 'selected' : ''}>Dış araç (elle: Google Flow, Kling, Runway…; klibi siz yüklersiniz)</option></select>
             <div class="row mt"><label class="check"><input type="checkbox" id="nv-hard"> Zor planlama (Opus ile – daha pahalı)</label></div>
             <div class="mt"><label class="check"><input type="checkbox" id="nv-auto" checked> Kütüphanedeki karakter ve mekânları Claude senaryodaki isimlerle eşleştirsin</label>
               <div id="nv-assets" style="display:none">${assetBox('characters', 'Karakterler')}${assetBox('locations', 'Mekânlar')}${assetBox('narrators', 'Dış ses')}</div></div>
@@ -342,7 +342,7 @@
     const anyBusy = v.shots.some((s) => s.busy) || v.producing || v.assembling;
     const missing = v.shots.filter((s) => !s.video).length;
     const planDur = v.shots.reduce((n, s) => n + (s.duration || 0), 0);
-    const st = v.planning ? 'Planlanıyor' : v.planError && !v.shots.length ? 'Plan hatası' : !v.shots.length ? 'Plan yok' : v.final ? 'Hazır' : anyBusy ? 'Üretiliyor' : !v.approved ? 'Onay bekliyor' : v.shots.some((s) => s.tool === 'flow' && !s.raw && !s.video) ? 'Flow bekleniyor' : v.shots.some((s) => s.error) ? 'Hata var' : missing ? (v.shots.length - missing) + '/' + v.shots.length + ' çekim hazır' : 'Birleştirmeye hazır';
+    const st = v.planning ? 'Planlanıyor' : v.planError && !v.shots.length ? 'Plan hatası' : !v.shots.length ? 'Plan yok' : v.final ? 'Hazır' : anyBusy ? 'Üretiliyor' : !v.approved ? 'Onay bekliyor' : v.shots.some((s) => s.tool === 'flow' && !s.raw && !s.video) ? 'Klip bekleniyor' : v.shots.some((s) => s.error) ? 'Hata var' : missing ? (v.shots.length - missing) + '/' + v.shots.length + ' çekim hazır' : 'Birleştirmeye hazır';
     $('v-head').innerHTML = `
       <div style="min-width:280px">
         <div class="crumb"><a href="#/">Videolar</a> / ${statusChip(st)}</div>
@@ -426,7 +426,7 @@
     if (!$('scene-grid')) $('v-body').innerHTML = `<div class="ep-layout"><div><div class="scene-grid" id="scene-grid"></div><div class="panel" id="audio-box" style="margin-top:16px"></div><div class="panel" id="final-box" style="margin-top:16px"></div></div><aside class="panel detail" id="scene-detail"></aside></div>`;
     $('scene-grid').innerHTML = v.shots.map((s) => {
       const media = s.video ? `<video muted preload="metadata" src="${vFile(s.video, s.videoAt)}#t=0.5"></video>` : s.image ? `<img src="${vFile(s.image, s.imageAt)}" alt="">` : '<span>henüz üretilmedi</span>';
-      const st = s.error ? 'err' : s.video ? 'ok' : /Flow/.test(s.status || '') ? 'gold' : '';
+      const st = s.error ? 'err' : s.video ? 'ok' : /Klip bekleniyor/.test(s.status || '') ? 'gold' : '';
       return `<div class="scene ${s.id === S.sel ? 'sel' : ''}" data-sel="${s.id}"><div class="${thumbClass()}">${media}<span class="chip badge t-${esc(s.tool)}">${esc(TOOL_NAMES[s.tool].split(' ')[0])}</span>${s.busy ? '<span class="busy spin"></span>' : ''}</div>
         <div class="name"><span>#${s.id}</span><span class="chip ${st}">${esc(s.status || 'Bekliyor')}</span></div><div class="sum">${esc(shotText(s))}</div>
         <div class="foot"><span>${fmtT(s.start)} · ${fmtDur(s.actualDuration || s.duration)}</span><span>${fmtUsd(s.maliyet ? s.maliyet.toplam_usd : 0)}</span></div></div>`;
@@ -436,7 +436,7 @@
     $('audio-box').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="margin:0">Ses katmanları</h3><span class="act"><button class="xs" id="btn-genaudio" ${v.producing ? 'disabled' : ''}>Eksik müzik/efektleri üret</button><span class="est">${estTotal(v.tahmin && v.tahmin.katmanlar)}</span></span></div>
       ${layers.length ? layers.map((a) => `<div class="small" style="margin-top:6px"><span class="chip">${esc(a.type)}</span> ${fmtT(a.start)}–${fmtT(a.end)} · ${esc(a.description)} · <span class="muted">${a.type === 'silence' ? 'müzik kapalı' : a.file ? (a.file.startsWith('lib:') ? 'kütüphane' : 'üretildi') : esc(a.status || 'bekliyor')}</span>${a.error ? ` <span class="err">${esc(a.error)}</span>` : ''}${a.note ? ` <span class="faint">${esc(a.note)}</span>` : ''}</div>`).join('') : '<div class="small faint mt">Ses katmanı yok.</div>'}`;
     const allHave = v.shots.length && v.shots.every((s) => s.video);
-    $('final-box').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="margin:0">Final video</h3><span class="row"><span class="small muted">${v.assembling ? '<span class="spin"></span> ' : ''}${esc(v.finalStatus || 'Tüm çekimler bitince otomatik birleştirilir.')}${v.final && v.finalDuration ? ' · ' + fmtDur(v.finalDuration) : ''}</span><button class="xs" id="btn-assemble" ${!allHave || v.assembling || v.producing ? 'disabled' : ''}>${v.final ? 'Finali yenile' : 'Birleştir'}</button></span></div>
+    $('final-box').innerHTML = `<div class="row" style="justify-content:space-between"><h3 style="margin:0">Final video</h3><span class="row"><span class="small muted">${v.assembling ? '<span class="spin"></span> ' : ''}${esc(v.finalStatus || 'Tüm çekimler bitince otomatik birleştirilir.')}${v.final && v.finalDuration ? ' · ' + fmtDur(v.finalDuration) : ''}</span>${v.shots.some((s) => s.tool === 'flow') ? `<a class="btn xs" href="/api/videos/${v.id}/pack" title="Klip bekleyen dış araç çekimlerinin görselleri + promptları tek zip">Dış araç paketini indir</a><label class="btn xs">Klipleri toplu yükle<input type="file" accept="video/*,.mp4,.mov,.webm" id="bulk-clips" multiple hidden></label>` : ''}<button class="xs" id="btn-assemble" ${!allHave || v.assembling || v.producing ? 'disabled' : ''}>${v.final ? 'Finali yenile' : 'Birleştir'}</button></span></div>
       ${v.finalError ? `<div class="err">${esc(v.finalError)}</div>` : ''}${v.final ? `<div class="row mt"><video controls playsinline src="${vFile(v.final, v.finalAt)}" style="max-height:360px;max-width:100%;border-radius:8px;background:#000"></video></div>` : ''}`;
     if (!editing) renderDetail();
   }
@@ -473,8 +473,9 @@
         <div class="row" style="margin-top:6px"><button class="xs gold" id="btn-revise" ${busy || keyMissing('claude') ? 'disabled' : ''}>Notla yeniden üret</button><span class="small muted">Claude promptları nota göre yeniden yazar, çekim baştan üretilir (${esc(stepEst(s, Object.keys(s.tahmin || {})) || 'tahmin yok')}).</span></div>
         ${revs.length ? '<div class="small mt" style="opacity:.8">' + revs.map((r) => '<div>• <b>' + esc(r.note) + '</b>' + (r.answer ? ' <span class="faint">→ ' + esc(r.answer) + '</span>' : '') + '</div>').join('') + '</div>' : ''}</div>`;
     }
-    if (tool === 'flow') f += `<div class="flowbox"><b>Google Flow (elle)</b> <span class="est">Flow kredisi (siteden harcanmaz)</span><p class="small muted">1) İlk kare görselini indirin. 2) Promptu kopyalayın. 3) Flow'da görseli yükleyip promptla video üretin. 4) İndirdiğiniz klibi "Elle klip yükle" ile buraya yükleyin; tek konuşan varsa sesi karakter sesine çevrilir.</p>
-      <div class="row">${s.image ? `<a class="btn xs" href="${vFile(s.image, s.imageAt, true)}" download="cekim-${s.id}.jpg">Görseli indir</a>` : '<span class="small muted">Önce görseli üretin (Adımlar → Görsel).</span>'}<button class="xs" data-copy="${s.id}">Promptu kopyala</button><a class="btn xs" href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">Flow'u aç</a></div></div>`;
+    if (tool === 'flow') f += `<div class="flowbox"><b>Dış araç (elle)</b> <span class="est">siteden harcanmaz</span><p class="small muted">1) Görseli indirin, promptu kopyalayın. 2) Seçtiğiniz araçta görseli başlangıç karesi yapıp promptla video üretin (Flow'da "Frames to Video"). 3) İndirdiğiniz klibi "Elle klip yükle" ile buraya yükleyin ya da dosyayı <b>cekim-${String(s.id).padStart(2, '0')}.mp4</b> diye adlandırıp üstteki "Klipleri toplu yükle" ile hepsini birden verin. Tek konuşan varsa sesi karakter sesine çevrilir.</p>
+      <div class="row">${s.image ? `<a class="btn xs" href="${vFile(s.image, s.imageAt, true)}" download="cekim-${String(s.id).padStart(2, '0')}.jpg">Görseli indir</a>` : '<span class="small muted">Önce görseli üretin ("Bu çekimi üret").</span>'}<button class="xs" data-copy="${s.id}">Promptu kopyala</button></div>
+      <div class="row mt small"><span class="muted">Araçlar:</span><a href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">Google Flow</a><a href="https://app.klingai.com" target="_blank" rel="noopener">Kling</a><a href="https://app.runwayml.com" target="_blank" rel="noopener">Runway</a><a href="https://hailuoai.video" target="_blank" rel="noopener">Hailuo</a><a href="https://sora.chatgpt.com" target="_blank" rel="noopener">Sora</a></div></div>`;
     if (S.adv) {
       const b = [];
       if (tool !== 'text_card') b.push(actBtn(s.image ? 'Görseli yeniden üret' : 'Görseli üret', 'image', dis(['gemini']), missingReason(['gemini']), stepEst(s, ['image'])));
@@ -539,7 +540,7 @@
       else if (btn.dataset.addshot) { S.video = await api(`/api/videos/${S.video.id}/shots`, { method: 'POST', json: { section_id: Number(btn.dataset.addshot), after: Number(btn.dataset.after) } }); S.lastJson = ''; renderPlan(); }
       else if (btn.id === 'btn-addaudio') { const list = (S.video.audio || []).map((a) => ({ type: a.type, start: a.start, end: a.end, description: a.description, source: a.source })); const last = S.video.shots[S.video.shots.length - 1]; list.push({ type: 'music', start: 0, end: last ? last.start + last.duration : 30, description: 'Yeni müzik', source: 'generate' }); S.video = await api(`/api/videos/${S.video.id}/audio`, { method: 'PATCH', json: { audio: list } }); S.lastJson = ''; renderPlan(); }
       else if (btn.dataset.adel != null) { const list = (S.video.audio || []).filter((_, i) => i !== Number(btn.dataset.adel)).map((a) => ({ type: a.type, start: a.start, end: a.end, description: a.description, source: a.source })); S.video = await api(`/api/videos/${S.video.id}/audio`, { method: 'PATCH', json: { audio: list } }); S.lastJson = ''; renderPlan(); }
-      else if (btn.dataset.copy) { const s = S.video.shots.find((x) => x.id === Number(btn.dataset.copy)); try { await navigator.clipboard.writeText(s.video_prompt || ''); toast('Prompt kopyalandı'); } catch { toast('Kopyalanamadı'); } }
+      else if (btn.dataset.copy) { const s = S.video.shots.find((x) => x.id === Number(btn.dataset.copy)); try { await navigator.clipboard.writeText((s.video_prompt || '') + (S.lookVideo ? ' ' + S.lookVideo : '')); toast('Prompt kopyalandı (görünüm ekiyle)'); } catch { toast('Kopyalanamadı'); } }
       else if (btn.dataset.act) { btn.disabled = true; await apiConfirm(`/api/videos/${S.video.id}/shots/${S.sel}/generate`, { step: btn.dataset.act }); toast('Başladı'); }
     } catch (e) { toast(e.message); if (btn.dataset.act || btn.id === 'nv-start') btn.disabled = false; }
   });
@@ -578,6 +579,17 @@
       else if (el.dataset && el.dataset.upload) {
         const file = el.files && el.files[0]; if (!file) return; toast('Klip yükleniyor…');
         await api(`/api/videos/${S.video.id}/shots/${el.dataset.upload}/upload`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'application/octet-stream' } }); toast('Klip yüklendi');
+      } else if (el.id === 'bulk-clips') {
+        const files = Array.from(el.files || []); if (!files.length) return;
+        let ok = 0; const bad = [];
+        for (const file of files) {
+          const m = file.name.match(/(\d{1,3})/); const sid = m ? Number(m[1]) : NaN;
+          const sh = S.video.shots.find((x) => x.id === sid);
+          if (!sh) { bad.push(file.name); continue; }
+          toast(`Yükleniyor: ${file.name} → çekim #${sid}`);
+          try { await api(`/api/videos/${S.video.id}/shots/${sid}/upload`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'application/octet-stream' } }); ok++; } catch (e) { bad.push(file.name + ' (' + e.message + ')'); }
+        }
+        toast(`${ok} klip yüklendi${bad.length ? ' · eşleşmeyen: ' + bad.join(', ') : ''}`);
       } else if (el.dataset && el.dataset.pfile) {
         const file = el.files && el.files[0]; if (!file) return; const [kind, id] = el.dataset.pfile.split(':'); toast('Fotoğraf yükleniyor…');
         const it = await api(`/api/library/${kind}/${id}/photo`, { method: 'POST', body: file, headers: { 'Content-Type': file.type || 'image/jpeg' } }); S.lib[kind] = S.lib[kind].map((x) => (x.id === it.id ? it : x)); renderLib(); toast('Fotoğraf eklendi');
