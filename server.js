@@ -6,6 +6,7 @@ const express = require('express');
 
 const store = require('./lib/store');
 const claude = require('./lib/claude');
+const look = require('./lib/look');
 const gemini = require('./lib/gemini');
 const eleven = require('./lib/elevenlabs');
 const fal = require('./lib/fal');
@@ -77,8 +78,11 @@ app.patch('/api/settings', (req, res) => {
     if (['16:9', '9:16', '1:1', 'auto'].includes(b.aspect)) st.aspect = b.aspect;
     if (b.defaultBudget != null && Number(b.defaultBudget) >= 0) st.defaultBudget = Number(b.defaultBudget);
     if (b.movingProvider === 'gemini' || b.movingProvider === 'flow') st.movingProvider = b.movingProvider;
+    if (typeof b.look === 'string' && look.PRESETS[b.look]) st.look = b.look;
+    if (typeof b.lookCustom === 'string') st.lookCustom = b.lookCustom.trim().slice(0, 600);
   }));
 });
+app.get('/api/looks', (req, res) => res.json(look.list()));
 
 // --- Kütüphane ------------------------------------------------------------------------------------
 const KINDS = ['characters', 'locations', 'narrators', 'audio'];

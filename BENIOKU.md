@@ -44,6 +44,10 @@ Anahtarlar sunucuda kalır. Eksik anahtar varsa üstteki nokta gri kalır, ilgil
 
 Claude senaryoda kütüphanede olmayan bir kişi bulursa karakterlere kendisi ekler (ses seçmeniz gerekir); emin olamadığı eşleştirmeleri onay ekranında "sorular" olarak gösterir.
 
+## Görünüm (look)
+
+Ayarlar → Görünüm: "Sinema filmi" (varsayılan; 35mm, sığ alan derinliği, doğal ışık, soluk film paleti, grain, vinyet), "Belgesel", "Temiz reklam" ya da "Yok". Seçilen görünümün stil cümlesi her görsel ve video promptunun sonuna otomatik eklenir (), Claude planlarken de bunu bilir; birleştirmede aynı tona uygun ffmpeg renk/grain filtresi tüm kliplere uygulanır. "Görünüme ek" kutusuna dönem/mevsim gibi kısa İngilizce ekler yazılabilir.
+
 ## Çekim listesi ve araç seçimi
 
 Claude her çekim için şu araçlardan birini seçer ve Türkçe gerekçe yazar:

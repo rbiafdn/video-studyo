@@ -193,7 +193,7 @@
     } catch { /* sessiz */ }
   }
   async function loadVoices() { if (S.voices) return; if (keyMissing('elevenlabs')) { S.voicesError = 'ELEVENLABS_API_KEY tanımlı değil.'; return; } try { S.voices = await api('/api/voices'); S.voicesError = null; } catch (e) { S.voicesError = e.message; } }
-  async function loadBase() { [S.settings, S.lib] = await Promise.all([api('/api/settings'), api('/api/library')]); await loadVoices(); }
+  async function loadBase() { [S.settings, S.lib, S.looks] = await Promise.all([api('/api/settings'), api('/api/library'), api('/api/looks').catch(() => [])]); await loadVoices(); }
   function crumbs(items) { $('crumbs').innerHTML = items.map((c, i) => (c.href && i < items.length - 1) ? `<a href="${c.href}">${esc(c.label)}</a>` : `<span>${esc(c.label)}</span>`).join(' <span class="faint">/</span> '); }
 
   // ---------- yönlendirme ----------
@@ -238,6 +238,8 @@
           </div>
           <details class="set"><summary>Ayarlar</summary><div class="body">
             <label class="f">Varsayılan görüntü oranı</label><select id="st-aspect">${Object.entries(ASPECTS).map(([k, v]) => `<option value="${k}" ${k === st.aspect ? 'selected' : ''}>${v}</option>`).join('')}</select>
+            <label class="f">Görünüm (her görsel ve videoya otomatik eklenir)</label><select id="st-look">${(S.looks || []).map((l) => `<option value="${l.key}" ${l.key === (st.look || 'film') ? 'selected' : ''}>${esc(l.name)}</option>`).join('')}</select>
+            <label class="f">Görünüme ek (isteğe bağlı, İngilizce; örn. "1950s Anatolia, winter")</label><input type="text" id="st-look-custom" value="${esc(st.lookCustom || '')}">
             <label class="f">Genel tarz notları (her videoda uygulanır)</label><textarea id="st-notes" placeholder="örn. Belgesel gerçekçiliğinde, sıcak ışık, 2000'ler Türkiye'si">${esc(st.notes)}</textarea>
             <label class="f">Varsayılan bütçe (USD)</label><input type="number" id="st-budget" value="${esc(st.defaultBudget)}" min="0" step="1">
             <div class="row mt"><button class="gold" id="st-save">Kaydet</button></div>
@@ -510,7 +512,7 @@
         const v = await api('/api/videos', { method: 'POST', json: { name: $('nv-name').value.trim(), script, targetSeconds: Number($('nv-dur').value) || 0, hardPlanning: $('nv-hard').checked, budget: Number($('nv-budget').value), movingProvider: $('nv-provider').value, assets: { auto, characters: pick('characters'), locations: pick('locations'), narrators: pick('narrators') } } });
         S.sel = null; location.hash = '#/v/' + v.id;
       } else if (btn.dataset.delVideo) { if (!confirm('Video ve dosyaları silinsin mi?')) return; await api('/api/videos/' + btn.dataset.delVideo, { method: 'DELETE' }); toast('Silindi'); viewHome(); }
-      else if (btn.id === 'st-save') { S.settings = await api('/api/settings', { method: 'PATCH', json: { aspect: $('st-aspect').value, notes: $('st-notes').value, defaultBudget: Number($('st-budget').value) } }); $('nv-budget').value = S.settings.defaultBudget; toast('Ayarlar kaydedildi'); }
+      else if (btn.id === 'st-save') { S.settings = await api('/api/settings', { method: 'PATCH', json: { aspect: $('st-aspect').value, notes: $('st-notes').value, defaultBudget: Number($('st-budget').value), look: $('st-look').value, lookCustom: $('st-look-custom').value } }); $('nv-budget').value = S.settings.defaultBudget; toast('Ayarlar kaydedildi'); }
       else if (btn.dataset.ladd) { const kind = btn.dataset.ladd; const name = $('new-' + kind).value.trim(); if (!name) return toast('Ad yazın.'); const it = await api('/api/library/' + kind, { method: 'POST', json: { name } }); S.lib[kind].push(it); renderLib(); toast('Eklendi'); }
       else if (btn.dataset.lsave) {
         const [kind, id] = btn.dataset.lsave.split(':'); const card = btn.closest('[data-lib]'); const body = {};
