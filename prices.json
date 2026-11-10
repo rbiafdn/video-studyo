@@ -1,0 +1,82 @@
+{
+  "_aciklama": "Birim fiyatlar. Fiyat değişince sadece bu dosyayı düzenleyin; sunucuyu yeniden başlatmak gerekmez. 'tahmini': true olan değerler resmi sayfada bulunamadı veya türetildi.",
+  "_guncelleme": "2026-11-10",
+
+  "claude": {
+    "_birim": "USD / 1 milyon token (girdi, çıktı). Kaynak: platform.claude.com/docs pricing",
+    "claude-opus-5-5":  { "girdi": 4.0,  "cikti": 20.0, "tahmini": false },
+    "claude-opus-5":    { "girdi": 5.0,  "cikti": 25.0, "tahmini": false },
+    "claude-sonnet-5-5":{ "girdi": 2.0,  "cikti": 10.0, "tahmini": false },
+    "claude-sonnet-5":  { "girdi": 2.0,  "cikti": 10.0, "tahmini": false },
+    "claude-haiku-5-5": { "girdi": 0.1,  "cikti": 0.5,  "tahmini": false },
+    "claude-fable-5-1": { "girdi": 10.0, "cikti": 50.0, "tahmini": false },
+    "_varsayilan":      { "girdi": 5.0,  "cikti": 25.0, "tahmini": true }
+  },
+
+  "gemini_gorsel": {
+    "_birim": "USD / görsel, boyuta göre (1K, 2K, 4K). Kaynak: aistudio.google.com/docs/pricing",
+    "gemini-nano-banana-2.1":      { "1K": 0.0336, "2K": 0.0504, "4K": 0.113, "tahmini": false },
+    "gemini-3.1-flash-image":      { "1K": 0.067,  "2K": 0.067,  "4K": 0.067, "tahmini": true },
+    "gemini-3.1-flash-lite-image": { "1K": 0.0336, "2K": 0.0336, "4K": 0.0336, "tahmini": true },
+    "gemini-3-pro-image":          { "1K": 0.134,  "2K": 0.134,  "4K": 0.24,  "tahmini": false },
+    "gemini-2.5-flash-image":      { "1K": 0.039,  "2K": 0.039,  "4K": 0.039, "tahmini": true },
+    "_varsayilan":                 { "1K": 0.04,   "2K": 0.06,   "4K": 0.12,  "tahmini": true }
+  },
+
+  "gemini_video": {
+    "_birim": "USD / saniye, çözünürlüğe göre. Kaynak: aistudio.google.com/docs/pricing (Gemini Omni Flash)",
+    "gemini-omni-1.2-flash": { "360p": 0.023, "720p": 0.07, "1080p": 0.104, "4k": 0.209, "tahmini": false },
+    "gemini-omni-1.1-flash": { "360p": 0.023, "720p": 0.07, "1080p": 0.104, "4k": 0.209, "tahmini": true },
+    "_varsayilan":           { "360p": 0.023, "720p": 0.07, "1080p": 0.104, "4k": 0.209, "tahmini": true }
+  },
+
+  "elevenlabs": {
+    "_birim": "Kredi. TTS: kredi / karakter. Ses değiştirme (Voice Changer): kredi / dakika. Kaynak: elevenlabs.io/pricing SSS",
+    "tts_kredi_per_karakter": {
+      "eleven_multilingual_v2": { "kredi": 1,   "tahmini": false },
+      "eleven_flash_v2_5":      { "kredi": 0.5, "tahmini": true },
+      "eleven_v3":              { "kredi": 1,   "tahmini": true },
+      "eleven_v4":              { "kredi": 1,   "tahmini": true },
+      "eleven_v4_turbo":        { "kredi": 0.5, "tahmini": true },
+      "eleven_v4_turbo":        { "kredi": 0.5, "tahmini": true },
+      "_varsayilan":            { "kredi": 1,   "tahmini": true }
+    },
+    "sts_kredi_per_dakika": { "kredi": 1000, "tahmini": false },
+    "sfx_kredi_per_saniye": { "kredi": 40, "tahmini": false, "_not": "Süre belirtildiğinde 40 kredi/sn (docs: capabilities/sound-effects)" },
+    "muzik_kredi_per_dakika": { "kredi": 2000, "tahmini": true, "_not": "Resmi sayfada bulunamadı; tahmini. Kendi planınızın müzik fiyatına göre düzeltin." },
+    "usd_per_1000_kredi": { "usd": 0.18, "tahmini": true, "_not": "Creator planı (22 $ / 121k kredi) üzerinden türetildi; kendi planınıza göre değiştirin. Kullandıkça öde API: 1K karakter 0.08 $ (multilingual_v2), 0.04 $ (flash)." }
+  },
+
+  "fal": {
+    "_birim": "USD / üretilen video saniyesi. Kaynak: fal.ai model sayfaları",
+    "fal-ai/kling-video/ai-avatar/v2/standard": { "saniye": 0.0562, "tahmini": false },
+    "fal-ai/kling-video/ai-avatar/v2/pro":      { "saniye": 0.115,  "tahmini": false },
+    "fal-ai/kling-video/v1/standard/ai-avatar": { "saniye": 0.0562, "tahmini": false },
+    "fal-ai/kling-video/v1/pro/ai-avatar":      { "saniye": 0.115,  "tahmini": false },
+    "fal-ai/bytedance/omnihuman":               { "saniye": 0.14,   "tahmini": false },
+    "fal-ai/bytedance/omnihuman/v1.5":          { "saniye": 0.16,   "tahmini": false },
+    "fal-ai/ai-avatar":                         { "saniye": 0.2,    "tahmini": false },
+    "veed/fabric-1.0":                          { "saniye": 0.15,   "tahmini": true },
+    "_varsayilan":                              { "saniye": 0.1,    "tahmini": true }
+  },
+
+  "fal_seedance": {
+    "_birim": "USD / üretilen video saniyesi, çözünürlüğe göre. Kaynak: fal.ai Seedance model sayfaları (US endpoint)",
+    "bytedance/seedance-2.5/us/image-to-video": { "480p": 0.2205, "720p": 0.473,  "1080p": 1.164, "tahmini": false },
+    "bytedance/seedance-2.0/us/image-to-video": { "480p": 0.3034, "720p": 0.3034, "1080p": 0.682, "tahmini": true },
+    "fal-ai/bytedance/seedance/v1/pro/image-to-video": { "480p": 0.124, "720p": 0.124, "1080p": 0.124, "tahmini": true },
+    "_varsayilan": { "480p": 0.25, "720p": 0.5, "1080p": 1.2, "tahmini": true }
+  },
+
+  "tahmin_varsayimlari": {
+    "_aciklama": "Çalıştırmadan önceki tahminlerde kullanılan kabuller.",
+    "turkce_karakter_per_saniye": 14,
+    "plan_girdi_token_sabit": 1500,
+    "plan_girdi_token_per_karakter": 0.35,
+    "plan_cikti_token_sabit": 800,
+    "plan_cikti_token_per_sahne": 450,
+    "plan_sahne_per_karakter": 0.004,
+    "seedance_diyalogsuz_saniye": 5,
+    "seedance_diyalog_ek_saniye": 2
+  }
+}

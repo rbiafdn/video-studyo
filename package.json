@@ -1,0 +1,19 @@
+{
+  "name": "video-studyo",
+  "version": "1.0.0",
+  "description": "Senaryodan yapay zeka ile konuşan, dudak uyumlu videolar üreten sade yerel web uygulaması",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.80.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "ffmpeg-static": "^5.2.0"
+  }
+}
