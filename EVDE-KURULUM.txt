@@ -1,0 +1,16 @@
+VIDEO STÜDYO – EVDE KURULUM
+
+1) Node.js kurulu değilse: https://nodejs.org → "LTS" indir, kur (varsayılan seçeneklerle, hep İleri).
+2) Bu zip'i bir klasöre çıkarın (örn. Masaüstü\ai-video). Zip'in içinde her şey var:
+   kod, .env (API anahtarları), data klasörü (videolar, karakterler, ayarlar).
+3) Klasördeki  baslat.bat  dosyasına çift tıklayın.
+   - İlk açılışta paketleri yükler (1-2 dakika), sonra tarayıcıda http://localhost:3000 açılır.
+   - Siyah pencereyi kapatmayın; kapatınca uygulama durur. Tekrar açmak için yine baslat.bat.
+4) Kaldığınız yerden devam edin.
+
+İŞE GERİ TAŞIMAK:
+   Evde çalıştıktan sonra Kütüphane sekmesi → "Yedek indir (zip)" deyin, zip'i işteki bilgisayarda
+   Kütüphane → "Yedek yükle (zip)" ile içeri alın. (Ya da yine tüm klasörü taşıyın.)
+
+NOT: .env dosyası API anahtarlarınızı içerir; zip'i kimseyle paylaşmayın.
+Kodun en yeni hali her zaman https://github.com/rbiafdn/video-studyo adresinde.
