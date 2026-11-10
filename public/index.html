@@ -164,6 +164,16 @@
     const el = m.servisler.elevenlabs; if (el && el.kredi > 0) parts.push('ElevenLabs ' + fmtNum(el.kredi) + ' kredi' + (el.usd > 0 ? ' (≈ ' + fmtUsd(el.usd) + ')' : ''));
     return fmtUsd(m.toplam_usd) + (parts.length ? ' (' + parts.join(' · ') + ')' : '');
   }
+  function spentChips(m) {
+    const sv = (m && m.servisler) || {};
+    return ['claude', 'gemini', 'fal', 'elevenlabs'].map((k) => {
+      const s = sv[k] || {};
+      const val = k === 'elevenlabs'
+        ? (s.kredi > 0 ? fmtNum(s.kredi) + ' kredi' + (s.usd > 0 ? ' (≈ ' + fmtUsd(s.usd) + ')' : '') : fmtUsd(0))
+        : fmtUsd(s.usd || 0);
+      return `<span class="chip">${SERVICE[k]} <b>${val}</b></span>`;
+    }).join(' ');
+  }
   function voiceSelect(attrs, value, cls) {
     if (!S.voices) return `<input type="text" class="${cls || ''}" ${attrs} value="${esc(value || '')}" placeholder="ElevenLabs ses ID">`;
     const opts = ['<option value="">— ses seçin —</option>'].concat(S.voices.map((v) => { const lab = [v.labels && v.labels.gender, v.labels && v.labels.accent].filter(Boolean).join(', '); return `<option value="${esc(v.voice_id)}" ${v.voice_id === value ? 'selected' : ''}>${esc(v.name)}${lab ? ' (' + esc(lab) + ')' : ''}</option>`; }));
@@ -348,7 +358,8 @@
         <div class="crumb"><a href="#/">Videolar</a> / ${statusChip(st)}</div>
         <h1>${esc(v.name || 'Video')}</h1>
         <div class="meta">${v.shots.length} çekim${v.plan ? ' · plan ' + fmtDur(planDur) + (v.plan.target_duration ? ' / hedef ' + fmtDur(v.plan.target_duration) : '') + ' · ' + esc(v.plan.aspect) + ' · ' + esc(v.plan.model || '') : ''}</div>
-        <div class="row" style="margin-top:8px;gap:8px"><div class="progress" style="width:200px"><i class="${m.toplam_usd > v.budget ? 'over' : ''}" style="width:${pct}%"></i></div><span class="small"><b>${fmtUsd(m.toplam_usd)}</b> / ${fmtUsd(v.budget)}</span><span class="small faint" title="${esc(spent(m))}">ⓘ</span></div>
+        <div class="row" style="margin-top:8px;gap:8px"><div class="progress" style="width:200px"><i class="${m.toplam_usd > v.budget ? 'over' : ''}" style="width:${pct}%"></i></div><span class="small"><b>${fmtUsd(m.toplam_usd)}</b> / ${fmtUsd(v.budget)}</span></div>
+        <div class="row" style="margin-top:6px;gap:6px;flex-wrap:wrap">${spentChips(m)}</div>
       </div>
       <div class="actions">
         ${v.shots.length && !v.planning ? `<div class="vtabs"><button class="${S.vtab === 'plan' ? 'on' : ''}" data-vtab="plan">Plan / onay</button><button class="${S.vtab === 'prod' ? 'on' : ''}" data-vtab="prod">Üretim</button></div>` : ''}
