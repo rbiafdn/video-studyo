@@ -166,7 +166,7 @@
   }
   function voiceSelect(attrs, value, cls) {
     if (!S.voices) return `<input type="text" class="${cls || ''}" ${attrs} value="${esc(value || '')}" placeholder="ElevenLabs ses ID">`;
-    const opts = ['<option value="">— ses seçin —</option>'].concat(S.voices.map((v) => { const lab = [v.labels && v.labels.gender, v.labels && v.labels.accent].filter(Boolean).join(', '); return `<option value="${esc(v.voice_id)}" ${v.voice_id === value ? 'selected' : ''}>${esc(v.name)}${lab ? ' (' + esc(lab) + ')' : ''}</option>`; }));
+    const opts = ['<option value="">— ses seçin —</option>'].concat(S.voices.map((v) => { const lab = [v.labels && v.labels.gender, v.labels && v.labels.accent].filter(Boolean).join(', '); const paid = v.category && v.category !== 'premade' ? ' · ücretli plan' : ''; return `<option value="${esc(v.voice_id)}" ${v.voice_id === value ? 'selected' : ''}>${esc(v.name)}${lab ? ' (' + esc(lab) + ')' : ''}${paid}</option>`; }));
     if (value && !S.voices.some((v) => v.voice_id === value)) opts.push(`<option value="${esc(value)}" selected>${esc(value)}</option>`);
     return `<select class="${cls || ''}" ${attrs}>${opts.join('')}</select>`;
   }
