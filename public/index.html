@@ -404,6 +404,7 @@
       ${open ? `<div class="adv">
         <div class="full"><label class="f">Görsel promptu (ilk kare)</label><textarea class="sm" data-sf="${s.id}:image_prompt">${esc(s.image_prompt)}</textarea></div>
         ${s.tool !== 'avatar' && s.tool !== 'text_card' ? `<div class="full"><label class="f">Video promptu</label><textarea class="sm" data-sf="${s.id}:video_prompt">${esc(s.video_prompt)}</textarea></div>` : ''}
+        ${s.video_prompt_soft && s.video_prompt_soft_for === s.video_prompt ? `<div class="full"><label class="f">Yumuşatılmış prompt (Gemini filtresi için, otomatik)</label><div class="sm" style="white-space:pre-wrap;opacity:.75">${esc(s.video_prompt_soft)}</div></div>` : ''}
         ${s.tool === 'avatar' ? `<div class="full"><label class="f">Hareket promptu (isteğe bağlı)</label><input type="text" class="sm" data-sf="${s.id}:motion_prompt" value="${esc(s.motion_prompt || '')}"></div>` : ''}
         <div><label class="f">Karakterler (virgülle)</label><input type="text" class="sm" data-sf="${s.id}:characters" value="${esc((s.characters || []).join(', '))}"></div>
         <div><label class="f">Mekân</label><input type="text" class="sm" data-sf="${s.id}:location" value="${esc(s.location || '')}"></div>
