@@ -397,6 +397,36 @@ app.post('/api/videos/:id/shots/:sid/generate', (req, res) => {
   res.json({ ok: true });
 });
 
+// Türkçe düzeltme notuyla çekimi yeniden yazdır (Claude); çıktılar sıfırlanır, üretim ayrıca tetiklenir.
+app.post('/api/videos/:id/shots/:sid/revise', async (req, res) => {
+  const v = getV(req, res);
+  if (!v) return;
+  const sid = Number(req.params.sid);
+  const s = v.shots.find((x) => x.id === sid);
+  if (!s) return sendError(res, new Error('Çekim bulunamadı'), 404);
+  if (jobs.isShotBusy(v.id, sid) || s.busy) return sendError(res, new Error('Bu çekimde zaten bir iş çalışıyor.'));
+  const note = String((req.body && req.body.note) || '').trim();
+  if (!note) return sendError(res, new Error('Düzeltme notu boş.'));
+  if (!claude.isConfigured()) return sendError(res, new Error('ANTHROPIC_API_KEY tanımlı değil.'));
+  try {
+    const assets = selectedAssets(v);
+    const notes = (s.revisions || []).map((r) => r.note);
+    const { patch, usage } = await claude.reviseShot({ shot: s, aspect: v.plan ? v.plan.aspect : v.aspect, assets, notes, note });
+    const out = store.updateVideo(v.id, (vv) => {
+      const sh = vv.shots.find((x) => x.id === sid);
+      for (const f of ['description', 'camera', 'image_prompt', 'video_prompt']) if (typeof patch[f] === 'string' && patch[f].trim()) sh[f] = patch[f];
+      if (Array.isArray(patch.dialogue) && patch.dialogue.length) sh.dialogue = patch.dialogue.map((d) => ({ speaker: String(d.speaker || ''), line: String(d.line || ''), emotion: String(d.emotion || '') }));
+      if (Number(patch.duration) > 0) sh.duration = Math.round(Number(patch.duration) * 10) / 10;
+      if (sh.tool === 'gemini' || sh.tool === 'flow') sh.duration = Math.min(8, Math.max(sh.duration, Math.ceil(claude.speechSeconds(sh.dialogue) * 2) / 2));
+      sh.revisions = (sh.revisions || []).concat([{ note, answer: String(patch.answer_tr || ''), at: new Date().toISOString() }]);
+      Object.assign(sh, { image: null, raw: null, video: null, audio: null, manual: false, status: 'Bekliyor', error: null, fixNote: '', video_prompt_soft: null, video_prompt_soft_for: null, actualDuration: null, rawDuration: null });
+      relayout(vv);
+    });
+    costs.record(v.id, sid, { servis: 'claude', model: usage.model, birim: 'token', miktar: usage.input_tokens + usage.output_tokens, girdi_token: usage.input_tokens, cikti_token: usage.output_tokens, ...costs.claudeCost(usage.model, usage), not: 'Düzeltme notu' });
+    res.json({ ok: true, answer: String(patch.answer_tr || ''), video: decorateVideo(store.getVideo(v.id) || out) });
+  } catch (err) { sendError(res, err); }
+});
+
 app.post('/api/videos/:id/shots/:sid/upload', rawBody('2gb'), async (req, res) => {
   const v = getV(req, res);
   if (!v) return;

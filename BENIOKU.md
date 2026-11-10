@@ -66,6 +66,7 @@ Plan geldikten sonra hiçbir şey üretilmez. Zaman çizelgesinde bölümler ve 
 ## Üretim ve birleştirme
 
 - Çekimler sırayla üretilir; Flow çekimleri "Flow bekleniyor" durumunda kalır (görseli indir → Flow'da üret → klibi yükle). Herhangi bir çekime "Elle klip yükle" ile kendi klibinizi koyabilirsiniz.
+- Düzeltme notu: üretim ekranında her çekimin altında Türkçe not kutusu ("kadın solda otursun, adam ona dönük konuşsun"). Claude promptları ve süreyi nota göre yeniden yazar, önceki notları hatırlar; çekim baştan üretilir.
 - Gemini video filtresi: Gemini bir sahneyi reddederse (bağırma, tehdit, korkmuş kişi gibi ifadeler) Claude video promptunu otomatik yumuşatır (replik aynen kalır) ve bir kez daha dener; yine reddedilirse hata mesajı Avatar aracına geçmeyi ya da promptu düzenlemeyi önerir. 4,5 saniyeye sığan çekimler için 4 saniyelik (yarı fiyat) video istenir.
 - Müzik/efekt: kütüphaneden ya da ElevenLabs ile üretilir, süreye göre kırpılır, giriş/çıkış fade uygulanır.
 - Birleştirme (ffmpeg): tüm çekimler aynı çözünürlükte (siyah bant yok), 30 fps H.264 + AAC. Diyalog/klip sesi + dış ses + müzik + efekt karıştırılır; konuşma olan yerde müzik otomatik kısılır (sidechain ducking), "sessizlik" bölümlerinde müzik tamamen kapanır. Bölüm renk tonu (soğuk mavi, sıcak, siyah-beyaz…) uygulanır. Ekran yazıları zamanına göre bindirilir (kanca üst-orta büyük; kapanış kartı siyah fon, beyaz + altın, yavaş fade-in). Bölüm geçişlerinde ve sonda kararma.

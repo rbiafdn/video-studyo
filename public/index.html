@@ -98,6 +98,8 @@
   .empty { color: var(--muted); padding: 30px; text-align: center; border: 1px dashed var(--line); border-radius: var(--r); }
   .vtabs { display: inline-flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; } .vtabs button { border: 0; border-radius: 0; background: transparent; } .vtabs button.on { background: var(--panel2); color: var(--gold); }
   @media (max-width: 1100px) { .ep-layout, .grid-2 { grid-template-columns: 1fr; } .detail { position: static; max-height: none; } .shot-row { grid-template-columns: 60px 1fr; } .shot-row .cost, .shot-row .tool { grid-column: span 1; } }
+    .revbox{border:1px dashed var(--line);border-radius:10px;padding:10px}
+    .revbox textarea{width:100%;box-sizing:border-box}
 </style>
 </head>
 <body>
@@ -144,6 +146,7 @@
   const fmtT = (sec) => { sec = Math.max(0, Number(sec) || 0); const m = Math.floor(sec / 60), s = sec - m * 60; return m + ':' + (s < 10 ? '0' : '') + s.toFixed(1); };
   const keyMissing = (k) => !(S.status && S.status.keys && S.status.keys[k]);
   function missingReason(list) { const names = { anthropic: 'ANTHROPIC_API_KEY', gemini: 'GEMINI_API_KEY', elevenlabs: 'ELEVENLABS_API_KEY', fal: 'FAL_KEY' }; const miss = list.filter(keyMissing).map((k) => names[k]); return miss.length ? 'Eksik anahtar: ' + miss.join(', ') : ''; }
+  document.addEventListener('input', (e) => { if (e.target && e.target.id === 'revise-note') S.reviseDraft = e.target.value; });
   function isEditing() { const el = document.activeElement; return el && (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT' || el.tagName === 'SELECT'); }
   const vFile = (name, stamp, dl) => `/files/v/${S.video.id}/${name}?v=${stamp || 0}${dl ? '&download=1' : ''}`;
   function estLabel(item) {
@@ -461,6 +464,13 @@
       ${actBtn(hasAll ? 'Çekimi yeniden üret' : 'Bu çekimi üret', hasAll ? 'all' : 'auto', dis(need) || (tool === 'flow' && !s.raw && !!s.image && !hasAll), missingReason(need), stepEst(s, hasAll ? Object.keys(s.tahmin || {}) : missingKeys), true)}
       <label class="btn xs">Elle klip yükle<input type="file" accept="video/*,.mp4,.mov,.webm" data-upload="${s.id}" hidden ${busy ? 'disabled' : ''}></label>
       <button class="xs ghost" id="btn-adv">${S.adv ? 'Adımları gizle' : 'Adımlar'}</button></div>`;
+    if (tool !== 'text_card') {
+      const revs = s.revisions || [];
+      f += `<div class="mt revbox"><label class="f">Düzeltme notu <span class="faint">(Türkçe, yönetmene söyler gibi: "kadın solda otursun, adam ona dönük konuşsun")</span></label>
+        <textarea class="sm" id="revise-note" rows="2" ${busy ? 'disabled' : ''}>${esc(S.reviseDraft || '')}</textarea>
+        <div class="row" style="margin-top:6px"><button class="xs gold" id="btn-revise" ${busy || keyMissing('claude') ? 'disabled' : ''}>Notla yeniden üret</button><span class="small muted">Claude promptları nota göre yeniden yazar, çekim baştan üretilir (${esc(stepEst(s, Object.keys(s.tahmin || {})) || 'tahmin yok')}).</span></div>
+        ${revs.length ? '<div class="small mt" style="opacity:.8">' + revs.map((r) => '<div>• <b>' + esc(r.note) + '</b>' + (r.answer ? ' <span class="faint">→ ' + esc(r.answer) + '</span>' : '') + '</div>').join('') + '</div>' : ''}</div>`;
+    }
     if (tool === 'flow') f += `<div class="flowbox"><b>Google Flow (elle)</b> <span class="est">Flow kredisi (siteden harcanmaz)</span><p class="small muted">1) İlk kare görselini indirin. 2) Promptu kopyalayın. 3) Flow'da görseli yükleyip promptla video üretin. 4) İndirdiğiniz klibi "Elle klip yükle" ile buraya yükleyin; tek konuşan varsa sesi karakter sesine çevrilir.</p>
       <div class="row">${s.image ? `<a class="btn xs" href="${vFile(s.image, s.imageAt, true)}" download="cekim-${s.id}.jpg">Görseli indir</a>` : '<span class="small muted">Önce görseli üretin (Adımlar → Görsel).</span>'}<button class="xs" data-copy="${s.id}">Promptu kopyala</button><a class="btn xs" href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">Flow'u aç</a></div></div>`;
     if (S.adv) {
@@ -514,6 +524,14 @@
       else if (btn.id === 'btn-replan') { if (S.video.shots.length && !confirm('Yeniden planlama mevcut çekim listesini siler. Devam?')) return; await apiConfirm(`/api/videos/${S.video.id}/plan`); S.vtab = 'plan'; toast('Yeniden planlanıyor'); }
       else if (btn.id === 'btn-del') { if (!confirm('Video ve dosyaları silinsin mi?')) return; await api('/api/videos/' + S.video.id, { method: 'DELETE' }); location.hash = '#/'; }
       else if (btn.id === 'btn-adv') { S.adv = !S.adv; renderDetail(); }
+      else if (btn.id === 'btn-revise') {
+        const ta = $('revise-note'); const note = (ta && ta.value || '').trim();
+        if (!note) { toast('Önce notu yazın.'); return; }
+        btn.disabled = true; btn.textContent = 'Claude yeniden yazıyor…';
+        const r = await api(`/api/videos/${S.video.id}/shots/${S.sel}/revise`, { method: 'POST', json: { note } });
+        S.reviseDraft = ''; S.video = r.video; updateVideo(true); toast(r.answer || 'Çekim yeniden yazıldı');
+        await apiConfirm(`/api/videos/${S.video.id}/shots/${S.sel}/generate`, { step: 'auto' });
+      }
       else if (btn.dataset.adv) { const id = Number(btn.dataset.adv); if (S.openAdv.has(id)) S.openAdv.delete(id); else S.openAdv.add(id); renderPlan(); }
       else if (btn.dataset.sdel) { if (!confirm('Çekim silinsin mi?')) return; S.video = await api(`/api/videos/${S.video.id}/shots/${btn.dataset.sdel}`, { method: 'DELETE' }); S.lastJson = ''; renderPlan(); }
       else if (btn.dataset.addshot) { S.video = await api(`/api/videos/${S.video.id}/shots`, { method: 'POST', json: { section_id: Number(btn.dataset.addshot), after: Number(btn.dataset.after) } }); S.lastJson = ''; renderPlan(); }
