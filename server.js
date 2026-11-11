@@ -268,7 +268,8 @@ function startPlanning(video) {
         });
       }
       store.updateVideo(video.id, (v) => {
-        v.plan = { title: plan.title, aspect: plan.aspect, target_duration: plan.target_duration, sections: plan.sections, warnings: plan.warnings, questions: plan.questions, model: usage.model };
+        // kullanıcı oranı açıkça seçtiyse Claude'un tahmini onu ezmesin
+        v.plan = { title: plan.title, aspect: ['16:9', '9:16', '1:1'].includes(v.aspect) ? v.aspect : plan.aspect, target_duration: plan.target_duration, sections: plan.sections, warnings: plan.warnings, questions: plan.questions, model: usage.model };
         if (plan.title && !v.name) v.name = plan.title;
         v.shots = plan.shots.map((s) => ({
           ...s,
