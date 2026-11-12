@@ -253,7 +253,7 @@ function decorateVideo(v) {
 
 function startPlanning(video) {
   store.updateVideo(video.id, (v) => { v.planning = true; v.planError = null; });
-  (async () => {
+  jobs.bg((async () => {
     try {
       const settings = store.getSettings();
       const assets = selectedAssets(video);
@@ -284,7 +284,7 @@ function startPlanning(video) {
     } catch (err) {
       store.updateVideo(video.id, (v) => { v.planning = false; v.planError = err.message || String(err); });
     }
-  })();
+  })());
 }
 
 app.get('/api/videos', (req, res) => res.json(store.listVideos().map(summary)));
@@ -431,7 +431,7 @@ app.post('/api/videos/:id/shots/:sid/generate', (req, res) => {
   if (!['auto', 'all', 'image', 'audio', 'voiceover', 'video', 'fixvoice'].includes(step)) return sendError(res, new Error('Geçersiz adım'));
   if (budgetGate(req, res, v, costs.estimateStep(v, s, step).usd)) return;
   store.updateVideo(v.id, (vv) => { vv.approved = true; });
-  jobs.runShot(v.id, sid, step);
+  jobs.bg(jobs.runShot(v.id, sid, step));
   res.json({ ok: true });
 });
 
@@ -533,7 +533,7 @@ app.post('/api/videos/:id/audio/generate', (req, res) => {
   if (!v) return;
   const items = costs.estimateAudioLayers(v);
   if (budgetGate(req, res, v, items.reduce((n, i) => n + (i.usd || 0), 0))) return;
-  jobs.generateAudioLayers(v.id);
+  jobs.bg(jobs.generateAudioLayers(v.id));
   res.json({ ok: true });
 });
 app.post('/api/videos/:id/assemble', (req, res) => {
@@ -544,9 +544,14 @@ app.post('/api/videos/:id/assemble', (req, res) => {
 
 app.use((err, req, res, next) => { if (res.headersSent) return next(err); sendError(res, err, err.status || 500); });
 
+// Son güvenlik ağı: gözden kaçan bir arka plan hatası sunucuyu düşürmesin.
+process.on('unhandledRejection', (err) => console.error('[yakalanmamış hata]', (err && err.message) || err));
+
+// Varsayılan olarak yalnızca bu bilgisayardan erişilir; ağdan erişim için .env'de HOST=0.0.0.0
+const HOST = process.env.HOST || '127.0.0.1';
 jobs.resetStaleFlags();
-app.listen(PORT, () => {
-  console.log(`Video Stüdyo çalışıyor: http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Video Stüdyo çalışıyor: http://localhost:${PORT}${HOST === '127.0.0.1' ? '' : ` (ağ: ${HOST})`}`);
   const k = { ANTHROPIC_API_KEY: claude.isConfigured(), GEMINI_API_KEY: gemini.isConfigured(), ELEVENLABS_API_KEY: eleven.isConfigured(), FAL_KEY: fal.isConfigured() };
   for (const [name, ok] of Object.entries(k)) console.log(`  ${ok ? '✓' : '·'} ${name}${ok ? '' : ' (tanımlı değil)'}`);
   if (!media.ffmpegPath) console.log('  ! ffmpeg-static bulunamadı');
