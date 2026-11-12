@@ -4,101 +4,176 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Video Stüdyo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0b0c10; --panel: #13151b; --panel2: #191c24; --line: #262a35; --line2: #343948;
-    --ink: #e8e9ee; --muted: #8b90a0; --faint: #5d6270;
-    --gold: #e6b84a; --gold2: #f3cc6a; --gold-ink: #1a1405;
-    --ok: #3ddc84; --warn: #f0b24a; --err: #ff6b6b; --off: #3a3f4c; --blue: #6ea8ff; --purple: #b38cff; --teal: #4fd1c5;
-    --r: 12px;
+    --bg: #f6f7f9; --bg2: #ffffff; --panel: #ffffff; --panel2: #f3f4f7; --panel3: #e9ebf0; --line: #e4e7ec; --line2: #d3d8e0;
+    --ink: #161a23; --muted: #5d6576; --faint: #959cab;
+    --gold: #6d5efc; --gold2: #5b4cf0; --gold-ink: #ffffff; --gold-soft: rgba(109,94,252,.09); --gold-line: rgba(109,94,252,.35);
+    --ok: #12a061; --ok-soft: rgba(18,160,97,.1); --warn: #c27a06; --err: #e0413c; --err-soft: rgba(224,65,60,.08); --off: #c8cdd6;
+    --blue: #2f6fe0; --purple: #7c4ddb; --teal: #0e8f86;
+    --r: 14px; --r-sm: 10px;
+    --shadow: 0 1px 2px rgba(16,24,40,.05), 0 1px 3px rgba(16,24,40,.04);
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 14px; line-height: 1.45; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  body { background: var(--bg); min-height: 100vh; }
   a { color: var(--gold); text-decoration: none; } a:hover { text-decoration: underline; }
-  h1 { font-size: 22px; margin: 0; font-weight: 700; } h2 { font-size: 17px; margin: 0 0 12px; font-weight: 700; } h3 { font-size: 15px; margin: 0 0 10px; font-weight: 600; }
-  p { margin: 6px 0; } .muted { color: var(--muted); } .faint { color: var(--faint); } .small { font-size: 12px; }
-  .top { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 22px; padding: 0 28px; height: 54px; background: rgba(11,12,16,.92); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
-  .brand { font-weight: 800; letter-spacing: .08em; font-size: 15px; white-space: nowrap; } .brand span { color: var(--gold); }
-  .tabs { display: flex; gap: 4px; } .tabs a { padding: 6px 12px; border-radius: 8px; color: var(--muted); font-size: 13px; } .tabs a.on { background: var(--panel2); color: var(--ink); }
-  .top nav { flex: 1; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .top nav a { color: var(--muted); }
-  .top .right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 12px; color: var(--muted); }
-  .status-row { display: flex; gap: 12px; }
-  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--off); margin-right: 5px; vertical-align: middle; } .dot.on { background: var(--ok); }
-  main { padding: 22px 28px 60px; }
-  .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
-  .page-head .meta { color: var(--muted); font-size: 13px; margin-top: 4px; }
-  .crumb { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  h1 { font-size: 24px; margin: 0; font-weight: 700; letter-spacing: -.02em; } h2 { font-size: 18px; margin: 0 0 12px; font-weight: 650; letter-spacing: -.01em; } h3 { font-size: 15px; margin: 0 0 12px; font-weight: 600; }
+  p { margin: 6px 0; } .muted { color: var(--muted); } .faint { color: var(--faint); } .small { font-size: 12.5px; }
+  code { background: var(--panel2); padding: 1px 5px; border-radius: 5px; font-size: 12px; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  /* üst çubuk */
+  .top { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 18px; padding: 0 28px; height: 60px; background: rgba(255,255,255,.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 750; letter-spacing: -.01em; font-size: 15px; white-space: nowrap; color: var(--ink); }
+  .brand:hover { text-decoration: none; }
+  .brand .logo { width: 30px; height: 30px; border-radius: 9px; background: var(--gold); display: grid; place-items: center; color: #fff; }
+  .brand span { color: var(--gold); }
+  .tabs { display: flex; gap: 2px; background: var(--panel2); border: 1px solid var(--line); border-radius: 11px; padding: 3px; }
+  .tabs a { padding: 6px 14px; border-radius: 8px; color: var(--muted); font-size: 13px; font-weight: 500; } .tabs a:hover { color: var(--ink); text-decoration: none; } .tabs a.on { background: #fff; color: var(--ink); box-shadow: var(--shadow); }
+  .top nav { flex: 1; min-width: 0; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .top nav a { color: var(--muted); }
+  .conn { position: relative; } .conn summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .conn summary::-webkit-details-marker { display: none; } .conn summary:hover { border-color: var(--line2); color: var(--ink); }
+  .conn .pop { position: absolute; right: 0; top: calc(100% + 8px); width: 330px; background: var(--panel); border: 1px solid var(--line2); border-radius: var(--r); padding: 14px; box-shadow: 0 16px 40px -12px rgba(16,24,40,.25); z-index: 30; }
+  .conn .svc { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 13px; } .conn .svc:last-of-type { border-bottom: 0; }
+  .conn .svc .m { color: var(--faint); font-size: 11.5px; }
+  .status-row { display: block; } #balance-row { font-size: 12px; color: var(--muted); margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); line-height: 1.7; }
+  .dot { display: inline-block; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--off); margin-top: 6px; } .dot.on { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-soft); }
+  .conn summary .dot { margin-top: 0; }
+  main { padding: 28px 28px 80px; max-width: 1480px; margin: 0 auto; }
+
+  /* sayfa başlığı */
+  .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+  .page-head .meta { color: var(--muted); font-size: 13px; margin-top: 6px; }
+  .crumb { font-size: 12.5px; color: var(--muted); margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
   .actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
-  .grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 20px; align-items: start; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); }
+  .panel > h3:first-child { display: flex; align-items: center; gap: 8px; }
+  .grid-2 { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: start; }
   .grid-setup { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; align-items: start; }
-  .grid-lib { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; align-items: start; }
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; position: relative; transition: border-color .15s; }
-  .card.link { cursor: pointer; } .card.link:hover { border-color: var(--line2); }
-  .card .title { font-weight: 600; font-size: 15px; margin-bottom: 4px; padding-right: 50px; } .card .sub { color: var(--muted); font-size: 12.5px; }
-  .card .del { position: absolute; top: 10px; right: 10px; }
-  .chip { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--panel2); border: 1px solid var(--line); color: var(--muted); vertical-align: middle; white-space: nowrap; }
-  .chip.ok { color: var(--ok); border-color: #1f5a3a; } .chip.err { color: var(--err); border-color: #6a2a2a; } .chip.gold { color: var(--gold); border-color: #6a541f; }
-  .chip.t-avatar { color: var(--blue); border-color: #2d3f63; } .chip.t-gemini, .chip.t-flow { color: var(--warn); border-color: #5a4420; } .chip.t-seedance { color: var(--purple); border-color: #4a3870; } .chip.t-text_card { color: var(--teal); border-color: #1f5a55; }
-  label.f { display: block; font-size: 12px; color: var(--muted); margin: 12px 0 5px; } label.f:first-child { margin-top: 0; }
-  input[type=text], input[type=number], textarea, select { width: 100%; font: inherit; font-size: 13.5px; color: var(--ink); background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; outline: none; }
-  input:focus, textarea:focus, select:focus { border-color: var(--gold); }
-  textarea { min-height: 70px; resize: vertical; } textarea.tall { min-height: 280px; } textarea.sm { min-height: 44px; padding: 6px 9px; font-size: 13px; }
-  input.sm, select.sm { padding: 6px 8px; font-size: 12.5px; }
+  .grid-lib { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr)); gap: 20px; align-items: start; }
+  .cards { display: grid; grid-template-columns: 1fr; gap: 10px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; position: relative; transition: border-color .15s, transform .15s, background .15s; }
+  .card.link { cursor: pointer; } .card.link:hover { border-color: var(--line2); background: var(--panel2); }
+  .card .title { font-weight: 600; font-size: 15px; margin-bottom: 6px; padding-right: 56px; } .card .sub { color: var(--muted); font-size: 12.5px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .card .del { position: absolute; top: 12px; right: 12px; opacity: 0; transition: opacity .15s; } .card:hover .del, .card .del:focus { opacity: 1; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; padding: 3px 9px; border-radius: 999px; background: var(--panel2); border: 1px solid var(--line); color: var(--muted); vertical-align: middle; white-space: nowrap; font-weight: 500; }
+  .chip b { color: var(--ink); font-weight: 600; }
+  .chip.ok { color: var(--ok); border-color: rgba(18,160,97,.35); background: var(--ok-soft); } .chip.err { color: var(--err); border-color: rgba(224,65,60,.35); background: var(--err-soft); } .chip.gold { color: var(--gold); border-color: var(--gold-line); background: var(--gold-soft); }
+  .chip.t-avatar { color: var(--blue); } .chip.t-gemini, .chip.t-flow { color: var(--warn); } .chip.t-seedance { color: var(--purple); } .chip.t-text_card { color: var(--teal); }
+
+  /* formlar */
+  label.f { display: block; font-size: 12.5px; font-weight: 500; color: var(--muted); margin: 14px 0 6px; } label.f:first-child { margin-top: 0; }
+  .hint { font-size: 12px; color: var(--faint); margin-top: 5px; }
+  input[type=text], input[type=number], textarea, select { width: 100%; font: inherit; font-size: 13.5px; color: var(--ink); background: var(--bg2); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; outline: none; transition: border-color .15s, box-shadow .15s; }
+  input:hover, textarea:hover, select:hover { border-color: var(--line2); }
+  input:focus, textarea:focus, select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+  select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 30px; }
+  textarea { min-height: 70px; resize: vertical; line-height: 1.55; } textarea.tall { min-height: 300px; } textarea.sm { min-height: 44px; padding: 7px 10px; font-size: 13px; }
+  input.sm, select.sm { padding: 7px 10px; font-size: 12.5px; border-radius: 8px; } select.sm { padding-right: 28px; }
   input::placeholder, textarea::placeholder { color: var(--faint); }
-  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; } .mt { margin-top: 14px; }
-  .check { display: inline-flex; align-items: center; gap: 7px; cursor: pointer; font-size: 13px; } .check input { accent-color: var(--gold); }
-  details.set { border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); margin-top: 14px; }
-  details.set summary { cursor: pointer; padding: 12px 18px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; }
-  details.set summary::after { content: "▾"; color: var(--muted); } details.set[open] summary::after { content: "▴"; } details.set .body { padding: 0 18px 18px; }
-  button, .btn { font: inherit; font-size: 13.5px; padding: 9px 14px; border-radius: 9px; border: 1px solid var(--line2); background: var(--panel2); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
-  button:hover, .btn:hover { border-color: #4a5063; text-decoration: none; }
-  button.gold, .btn.gold { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); font-weight: 600; } button.gold:hover, .btn.gold:hover { background: var(--gold2); }
-  button.ghost { background: transparent; } button.danger { color: var(--err); }
-  button.xs, .btn.xs { font-size: 12px; padding: 5px 9px; border-radius: 7px; } button.big { font-size: 15px; padding: 12px 20px; }
-  button:disabled, .btn.dis { opacity: .4; cursor: not-allowed; }
-  .act { display: inline-flex; flex-direction: column; gap: 3px; } .est { font-size: 11px; color: var(--muted); white-space: nowrap; }
+  input:disabled, textarea:disabled, select:disabled { opacity: .5; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; } .mt { margin-top: 16px; }
+  .check { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; } .check input { accent-color: var(--gold); width: 16px; height: 16px; }
+  details.set { border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); margin-top: 16px; }
+  details.set summary { cursor: pointer; padding: 14px 20px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details.set summary::-webkit-details-marker { display: none; }
+  details.set summary::after { content: ""; width: 7px; height: 7px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform .15s; } details.set[open] summary::after { transform: rotate(-135deg); } details.set .body { padding: 0 20px 20px; }
+
+  /* butonlar */
+  button, .btn { font: inherit; font-size: 13.5px; font-weight: 500; padding: 9px 15px; border-radius: var(--r-sm); border: 1px solid var(--line2); background: #fff; color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px; white-space: nowrap; transition: background .15s, border-color .15s, transform .05s; }
+  button:hover, .btn:hover { border-color: #b9c0cc; background: var(--panel2); text-decoration: none; } button:active, .btn:active { transform: translateY(1px); }
+  button.gold, .btn.gold { background: var(--gold); border-color: var(--gold); color: var(--gold-ink); font-weight: 650; box-shadow: 0 1px 2px rgba(16,24,40,.08); } button.gold:hover, .btn.gold:hover { background: var(--gold2); border-color: var(--gold2); }
+  button.ghost { background: transparent; border-color: transparent; color: var(--muted); } button.ghost:hover { background: var(--panel2); color: var(--ink); }
+  button.danger { color: var(--err); } button.danger:hover { background: var(--err-soft); color: var(--err); }
+  button.xs, .btn.xs { font-size: 12.5px; padding: 6px 11px; border-radius: 8px; } button.big, .btn.big { font-size: 15px; padding: 13px 22px; border-radius: 12px; }
+  button:disabled, .btn.dis { opacity: .4; cursor: not-allowed; box-shadow: none; } button:disabled:active { transform: none; }
+  .act { display: inline-flex; flex-direction: column; gap: 4px; } .est { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
   .err { color: var(--err); font-size: 13px; white-space: pre-wrap; }
-  .warnbox { background: #2a2210; border: 1px solid #6a541f; border-radius: var(--r); padding: 12px 18px; margin-bottom: 14px; }
+  .warnbox { background: var(--gold-soft); border: 1px solid var(--gold-line); border-radius: var(--r); padding: 12px 18px; margin-bottom: 14px; }
   .warnbox summary { cursor: pointer; color: var(--gold); font-weight: 600; } .warnbox li { margin: 3px 0; }
-  .progress { height: 6px; background: var(--panel2); border-radius: 4px; overflow: hidden; border: 1px solid var(--line); } .progress i { display: block; height: 100%; background: var(--gold); } .progress i.over { background: var(--err); }
-  /* adımlar */
-  .steps { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 1px solid var(--line); }
-  .steps button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: var(--muted); padding: 10px 16px; font-size: 14px; }
-  .steps button.on { color: var(--gold); border-bottom-color: var(--gold); } .steps button b { display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: var(--panel2); color: var(--ink); font-size: 12px; line-height: 20px; text-align: center; margin-right: 6px; } .steps button.on b { background: var(--gold); color: var(--gold-ink); }
+  .progress { height: 6px; background: var(--panel3); border-radius: 99px; overflow: hidden; } .progress i { display: block; height: 100%; background: var(--gold); border-radius: 99px; transition: width .4s; } .progress i.over { background: var(--err); } .progress i.okbar { background: var(--ok); }
+  .pulse { animation: pulse 1.6s ease-out 2; } @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(109,94,252,.5); } 100% { box-shadow: 0 0 0 14px rgba(109,94,252,0); } }
+
+  /* karşılama */
+  .hero { margin-bottom: 26px; } .hero h1 { font-size: 30px; } .hero p { color: var(--muted); font-size: 15px; margin-top: 8px; max-width: 640px; }
+  .how { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+  .how > div { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; }
+  .how b.n { flex: none; width: 28px; height: 28px; border-radius: 9px; background: var(--gold-soft); color: var(--gold); display: grid; place-items: center; font-size: 13px; border: 1px solid var(--gold-line); }
+  .how strong { display: block; font-size: 13.5px; } .how span { color: var(--muted); font-size: 12.5px; }
+
+  /* adımlar (stepper) */
+  .steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-bottom: 16px; }
+  .steps button { justify-content: flex-start; text-align: left; gap: 12px; padding: 12px 14px; border-radius: var(--r); background: var(--panel); border: 1px solid var(--line); color: var(--muted); white-space: normal; }
+  .steps button:hover:not(:disabled) { background: var(--panel2); }
+  .steps button b { flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--panel3); color: var(--ink); font-size: 13px; display: grid; place-items: center; }
+  .steps button .st-t { display: block; color: var(--ink); font-weight: 600; font-size: 14px; } .steps button .st-s { display: block; font-size: 12px; color: var(--faint); font-weight: 400; }
+  .steps button.done b { background: var(--ok-soft); color: var(--ok); border: 1px solid rgba(18,160,97,.4); }
+  .steps button.on { border-color: var(--gold); background: #fff; box-shadow: 0 0 0 3px var(--gold-soft); } .steps button.on b { background: var(--gold); color: var(--gold-ink); border: 0; }
+
+  /* sıradaki adım rehberi */
+  .guide { display: flex; align-items: center; gap: 16px; padding: 16px 18px; border-radius: var(--r); border: 1px solid var(--gold-line); background: var(--gold-soft); margin-bottom: 18px; }
+  .guide .ic { flex: none; width: 40px; height: 40px; border-radius: 12px; background: var(--gold-soft); color: var(--gold); display: grid; place-items: center; font-size: 18px; }
+  .guide .tx { flex: 1; min-width: 0; } .guide .tx b { display: block; font-size: 15px; } .guide .tx span { color: var(--muted); font-size: 13px; }
+  .guide.ok { border-color: rgba(18,160,97,.4); background: linear-gradient(90deg, rgba(18,160,97,.1), rgba(18,160,97,.02)); } .guide.ok .ic { background: var(--ok-soft); color: var(--ok); }
+  .guide.err { border-color: rgba(224,65,60,.4); background: linear-gradient(90deg, rgba(224,65,60,.09), rgba(224,65,60,.02)); } .guide.err .ic { background: var(--err-soft); color: var(--err); }
+  .guide.busy .ic { background: var(--panel2); }
+
   /* çekim kartı */
-  .section { margin: 18px 0 8px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; } .section b { font-size: 15px; }
-  .shot { display: grid; grid-template-columns: 170px minmax(0, 1fr) 250px; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
-  .shot.busy { border-color: #6a541f; }
-  .shot .thumb { width: 100%; aspect-ratio: 16 / 9; background: #0f1116; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; color: var(--faint); font-size: 12px; }
-  .shot .thumb.v { aspect-ratio: 9 / 16; max-height: 300px; } .shot .thumb.sq { aspect-ratio: 1 / 1; } .shot .thumb img, .shot .thumb video { width: 100%; height: 100%; object-fit: contain; background: #000; }
-  .shot .head { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--muted); } .shot .head b { color: var(--ink); font-size: 15px; }
-  .shot .lines { margin-top: 8px; display: grid; gap: 6px; }
-  .line { display: grid; grid-template-columns: 110px minmax(0, 1fr) 120px; gap: 8px; align-items: center; font-size: 13px; }
-  .line .who { color: var(--muted); font-size: 12px; } .line.vo .who { color: var(--purple); } .line.txt .who { color: var(--teal); }
-  .shot .side { display: flex; flex-direction: column; gap: 8px; }
+  .section { margin: 26px 0 10px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; } .section b { font-size: 16px; letter-spacing: -.01em; }
+  .shot { display: grid; grid-template-columns: 190px minmax(0, 1fr) 270px; gap: 18px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; margin-bottom: 12px; box-shadow: var(--shadow); transition: border-color .2s; }
+  .shot.busy { border-color: var(--gold-line); } .shot.has-err { border-color: rgba(224,65,60,.4); }
+  .shot .thumb { width: 100%; aspect-ratio: 16 / 9; background: var(--panel2); border: 1px solid var(--line); border-radius: var(--r-sm); overflow: hidden; display: flex; align-items: center; justify-content: center; color: var(--faint); font-size: 12px; text-align: center; padding: 0; }
+  .shot .thumb.v { aspect-ratio: 9 / 16; max-height: 320px; } .shot .thumb.sq { aspect-ratio: 1 / 1; } .shot .thumb img, .shot .thumb video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+  .shot .head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--muted); } .shot .head b { color: var(--ink); font-size: 16px; }
+  .shot .num { background: var(--panel3); border-radius: 8px; padding: 2px 8px; }
+  .shot .lines { margin-top: 10px; display: grid; gap: 6px; }
+  .line { display: grid; grid-template-columns: 120px minmax(0, 1fr) 120px; gap: 8px; align-items: center; font-size: 13px; }
+  .line .who { color: var(--muted); font-size: 12px; font-weight: 500; } .line.vo .who { color: var(--purple); } .line.txt .who { color: var(--teal); }
+  .shot .side { display: flex; flex-direction: column; gap: 10px; }
   .shot .side .btns { display: flex; gap: 6px; flex-wrap: wrap; }
-  .shot .note { border: 1px dashed var(--line2); border-radius: 9px; padding: 8px; }
-  .shot .note textarea { min-height: 46px; }
-  .shot .adv { grid-column: 1 / -1; border-top: 1px dashed var(--line); padding-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .adv .full { grid-column: 1 / -1; }
-  .audio-row { display: grid; grid-template-columns: 90px 130px minmax(0, 1fr) 180px 40px; gap: 10px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; }
-  .bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 16px; margin-bottom: 12px; }
-  .photos { display: flex; gap: 6px; flex-wrap: wrap; } .photos img { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); cursor: pointer; } .photos .add { width: 56px; height: 56px; border: 1px dashed var(--line2); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--faint); font-size: 11px; cursor: pointer; }
-  .lib-item { background: var(--panel2); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 10px; } .lib-item.used { border-color: #6a541f; }
-  .lib-item .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .lib-item .full { grid-column: 1 / -1; }
+  .shot .note { border: 1px solid var(--line); background: var(--panel2); border-radius: var(--r-sm); padding: 10px; }
+  .shot .note textarea { min-height: 50px; background: #fff; }
+  .shot .adv { grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .adv .full { grid-column: 1 / -1; }
+  .audio-row { display: grid; grid-template-columns: 100px 140px minmax(0, 1fr) 190px 40px; gap: 10px; align-items: center; background: var(--panel2); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 10px 12px; margin-bottom: 8px; }
+  .bar { display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 18px; margin-bottom: 12px; }
+  .photos { display: flex; gap: 6px; flex-wrap: wrap; } .photos img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); cursor: pointer; } .photos img:hover { border-color: var(--err); opacity: .8; } .photos .add { width: 56px; height: 56px; border: 1px dashed var(--line2); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 11px; cursor: pointer; } .photos .add:hover { border-color: var(--gold); color: var(--gold); }
+  .lib-item { background: var(--panel2); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 14px; margin-bottom: 10px; } .lib-item.used { border-color: var(--gold-line); }
+  .lib-item .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .lib-item .full { grid-column: 1 / -1; }
   .spin { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--line2); border-top-color: var(--gold); border-radius: 50%; animation: sp 1s linear infinite; vertical-align: -2px; } @keyframes sp { to { transform: rotate(360deg); } }
-  .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); background: #22252e; border: 1px solid var(--line2); color: var(--ink); padding: 10px 16px; border-radius: 9px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; max-width: 90vw; z-index: 50; } .toast.show { opacity: 1; }
-  .empty { color: var(--muted); padding: 30px; text-align: center; border: 1px dashed var(--line); border-radius: var(--r); }
-  @media (max-width: 1100px) { .grid-2, .grid-setup { grid-template-columns: 1fr; } .shot { grid-template-columns: 140px 1fr; } .shot .side { grid-column: 1 / -1; } }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translate(-50%, 10px); background: #161a23; border: 1px solid #161a23; color: #fff; padding: 11px 18px; border-radius: 12px; font-size: 13px; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; max-width: 90vw; z-index: 50; box-shadow: 0 16px 40px -10px rgba(16,24,40,.35); } .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .empty { color: var(--muted); padding: 36px 24px; text-align: center; border: 1px dashed var(--line2); border-radius: var(--r); background: transparent; }
+  .empty .ic { font-size: 28px; margin-bottom: 8px; }
+  .help { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; border: 1px solid var(--line2); color: var(--muted); font-size: 10.5px; font-weight: 700; cursor: help; vertical-align: 1px; margin-left: 4px; }
+
+  @media (max-width: 1100px) { .grid-2, .grid-setup { grid-template-columns: 1fr; } .shot { grid-template-columns: 160px minmax(0, 1fr); } .shot .side { grid-column: 1 / -1; } }
+  @media (max-width: 760px) {
+    .top { padding: 0 16px; gap: 10px; } .top nav { display: none; } .brand .txt { display: none; } .conn summary .lbl { display: none; } .conn .pop { width: min(330px, calc(100vw - 32px)); }
+    main { padding: 20px 16px 60px; } .hero h1 { font-size: 24px; } .how { grid-template-columns: 1fr; } .steps button .st-s { display: none; } .steps button { padding: 9px 8px; gap: 7px; } .steps button b { width: 24px; height: 24px; font-size: 12px; } .steps button .st-t { font-size: 13px; }
+    .shot { grid-template-columns: 1fr; } .line { grid-template-columns: 1fr; gap: 4px; } .shot .adv, .lib-item .g2 { grid-template-columns: 1fr; }
+    .audio-row { grid-template-columns: 1fr 1fr; } .audio-row > div:nth-child(3), .audio-row select[data-af=source] { grid-column: 1 / -1; }
+    .guide { flex-wrap: wrap; } .guide .go { width: 100%; }
+  }
+
+  .card.link:hover { box-shadow: 0 4px 14px -6px rgba(16,24,40,.15); }
+  .card { box-shadow: var(--shadow); }
+  .aspects { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .asp { flex-direction: column; align-items: flex-start; gap: 4px; padding: 14px; border-radius: var(--r); white-space: normal; text-align: left; }
+  .asp b { font-size: 14px; } .asp > span { font-size: 12px; color: var(--muted); font-weight: 400; }
+  .asp.on { border-color: var(--gold); background: var(--gold-soft); box-shadow: 0 0 0 3px var(--gold-soft); }
+  .asp .shape { display: block; border: 2px solid var(--muted); border-radius: 4px; margin-bottom: 6px; } .asp.on .shape { border-color: var(--gold); background: rgba(109,94,252,.15); }
+  .shape.s916 { width: 18px; height: 30px; } .shape.s169 { width: 40px; height: 23px; margin-top: 7px; } .shape.s11 { width: 28px; height: 28px; margin-top: 2px; }
+  @media (max-width: 760px) { .aspects { grid-template-columns: 1fr 1fr 1fr; } .asp > span { display: none; } .asp { padding: 10px; } }
 </style>
 </head>
 <body>
 <header class="top">
-  <div class="brand">VİDEO <span>STÜDYO</span></div>
+  <a class="brand" href="#/"><span class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z"/></svg></span><span class="txt" style="color:var(--ink)">Video <span>Stüdyo</span></span></a>
   <div class="tabs"><a href="#/" id="tab-videos">Videolar</a><a href="#/lib" id="tab-lib">Kütüphane</a></div>
   <nav id="crumbs"></nav>
-  <div class="right"><div class="status-row" id="status-row">Durum yükleniyor…</div><div id="balance-row"></div></div>
+  <details class="conn" id="conn"><summary id="conn-sum"><span class="dot"></span><span class="lbl">Bağlantılar</span></summary><div class="pop"><div class="status-row" id="status-row">Durum yükleniyor…</div><div id="balance-row"></div></div></details>
 </header>
 <main id="app"></main>
 <div class="toast" id="toast"></div>
@@ -179,8 +254,10 @@
   async function loadStatus() {
     try { S.status = await api('/api/status'); } catch { $('status-row').textContent = 'Sunucuya ulaşılamıyor'; return; }
     const k = S.status.keys, m = S.status.models;
-    const it = (ok, label, title) => `<span title="${esc(title)}"><span class="dot ${ok ? 'on' : ''}"></span>${label}</span>`;
-    $('status-row').innerHTML = it(k.anthropic, 'Claude', m.claude + ' / zor: ' + m.claudeHard) + it(k.gemini, 'Gemini', 'Görsel: ' + m.image + ' · Video: ' + m.video) + it(k.elevenlabs, 'ElevenLabs', 'Diyalog: ' + m.dialogue + ' · Dış ses: ' + m.tts + ' · Müzik: ' + m.music + ' · SFX: ' + m.sfx) + it(k.fal, 'fal.ai', 'Avatar: ' + m.avatar + ' · Seedance: ' + m.seedance) + it(S.status.ffmpeg, 'ffmpeg', 'ffmpeg-static');
+    const svcs = [[k.anthropic, 'Claude', 'Senaryoyu çekimlere böler', m.claude], [k.gemini, 'Gemini', 'Görsel ve video üretir', m.image + ' · ' + m.video], [k.elevenlabs, 'ElevenLabs', 'Seslendirme, müzik, efekt', m.dialogue], [k.fal, 'fal.ai', 'Konuşan avatar, Seedance', m.avatar], [S.status.ffmpeg, 'ffmpeg', 'Videoyu birleştirir (ücretsiz)', '']];
+    $('status-row').innerHTML = svcs.map(([ok, label, what, model]) => `<div class="svc"><span class="dot ${ok ? 'on' : ''}"></span><div><b>${label}</b> <span class="muted">· ${what}</span>${ok ? (model ? `<div class="m">${esc(model)}</div>` : '') : '<div class="m" style="color:var(--err)">Anahtar eksik (.env)</div>'}</div></div>`).join('');
+    const on = svcs.filter((x) => x[0]).length;
+    $('conn-sum').innerHTML = `<span class="dot ${on === svcs.length ? 'on' : ''}" style="${on < svcs.length ? 'background:var(--warn)' : ''}"></span><span class="lbl">${on === svcs.length ? 'Tüm servisler bağlı' : on + '/' + svcs.length + ' servis bağlı'}</span>`;
     loadBalances();
     if (!S.prices) { try { S.prices = await api('/api/prices'); } catch { /* sessiz */ } }
   }
@@ -190,7 +267,7 @@
       if (b.elevenlabs) parts.push(`ElevenLabs kalan: <b>${fmtNum(b.elevenlabs.remaining)}</b> / ${fmtNum(b.elevenlabs.limit)} kredi`);
       const L = b.links || {};
       parts.push(`Bakiye: <a href="${esc(L.anthropic)}" target="_blank" rel="noopener">Anthropic</a> · <a href="${esc(L.gemini)}" target="_blank" rel="noopener">Google</a> · <a href="${esc(L.fal)}" target="_blank" rel="noopener">fal.ai</a>${b.elevenlabs ? '' : ' · <a href="' + esc(L.elevenlabs) + '" target="_blank" rel="noopener">ElevenLabs</a>'}`);
-      $('balance-row').innerHTML = parts.join(' &nbsp;·&nbsp; ');
+      $('balance-row').innerHTML = parts.join('<br>');
     } catch { /* sessiz */ }
   }
   async function loadVoices() { if (S.voices) return; if (keyMissing('elevenlabs')) { S.voicesError = 'ELEVENLABS_API_KEY tanımlı değil.'; return; } try { S.voices = await api('/api/voices'); S.voicesError = null; } catch (e) { S.voicesError = e.message; } }
@@ -213,25 +290,26 @@
 
   // ---------- ANA SAYFA ----------
   async function viewHome() {
-    S.view = 'home'; crumbs([{ label: 'Videolar' }]);
+    S.view = 'home'; crumbs([]);
     try { await loadBase(); S.videos = await api('/api/videos'); } catch (e) { app.innerHTML = `<div class="err">${esc(e.message)}</div>`; return; }
     const st = S.settings, r = missingReason(['anthropic']);
     app.innerHTML = `
       <div class="grid-2">
-        <section><h2>Videolar</h2><div class="cards" id="video-cards"></div></section>
-        <aside>
-          <div class="panel">
-            <h3>Yeni video</h3>
-            <label class="f">Ad (boşsa Claude senaryodan koyar)</label><input type="text" id="nv-name" placeholder="örn. Sarıkamış Yolunda">
-            <label class="f">Senaryo (serbest format: başlık, süre, müzik notları, bölümler, dış ses, diyaloglar, ekran yazıları)</label><textarea class="tall" id="nv-script" placeholder="Senaryoyu olduğu gibi yapıştırın. Claude okuyup çekim listesi çıkarır."></textarea>
-            <div class="row mt">
-              <div style="flex:1"><label class="f">Hedef süre (sn, boş = senaryodan)</label><input type="number" id="nv-dur" min="0" step="1" placeholder="örn. 60"></div>
-              <div style="flex:1"><label class="f">Bütçe (USD)</label><input type="number" id="nv-budget" value="${esc(st.defaultBudget)}" min="0" step="1"></div>
-            </div>
-            <div class="row mt"><span class="act"><button class="gold big" id="nv-start" ${r ? 'disabled' : ''}>Çekim listesini hazırla</button><span class="est" id="nv-est"></span></span><span class="small err">${esc(r)}</span></div>
-            <div class="small faint mt">Oran, kalite, görünüm, karakterler ve sesler bir sonraki adımda (Hazırlık) ayarlanır. Hiçbir şey siz "Üret" demeden üretilmez.</div>
+        <section class="panel">
+          <h2>Yeni video</h2>
+          <label class="f">1. Senaryoyu yapıştır</label><textarea class="tall" id="nv-script" placeholder="Senaryoyu olduğu gibi buraya yapıştır."></textarea>
+          <label class="f">2. Video nerede yayınlanacak?</label>
+          <div class="aspects" id="nv-aspect">
+            ${[['9:16', 'Dikey', 'Reels, Shorts, TikTok'], ['16:9', 'Yatay', 'YouTube, TV'], ['1:1', 'Kare', 'Instagram gönderi']].map(([k, t, d]) => `<button type="button" class="asp ${k === (st.aspect === 'auto' ? '9:16' : st.aspect) ? 'on' : ''}" data-aspect="${k}"><i class="shape s${k.replace(':', '')}"></i><b>${t} <span class="faint">${k}</span></b><span>${d}</span></button>`).join('')}
           </div>
-        </aside>
+          <details class="set" style="margin-top:14px"><summary class="small">Diğer ayarlar (isteğe bağlı)</summary><div class="body"><div class="row" style="align-items:flex-start">
+            <div style="flex:2;min-width:180px"><label class="f">Video adı</label><input type="text" id="nv-name" placeholder="Boşsa senaryodan konur"></div>
+            <div style="flex:1;min-width:110px"><label class="f">Süre (sn)</label><input type="number" id="nv-dur" min="0" step="1" placeholder="Senaryodan"></div>
+            <div style="flex:1;min-width:110px"><label class="f">Bütçe sınırı ($)</label><input type="number" id="nv-budget" value="${esc(st.defaultBudget)}" min="0" step="1"></div>
+          </div></div></details>
+          <div class="row mt"><span class="act"><button class="gold big" id="nv-start" ${r ? 'disabled' : ''}>3. Çekim listesini hazırla →</button><span class="est" id="nv-est"></span></span><span class="small err">${esc(r)}</span></div>
+        </section>
+        <section><h2>Videoların</h2><div class="cards" id="video-cards"></div></section>
       </div>`;
     renderVideoCards(); updatePlanEst();
     S.timer = setInterval(async () => { if (S.view !== 'home') return; try { const nv = await api('/api/videos'); if (JSON.stringify(nv) !== JSON.stringify(S.videos)) { S.videos = nv; renderVideoCards(); } } catch { /* sessiz */ } }, 4000);
@@ -240,10 +318,10 @@
     $('video-cards').innerHTML = S.videos.length ? S.videos.map((v) => `
       <div class="card link" data-open="#/v/${esc(v.id)}">
         <div class="title">${esc(v.name)}</div>
-        <div class="sub">${statusChip(v.status)} &nbsp;${v.shotCount ? v.shotCount + ' çekim · ' : ''}${v.targetSeconds ? fmtDur(v.targetSeconds) + ' · ' : ''}${esc(v.aspect)}</div>
-        <div class="sub" style="margin-top:8px">${fmtUsd(v.toplam_usd)} / ${fmtUsd(v.budget)} · <span class="faint">${fmtDate(v.createdAt)}</span></div>
+        <div class="sub">${statusChip(v.status)}<span>${v.shotCount ? v.shotCount + ' çekim · ' : ''}${v.targetSeconds ? fmtDur(v.targetSeconds) + ' · ' : ''}${esc(v.aspect)}</span></div>
+        <div class="sub" style="margin-top:10px"><span>Harcanan <b style="color:var(--ink)">${fmtUsd(v.toplam_usd)}</b> / ${fmtUsd(v.budget)}</span><span class="faint">· ${fmtDate(v.createdAt)}</span></div>
         <button class="xs ghost danger del" data-del-video="${esc(v.id)}" title="Videoyu sil">Sil</button>
-      </div>`).join('') : '<div class="empty">Henüz video yok. Sağdan senaryoyu yapıştırıp "Çekim listesini hazırla" deyin.</div>';
+      </div>`).join('') : '<div class="empty"><div class="ic">🎬</div><b style="color:var(--ink)">Henüz video yok</b><div class="small" style="margin-top:4px">Soldaki kutuya senaryonu yapıştırıp ilk videonu başlat.</div></div>';
   }
   function updatePlanEst() {
     const el = $('nv-est'); if (!el || !S.prices) return;
@@ -259,7 +337,7 @@
 
   // ---------- KÜTÜPHANE (kartlar; Hazırlık adımında da kullanılır) ----------
   async function viewLibrary() {
-    S.view = 'lib'; crumbs([{ label: 'Kütüphane' }]);
+    S.view = 'lib'; crumbs([]);
     try { await loadBase(); } catch (e) { app.innerHTML = `<div class="err">${esc(e.message)}</div>`; return; }
     const st = S.settings;
     app.innerHTML = `
@@ -332,7 +410,7 @@
     S.step = step || (S.video.shots.length ? 'shots' : 'setup'); S.openAdv = new Set();
     crumbs([{ label: 'Videolar', href: '#/' }, { label: S.video.name || 'Video' }]);
     S.lastJson = '';
-    app.innerHTML = `<div class="page-head" id="v-head"></div><div class="steps" id="v-steps"></div><div id="v-body"></div>`;
+    app.innerHTML = `<div class="page-head" id="v-head"></div><div class="steps" id="v-steps"></div><div id="v-guide"></div><div id="v-body"></div>`;
     updateVideo(true);
     S.timer = setInterval(async () => { if (S.view !== 'video') return; try { S.video = await api('/api/videos/' + id); if (S.video.library) S.lib = S.video.library; updateVideo(false); } catch { /* sessiz */ } }, 3000);
   }
@@ -340,6 +418,23 @@
     const anyBusy = v.shots.some((s) => s.busy) || v.producing || v.assembling;
     const missing = v.shots.filter((s) => !s.video).length;
     return v.planning ? 'Planlanıyor' : v.planError && !v.shots.length ? 'Plan hatası' : !v.shots.length ? 'Plan yok' : v.final ? 'Hazır' : anyBusy ? 'Üretiliyor' : v.shots.some((s) => s.tool === 'flow' && !s.raw && !s.video) ? 'Klip bekleniyor' : v.shots.some((s) => s.error) ? 'Hata var' : missing ? (v.shots.length - missing) + '/' + v.shots.length + ' çekim hazır' : 'Birleştirmeye hazır';
+  }
+  // "Sıradaki adım" rehberi: kullanıcıya şu an ne yapması gerektiğini tek cümleyle söyler
+  function guideHtml(v) {
+    const shots = v.shots, ready = shots.filter((s) => s.video).length, busy = shots.some((s) => s.busy) || v.producing;
+    const box = (kind, icon, title, text, btn) => `<div class="guide ${kind}"><div class="ic">${icon}</div><div class="tx"><b>${title}</b><span>${text}</span></div>${btn || ''}</div>`;
+    const go = (step, target, label, primary) => `<button class="go ${primary ? 'gold' : ''}" data-goto="${step}:${target}">${label}</button>`;
+    if (v.planning) return box('busy', '<span class="spin" style="width:18px;height:18px"></span>', 'Claude senaryonu okuyor…', '1–4 dakika sürer, sayfa kendini yeniler.');
+    if (!shots.length && v.planError) return box('err', '!', 'Planlama tamamlanamadı', 'Hata mesajına bakıp tekrar dene.', S.step !== 'setup' ? go('setup', 'btn-plan', 'Hazırlığa git') : '');
+    if (!shots.length) return box('', '1', 'Çekim listesini hazırla', '"Çekim listesini hazırla" düğmesine bas.', go('setup', 'btn-plan', 'Göster', true));
+    if (v.assembling) return box('busy', '<span class="spin" style="width:18px;height:18px"></span>', 'Final video birleştiriliyor…', 'Birkaç dakika sürebilir.');
+    if (v.final) return box('ok', '✓', 'Videon hazır!', 'Final sekmesinden izleyebilir ya da hemen indirebilirsin.', `<a class="btn gold go" href="${vFile(v.final, v.finalAt, true)}" download="${esc((v.name || 'video').replace(/[^\w\-ğüşöçıİĞÜŞÖÇ ]+/g, '').trim())}.mp4">İndir</a>`);
+    if (busy) return box('busy', '<span class="spin" style="width:18px;height:18px"></span>', `Çekimler üretiliyor · ${ready}/${shots.length} hazır`, 'Bitenler sırayla görünür.', S.step !== 'shots' ? go('shots', '', 'Çekimlere git') : '');
+    const errs = shots.filter((s) => s.error).length;
+    if (errs) return box('err', '!', `${errs} çekimde hata var`, 'Kırmızı çerçeveli çekimde "Üret" ile tekrar dene.', go('shots', 'first-err', 'Hatalı çekime git'));
+    if (shots.some((s) => s.tool === 'flow' && !s.raw && !s.video)) return box('', '↥', 'Bazı çekimler klip bekliyor', 'Klibi dış araçta üretip "Klip yükle" ile ekle.', go('shots', '', 'Çekimlere git'));
+    if (ready < shots.length) return box('', '2', ready ? `${shots.length - ready} çekim kaldı` : 'Sıra çekimleri üretmekte', 'Çekimlere göz at, sonra "Eksik çekimleri üret" de.', go('shots', 'btn-produce', 'Üretime geç', true));
+    return box('ok', '3', 'Tüm çekimler hazır!', 'Final sekmesinde "Birleştir" de.', go('final', 'btn-assemble', 'Finale geç', true));
   }
   function updateVideo(force) {
     const v = S.video;
@@ -352,18 +447,27 @@
     const planDur = v.shots.reduce((n, s) => n + (s.duration || 0), 0);
     $('v-head').innerHTML = `
       <div style="min-width:280px">
-        <div class="crumb"><a href="#/">Videolar</a> / ${statusChip(videoStatusText(v))}</div>
+        <div class="crumb"><a href="#/">← Videolar</a>${statusChip(videoStatusText(v))}</div>
         <h1>${esc(v.name || 'Video')}</h1>
         <div class="meta">${v.shots.length ? v.shots.length + ' çekim · ' + fmtDur(planDur) + ' · ' : ''}${esc((v.plan && v.plan.aspect) || v.aspect)} · ${esc(v.resolution || '720p')}${v.lookEffective ? ' · ' + esc(v.lookEffective.name) : ''}</div>
-        <div class="row" style="margin-top:8px;gap:8px"><div class="progress" style="width:200px"><i class="${m.toplam_usd > v.budget ? 'over' : ''}" style="width:${pct}%"></i></div><span class="small"><b>${fmtUsd(m.toplam_usd)}</b> / ${fmtUsd(v.budget)}</span></div>
-        <div class="row" style="margin-top:6px;gap:6px;flex-wrap:wrap">${spentChips(m)}</div>
+      </div>
+      <div class="panel" style="padding:14px 16px;min-width:280px;flex:0 1 420px">
+        <div class="row" style="justify-content:space-between"><span class="small muted">Harcanan / bütçe</span><span class="small"><b>${fmtUsd(m.toplam_usd)}</b> / ${fmtUsd(v.budget)}</span></div>
+        <div class="progress" style="margin-top:8px"><i class="${m.toplam_usd > v.budget ? 'over' : ''}" style="width:${pct}%"></i></div>
+        <div class="row" style="margin-top:10px;gap:6px">${spentChips(m)}</div>
       </div>
       <div class="actions">
         ${v.final ? `<a class="btn gold" href="${vFile(v.final, v.finalAt, true)}" download="${esc((v.name || 'video').replace(/[^\w\-ğüşöçıİĞÜŞÖÇ ]+/g, '').trim())}.mp4">Final videoyu indir</a>` : ''}
         <button class="ghost danger" id="btn-del">Sil</button>
       </div>`;
-    const steps = [['setup', '1', 'Hazırlık'], ['shots', '2', 'Çekimler'], ['final', '3', 'Final']];
-    $('v-steps').innerHTML = steps.map(([k, n, l]) => `<button class="${S.step === k ? 'on' : ''}" data-step="${k}" ${k !== 'setup' && !v.shots.length ? 'disabled' : ''}><b>${n}</b>${l}</button>`).join('');
+    const ready = v.shots.filter((s) => s.video).length;
+    const steps = [
+      ['setup', '1', 'Hazırlık', 'Senaryo, ayarlar, karakterler', v.shots.length > 0],
+      ['shots', '2', 'Çekimler', v.shots.length ? ready + '/' + v.shots.length + ' çekim hazır' : 'Plan bekleniyor', v.shots.length > 0 && ready === v.shots.length],
+      ['final', '3', 'Final', v.final ? 'Video hazır' : 'Müzik ekle, birleştir, indir', !!v.final],
+    ];
+    $('v-steps').innerHTML = steps.map(([k, n, l, sub, done]) => `<button class="${S.step === k ? 'on' : ''} ${done ? 'done' : ''}" data-step="${k}" ${k !== 'setup' && !v.shots.length ? 'disabled' : ''}><b>${done && S.step !== k ? '✓' : n}</b><span><span class="st-t">${l}</span><span class="st-s">${esc(sub)}</span></span></button>`).join('');
+    $('v-guide').innerHTML = guideHtml(v);
     if (S.step === 'setup') renderSetup(); else if (S.step === 'shots') renderShots(); else renderFinal();
   }
 
@@ -381,23 +485,23 @@
             <div style="flex:1"><label class="f">Hedef süre (sn, boş = senaryodan)</label><input type="number" id="sc-dur" min="0" step="1" value="${v.targetSeconds || ''}"></div>
             <div style="flex:1"><label class="f">Ad</label><input type="text" id="sc-name" value="${esc(v.name || '')}"></div>
           </div>
-          <div class="row mt"><label class="check"><input type="checkbox" id="sc-hard" ${v.hardPlanning ? 'checked' : ''}> Zor planlama (Opus, daha pahalı)</label></div>
+          <div class="row mt"><label class="check"><input type="checkbox" id="sc-hard" ${v.hardPlanning ? 'checked' : ''}> Zor planlama <span class="faint">(uzun ve karmaşık senaryolar için)</span></label></div>
           ${v.planning ? `<div class="mt"><span class="spin"></span> &nbsp;Claude çekim listesini çıkarıyor… 1-4 dakika sürebilir, sayfa kendini yeniler.</div>` : v.planError ? `<div class="err mt">${esc(v.planError)}</div>` : ''}
           <div class="row mt"><span class="act"><button class="gold big" id="btn-plan" ${r || v.planning ? 'disabled' : ''} title="${esc(r)}">${v.shots.length ? 'Yeniden planla' : 'Çekim listesini hazırla'}</button><span class="est">${v.tahmin ? estLabel(v.tahmin.plan) : ''}${v.shots.length ? ' · mevcut çekim listesi silinir' : ''}</span></span></div>
         </div>
         <div class="panel">
           <h3>Video ayarları</h3>
-          <label class="f">Görüntü oranı (boy)</label><select data-vs="aspect">${Object.entries(ASPECTS).map(([k, l]) => `<option value="${k}" ${k === ((v.plan && v.plan.aspect) || v.aspect) ? 'selected' : ''}>${l}</option>`).join('')}</select>
+          <label class="f">Nerede yayınlanacak? (görüntü oranı)</label><select data-vs="aspect">${Object.entries(ASPECTS).map(([k, l]) => `<option value="${k}" ${k === ((v.plan && v.plan.aspect) || v.aspect) ? 'selected' : ''}>${l}</option>`).join('')}</select>
           <label class="f">Video kalitesi (Gemini)</label><select data-vs="resolution"><option value="720p" ${(v.resolution || '720p') === '720p' ? 'selected' : ''}>720p · ≈ $0.07 / sn</option><option value="1080p" ${v.resolution === '1080p' ? 'selected' : ''}>1080p · ≈ $0.10 / sn</option></select>
           <label class="f">Görünüm (her görsel ve videoya otomatik eklenir)</label><select data-vs="look"><option value="" ${!v.look ? 'selected' : ''}>Varsayılan (${esc((S.looks.find((l) => l.key === (st.look || 'film')) || {}).name || 'film')})</option>${S.looks.map((l) => `<option value="${l.key}" ${v.look === l.key ? 'selected' : ''}>${esc(l.name)}</option>`).join('')}</select>
           <label class="f">Görünüme ek (İngilizce, isteğe bağlı)</label><input type="text" data-vs="lookCustom" value="${esc(v.lookCustom || '')}" placeholder="${esc(st.lookCustom || '1950s Anatolia, winter')}">
-          <label class="f">Hareketli çekimler (kamera + oyunculuk)</label><select data-vs="movingProvider"><option value="gemini" ${v.movingProvider !== 'flow' ? 'selected' : ''}>Gemini (otomatik)</option><option value="flow" ${v.movingProvider === 'flow' ? 'selected' : ''}>Dış araç (elle: Google Flow, Kling, Runway…)</option></select>
+          <label class="f">Hareketli çekimleri kim üretsin?</label><select data-vs="movingProvider"><option value="gemini" ${v.movingProvider !== 'flow' ? 'selected' : ''}>Gemini (otomatik)</option><option value="flow" ${v.movingProvider === 'flow' ? 'selected' : ''}>Dış araç (elle: Google Flow, Kling, Runway…)</option></select>
           <label class="f">Bütçe (USD)</label><input type="number" data-vs="budget" value="${esc(v.budget)}" min="0" step="1">
           <div class="small faint mt">Değişiklikler anında kaydedilir. Oran değişirse yeni üretilen görseller o orana göre çıkar.</div>
         </div>
       </div>
-      <h2 class="mt" style="margin-top:22px">Bu videonun karakterleri, mekânları ve sesleri</h2>
-      <div class="small muted" style="margin-bottom:10px">Kütüphaneyle ortaktır. Sarı çerçeveliler bu videoda geçiyor. Fotoğraf ve tarif değişince bir sonraki üretimde kullanılır; mevcut görseli yenilemek için çekimde "Yeniden üret" deyin.${S.voicesError ? ' <span class="err">' + esc(S.voicesError) + '</span>' : ''}</div>
+      <h2 class="mt" style="margin-top:28px">Karakterler, mekânlar ve sesler <span class="chip">isteğe bağlı</span></h2>
+      <div class="small muted" style="margin-bottom:12px;max-width:900px">Karakterlerin her sahnede aynı görünmesi için fotoğraf ve tarif ekleyebilir, her birine bir ses seçebilirsin. Boş bırakırsan senaryodaki tariflere göre üretilir. Kütüphaneyle ortaktır; sarı çerçeveliler bu videoda geçiyor. Fotoğraf ve tarif değişince bir sonraki üretimde kullanılır; mevcut görseli yenilemek için çekimde "Yeniden üret" deyin.${S.voicesError ? ' <span class="err">' + esc(S.voicesError) + '</span>' : ''}</div>
       <div class="grid-lib">
         <section class="panel"><h3>Karakterler</h3><div id="lib-characters"></div></section>
         <section class="panel"><h3>Mekânlar</h3><div id="lib-locations"></div></section>
@@ -415,7 +519,7 @@
     let html = '';
     if (warns.length || qs.length) html += `<details class="warnbox"><summary>${warns.length} uyarı${qs.length ? ', ' + qs.length + ' soru' : ''} (Claude)</summary>${warns.length ? `<ul style="margin:6px 0 0;padding-left:18px">${warns.map((w) => `<li>${esc(w)}</li>`).join('')}</ul>` : ''}${qs.length ? `<ul style="margin:6px 0 0;padding-left:18px">${qs.map((q) => `<li>${esc(q)}</li>`).join('')}</ul>` : ''}</details>`;
     const est = v.tahmin && v.tahmin.tumunu, hasFlow = v.shots.some((s) => s.tool === 'flow'), anyBusy = v.shots.some((s) => s.busy) || v.producing;
-    html += `<div class="bar"><div><b>Kalan üretim tahmini: ${estTotal(est)}</b><div class="small muted">Her çekimi tek tek "Üret" ile ya da hepsini birden üretebilirsiniz. Beğenmediğinizi notla yeniden üretin.</div></div>
+    html += `<div class="bar"><div><span class="small muted">Kalan çekimlerin tahmini maliyeti</span><div style="font-size:18px;font-weight:700">${estTotal(est)}</div><div class="small muted">Hepsini birden ya da her çekimi tek tek "Üret" ile üretebilirsin. Beğenmediğin çekime not yazıp yeniden üret.</div></div>
       <div class="row">${hasFlow ? `<a class="btn xs" href="/api/videos/${v.id}/pack">Dış araç paketini indir</a><label class="btn xs">Klipleri toplu yükle<input type="file" accept="video/*,.mp4,.mov,.webm" id="bulk-clips" multiple hidden></label>` : ''}<button class="gold" id="btn-produce" ${anyBusy || missingReason(['gemini']) ? 'disabled' : ''}>Eksik çekimleri üret</button></div></div>`;
     const sections = (v.plan && v.plan.sections) || [];
     const bySection = new Map();
@@ -437,13 +541,13 @@
     for (const [i, d] of (s.dialogue || []).entries()) lines.push(`<div class="line"><span class="who">${esc(d.speaker)}</span><input type="text" class="sm" data-sline="${s.id}:dialogue:${i}:line" value="${esc(d.line)}"><input type="text" class="sm" data-sline="${s.id}:dialogue:${i}:emotion" value="${esc(d.emotion || '')}" placeholder="duygu"></div>`);
     for (const [i, d] of (s.voiceover || []).entries()) lines.push(`<div class="line vo"><span class="who">Dış ses · ${esc(d.narrator)}</span><input type="text" class="sm" data-sline="${s.id}:voiceover:${i}:line" value="${esc(d.line)}"><input type="text" class="sm" data-sline="${s.id}:voiceover:${i}:style" value="${esc(d.style || '')}" placeholder="üslup"></div>`);
     for (const [i, d] of (s.onscreen_text || []).entries()) lines.push(`<div class="line txt"><span class="who">Yazı · ${esc(d.style)}</span><textarea class="sm" data-sline="${s.id}:onscreen_text:${i}:text" style="min-height:36px">${esc(d.text)}</textarea><span class="small faint">${esc(d.start)}s · ${esc(d.duration)}s</span></div>`);
-    const media = s.video ? `<video controls playsinline preload="metadata" src="${vFile(s.video, s.videoAt)}#t=0.3"></video>` : s.raw ? `<video controls playsinline preload="metadata" src="${vFile(s.raw, s.rawAt)}#t=0.3"></video>` : s.image ? `<img src="${vFile(s.image, s.imageAt)}" alt="">` : '<span>henüz üretilmedi</span>';
+    const media = s.video ? `<video controls playsinline preload="metadata" src="${vFile(s.video, s.videoAt)}#t=0.3"></video>` : s.raw ? `<video controls playsinline preload="metadata" src="${vFile(s.raw, s.rawAt)}#t=0.3"></video>` : s.image ? `<img src="${vFile(s.image, s.imageAt)}" alt="">` : '<span style="padding:10px">Henüz üretilmedi<br><span class="faint">"Üret"e basınca burada görünür</span></span>';
     const stKey = Object.keys(s.tahmin || {}).filter((k) => !((k === 'image' && s.image) || (k === 'audio' && s.audio) || (k === 'voiceover' && s.voFiles && s.voFiles.length) || (k === 'video' && (s.video || s.raw)) || (k === 'fixvoice' && s.video)));
     const estMissing = stepEst(s, stKey), estAll = stepEst(s, Object.keys(s.tahmin || {}));
     const waitingClip = tool === 'flow' && !s.raw && !s.video;
     const draft = S.drafts[s.id] || '';
     const revs = s.revisions || [];
-    return `<div class="shot ${busy ? 'busy' : ''}" data-shot="${s.id}">
+    return `<div class="shot ${busy ? 'busy' : ''} ${s.error ? 'has-err' : ''}" data-shot="${s.id}">
       <div>
         <div class="${thumbClass()}">${media}</div>
         <div class="row small" style="margin-top:6px;gap:6px">${statusChip(s.status || 'Bekliyor')}${s.manual ? '<span class="chip">klip elle</span>' : ''}${s.imageManual ? '<span class="chip">kare elle</span>' : ''}</div>
@@ -451,14 +555,14 @@
         ${(s.voFiles || []).map((vo) => `<audio controls preload="none" src="${vFile(vo.file, s.voAt)}" style="width:100%;height:28px;margin-top:6px" title="dış ses"></audio>`).join('')}
       </div>
       <div>
-        <div class="head"><b>#${s.id}</b><span>${fmtT(s.start)}</span><span>süre <input type="number" class="sm" data-sf="${s.id}:duration" value="${esc(s.duration)}" step="0.5" min="1" style="width:64px"> sn</span>${toolSelect(`data-sf="${s.id}:tool"`, tool)}${s.camera ? `<span class="faint">${esc(s.camera)}</span>` : ''}</div>
+        <div class="head"><b class="num">#${s.id}</b><span>${fmtT(s.start)}</span><span>süre <input type="number" class="sm" data-sf="${s.id}:duration" value="${esc(s.duration)}" step="0.5" min="1" style="width:64px"> sn</span>${toolSelect(`data-sf="${s.id}:tool"`, tool)}${s.camera ? `<span class="faint">${esc(s.camera)}</span>` : ''}</div>
         <input type="text" class="sm" data-sf="${s.id}:description" value="${esc(s.description)}" style="margin-top:8px">
         <div class="small muted" style="margin-top:4px">${esc(s.tool_reason)}${s.characters && s.characters.length ? ' · ' + esc(s.characters.join(', ')) : ''}${s.location ? ' · ' + esc(s.location) : ''}</div>
         <div class="lines">${lines.join('')}</div>
         ${s.error ? `<div class="err mt">${esc(s.error)}</div>` : ''}
         ${s.fixNote ? `<div class="small muted mt">${esc(s.fixNote)}</div>` : ''}
         ${waitingClip && s.image ? `<div class="row mt small"><span class="muted">Dış araç:</span><a class="btn xs" href="${vFile(s.image, s.imageAt, true)}" download="cekim-${nn(s.id)}.jpg">Görseli indir</a><button class="xs" data-copy="${s.id}">Promptu kopyala</button><a href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">Flow</a><a href="https://app.klingai.com" target="_blank" rel="noopener">Kling</a><a href="https://app.runwayml.com" target="_blank" rel="noopener">Runway</a><span class="faint">klibi cekim-${nn(s.id)}.mp4 adıyla kaydedip yükleyin</span></div>` : ''}
-        <div class="row mt" style="gap:12px"><button class="xs ghost" data-adv="${s.id}">${open ? 'ayrıntıları gizle' : 'promptlar ve adımlar'}</button><button class="xs ghost danger" data-sdel="${s.id}">Çekimi sil</button></div>
+        <div class="row mt" style="gap:12px"><button class="xs ghost" data-adv="${s.id}">${open ? 'Gelişmiş ayarları gizle ▴' : 'Gelişmiş ayarlar ▾'}</button><button class="xs ghost danger" data-sdel="${s.id}">Çekimi sil</button></div>
       </div>
       <div class="side">
         <div class="btns">
@@ -467,7 +571,7 @@
           <label class="btn xs ${busy ? 'dis' : ''}">Klip yükle<input type="file" accept="video/*,.mp4,.mov,.webm" data-upload="${s.id}" hidden ${busy ? 'disabled' : ''}></label>
         </div>
         <div class="note">
-          <label class="f" style="margin-top:0">Düzeltme notu <span class="faint">(Türkçe, yönetmene söyler gibi)</span></label>
+          <label class="f" style="margin-top:0">Beğenmedin mi? Ne değişsin yaz</label>
           <textarea class="sm" data-note="${s.id}" placeholder="örn. kadın solda otursun, adam ona dönük konuşsun, daha loş olsun" ${busy ? 'disabled' : ''}>${esc(draft)}</textarea>
           <div class="row" style="margin-top:6px"><button class="xs" data-revise="${s.id}" ${busy || keyMissing('anthropic') ? 'disabled' : ''}>Notla yeniden üret</button><span class="est">${esc(estAll)}</span></div>
           ${revs.length ? `<div class="small" style="margin-top:6px;opacity:.8">${revs.map((r) => `<div>• <b>${esc(r.note)}</b>${r.answer ? ` <span class="faint">→ ${esc(r.answer)}</span>` : ''}</div>`).join('')}</div>` : ''}
@@ -505,16 +609,16 @@
       <div class="row" style="gap:4px;flex-wrap:nowrap"><input type="number" class="sm" data-af="start" value="${esc(a.start)}" step="0.5" min="0" style="width:62px"><span class="faint">–</span><input type="number" class="sm" data-af="end" value="${esc(a.end)}" step="0.5" min="0" style="width:62px"></div>
       <div><input type="text" class="sm" data-af="description" value="${esc(a.description)}" placeholder="açıklama / üretim promptu" ${a.type === 'silence' ? 'disabled' : ''}><div class="small muted" style="margin-top:3px">${a.type === 'silence' ? 'müzik kapalı' : a.file ? (a.file.startsWith('lib:') ? 'kütüphaneden hazır' : 'üretildi') : esc(a.status || 'henüz üretilmedi')}${a.error ? ` <span class="err">${esc(a.error)}</span>` : ''}</div></div>
       <select class="sm" data-af="source" ${a.type === 'silence' ? 'disabled' : ''}>${(() => { const src = String(a.source || ''); const isLib = src.startsWith('library:'); const tag = src.slice(8).trim().toLowerCase(); const files = S.lib.audio || []; let matched = isLib ? files.find((f) => (f.tags || '').toLowerCase().includes(tag) || f.name.toLowerCase().includes(tag)) : null; if (isLib && !matched) matched = files.find((f) => tag.split(/[\s,]+/).some((w) => w.length > 2 && ((f.tags || '').toLowerCase().includes(w) || f.name.toLowerCase().includes(w)))); return `<option value="generate" ${!matched ? 'selected' : ''}>üret (ElevenLabs)</option>` + files.map((f) => `<option value="${esc('library:' + f.name)}" ${matched && matched.id === f.id ? 'selected' : ''}>kütüphane: ${esc(f.name)}</option>`).join(''); })()}</select>
-      <button class="xs ghost danger" data-adel="${i}">✕</button></div>`).join('') || '<div class="small faint">Ses katmanı yok.</div>';
+      <button class="xs ghost danger" data-adel="${i}">✕</button></div>`).join('') || '<div class="small faint">Müzik veya efekt yok. "+ katman" ile ekleyebilirsin; eklemezsen video yalnızca konuşmalarla birleşir.</div>';
     $('v-body').innerHTML = `
       <div class="panel" style="margin-bottom:16px">
-        <div class="row" style="justify-content:space-between"><h3 style="margin:0">Ses katmanları <span class="small muted">müzik / efekt / sessizlik · konuşma olan yerde müzik otomatik kısılır</span></h3>
+        <div class="row" style="justify-content:space-between"><div><h3 style="margin:0"><span class="chip gold">A</span> Müzik ve efektler <span class="chip">isteğe bağlı</span></h3><div class="small muted" style="margin-top:6px">Arka plan müziği ve ses efektleri. Konuşma olan yerlerde müzik otomatik kısılır.</div></div>
           <span class="row"><button class="xs ghost" id="btn-addaudio">+ katman</button><span class="act"><button class="xs" id="btn-genaudio" ${v.producing ? 'disabled' : ''}>Eksik müzik/efektleri üret</button><span class="est">${estTotal(v.tahmin && v.tahmin.katmanlar)}</span></span></span></div>
         <div class="mt">${audioRows}</div>
         <div class="small faint mt">Kendi mp3'lerinizi Hazırlık → Müzik / efekt dosyaları'na yükleyip buradan "kütüphane" olarak seçebilirsiniz; ElevenLabs'ten üretmek kredi harcar.</div>
       </div>
       <div class="panel">
-        <div class="row" style="justify-content:space-between"><h3 style="margin:0">Final video</h3><span class="row"><span class="small muted">${v.assembling ? '<span class="spin"></span> ' : ''}${esc(v.finalStatus || (allHave ? 'Tüm çekimler hazır.' : v.shots.filter((s) => !s.video).length + ' çekim henüz hazır değil.'))}${v.final && v.finalDuration ? ' · ' + fmtDur(v.finalDuration) : ''}</span><button class="xs gold" id="btn-assemble" ${!allHave || v.assembling || v.producing ? 'disabled' : ''}>${v.final ? 'Finali yenile' : 'Birleştir'}</button></span></div>
+        <div class="row" style="justify-content:space-between"><h3 style="margin:0"><span class="chip gold">B</span> Final video</h3><span class="row"><span class="small muted">${v.assembling ? '<span class="spin"></span> ' : ''}${esc(v.finalStatus || (allHave ? 'Tüm çekimler hazır.' : v.shots.filter((s) => !s.video).length + ' çekim henüz hazır değil.'))}${v.final && v.finalDuration ? ' · ' + fmtDur(v.finalDuration) : ''}</span><button class="gold" id="btn-assemble" ${!allHave || v.assembling || v.producing ? 'disabled' : ''}>${v.final ? 'Finali yenile' : 'Birleştir'}</button></span></div>
         ${v.finalError ? `<div class="err mt">${esc(v.finalError)}</div>` : ''}
         ${v.final ? `<div class="row mt"><video controls playsinline src="${vFile(v.final, v.finalAt)}" style="max-height:420px;max-width:100%;border-radius:8px;background:#000"></video></div><div class="row mt"><a class="btn gold" href="${vFile(v.final, v.finalAt, true)}" download="${esc((v.name || 'video').replace(/[^\w\-ğüşöçıİĞÜŞÖÇ ]+/g, '').trim())}.mp4">Final videoyu indir</a></div>` : ''}
       </div>`;
@@ -535,10 +639,11 @@
     if (pdel) { const [kind, id, name] = pdel.dataset.pdel.split(':'); if (!confirm('Fotoğraf kaldırılsın mı?')) return; try { const it = await api(`/api/library/${kind}/${id}/photo/${name}`, { method: 'DELETE' }); S.lib[kind] = S.lib[kind].map((x) => (x.id === it.id ? it : x)); if (S.view === 'video') refresh(); else renderLib(); } catch (e) { toast(e.message); } return; }
     const btn = t.closest('button'); if (!btn) return;
     try {
+      if (btn.dataset.aspect) { document.querySelectorAll('#nv-aspect .asp').forEach((x) => x.classList.toggle('on', x === btn)); return; }
       if (btn.id === 'nv-start') {
         const script = $('nv-script').value.trim(); if (!script) return toast('Senaryoyu yapıştırın.');
         btn.disabled = true;
-        const v = await api('/api/videos', { method: 'POST', json: { name: $('nv-name').value.trim(), script, targetSeconds: Number($('nv-dur').value) || 0, budget: Number($('nv-budget').value), movingProvider: S.settings.movingProvider, assets: { auto: true } } });
+        const v = await api('/api/videos', { method: 'POST', json: { name: $('nv-name').value.trim(), script, targetSeconds: Number($('nv-dur').value) || 0, budget: Number($('nv-budget').value), aspect: (document.querySelector('#nv-aspect .asp.on') || {}).dataset?.aspect, movingProvider: S.settings.movingProvider, assets: { auto: true } } });
         location.hash = '#/v/' + v.id;
       } else if (btn.dataset.delVideo) { if (!confirm('Video ve dosyaları silinsin mi?')) return; await api('/api/videos/' + btn.dataset.delVideo, { method: 'DELETE' }); toast('Silindi'); viewHome(); }
       else if (btn.id === 'st-save') { S.settings = await api('/api/settings', { method: 'PATCH', json: { aspect: $('st-aspect').value, notes: $('st-notes').value, defaultBudget: Number($('st-budget').value), look: $('st-look').value, lookCustom: $('st-look-custom').value } }); toast('Ayarlar kaydedildi'); }
@@ -549,6 +654,12 @@
         const it = await api(`/api/library/${kind}/${id}`, { method: 'PATCH', json: body }); S.lib[kind] = S.lib[kind].map((x) => (x.id === it.id ? it : x)); toast('Kaydedildi');
       } else if (btn.dataset.ldel) { const [kind, id] = btn.dataset.ldel.split(':'); if (!confirm('Silinsin mi?')) return; await api(`/api/library/${kind}/${id}`, { method: 'DELETE' }); S.lib[kind] = S.lib[kind].filter((x) => x.id !== id); if (S.view === 'video') refresh(); else renderLib(); }
       else if (btn.dataset.step) { S.step = btn.dataset.step; refresh(); }
+      else if (btn.dataset.goto) {
+        const [step, target] = btn.dataset.goto.split(':');
+        if (S.step !== step) { S.step = step; refresh(); }
+        const el = target === 'first-err' ? document.querySelector('.shot.has-err') : target ? $(target) : $('v-body');
+        if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse'); }
+      }
       else if (btn.id === 'btn-plan') {
         if (S.video.shots.length && !confirm('Yeniden planlama mevcut çekim listesini ve üretilenlerin bağlantısını siler. Devam?')) return;
         btn.disabled = true;
