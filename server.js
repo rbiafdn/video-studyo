@@ -7,6 +7,7 @@ const express = require('express');
 const store = require('./lib/store');
 const claude = require('./lib/claude');
 const look = require('./lib/look');
+const cloud = require('./lib/cloud');
 const gemini = require('./lib/gemini');
 const eleven = require('./lib/elevenlabs');
 const fal = require('./lib/fal');
@@ -108,6 +109,53 @@ app.post('/api/restore', rawBody('4gb'), (req, res) => {
 });
 
 app.get('/api/looks', (req, res) => res.json(look.list()));
+
+// ---- Bulut (Supabase): oturum tarayıcıda saklanır, her istekte x-sb-session başlığıyla gelir ----
+function sbSession(req) { try { const h = req.headers['x-sb-session']; return h ? JSON.parse(Buffer.from(String(h), 'base64').toString('utf8')) : null; } catch { return null; } }
+const cloudGuard = (req, res) => { if (!cloud.isConfigured()) { sendError(res, new Error('Supabase ayarlı değil (.env: SUPABASE_URL, SUPABASE_ANON_KEY).'), 503); return false; } return true; };
+app.get('/api/cloud/status', (req, res) => res.json({ configured: cloud.isConfigured(), bucket: cloud.BUCKET }));
+app.post('/api/cloud/login', async (req, res) => {
+  if (!cloudGuard(req, res)) return;
+  const b = req.body || {};
+  try { res.json({ session: await cloud.signIn(String(b.email || '').trim(), String(b.password || '')) }); } catch (err) { sendError(res, err, 401); }
+});
+app.post('/api/cloud/signup', async (req, res) => {
+  if (!cloudGuard(req, res)) return;
+  const b = req.body || {};
+  try { res.json(await cloud.signUp(String(b.email || '').trim(), String(b.password || ''))); } catch (err) { sendError(res, err); }
+});
+app.get('/api/cloud/videos', async (req, res) => {
+  if (!cloudGuard(req, res)) return;
+  try { res.json(await cloud.listVideos(sbSession(req))); } catch (err) { sendError(res, err, 401); }
+});
+app.post('/api/cloud/videos/:id/push', async (req, res) => {
+  if (!cloudGuard(req, res)) return;
+  if (!store.getVideo(req.params.id)) return sendError(res, new Error('Video bulunamadı'), 404);
+  try { res.json(await cloud.pushVideo(sbSession(req), req.params.id)); } catch (err) { sendError(res, err); }
+});
+app.post('/api/cloud/videos/:id/pull', async (req, res) => {
+  if (!cloudGuard(req, res)) return;
+  if (!store.ID_RE.test(req.params.id)) return sendError(res, new Error('Geçersiz kimlik'));
+  const local = store.getVideo(req.params.id);
+  if (local && (local.producing || local.assembling || local.planning || local.shots.some((x) => x.busy))) return sendError(res, new Error('Bu videoda iş çalışıyor; bitince buluttan alın.'));
+  try { const r = await cloud.pullVideo(sbSession(req), req.params.id); jobs.resetStaleFlags(); res.json(r); } catch (err) { sendError(res, err); }
+});
+app.delete('/api/cloud/videos/:id', async (req, res) => {
+  if (!cloudGuard(req, res)) return;
+  try { res.json(await cloud.deleteVideo(sbSession(req), req.params.id)); } catch (err) { sendError(res, err); }
+});
+app.get('/api/cloud/library', async (req, res) => {
+  if (!cloudGuard(req, res)) return;
+  try { res.json(await cloud.libraryInfo(sbSession(req))); } catch (err) { sendError(res, err, 401); }
+});
+app.post('/api/cloud/library/push', async (req, res) => {
+  if (!cloudGuard(req, res)) return;
+  try { res.json(await cloud.pushLibrary(sbSession(req))); } catch (err) { sendError(res, err); }
+});
+app.post('/api/cloud/library/pull', async (req, res) => {
+  if (!cloudGuard(req, res)) return;
+  try { res.json(await cloud.pullLibrary(sbSession(req))); } catch (err) { sendError(res, err); }
+});
 app.get('/api/looks/current', (req, res) => res.json(look.preset(store.getSettings())));
 
 // --- Kütüphane ------------------------------------------------------------------------------------

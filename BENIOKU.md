@@ -83,6 +83,10 @@ Claude ayrıca **uyarılar** yazar: süreye sığmayan konuşmalar (Türkçe ≈
 - Kütüphane sayfası → **Yedek indir (zip)**: tüm videolar, kütüphane ve ayarlar tek zip. Diğer bilgisayarda projeyi GitHub'dan kurup aynı anahtarlarla .env oluşturun, Kütüphane → **Yedek yükle (zip)** ile içeri alın (aynı kimlikli kayıtların üstüne yazar).
 - İki bilgisayarın aynı veriyi kullanması için .env içinde DATA_DIR ile bulutla eşitlenen bir klasör verilebilir (OneDrive / Google Drive). Aynı anda iki yerde üretim yapmayın.
 
+## Bulut (Supabase)
+
+İsteğe bağlı: e-posta + şifre ile giriş; videolar ve kütüphane kullanıcıya özel Supabase deposuna kaydedilip başka bilgisayardan geri alınır. Kurulum: Supabase projesi aç → Project Settings → API → URL ve anon anahtarını .env içine (SUPABASE_URL, SUPABASE_ANON_KEY) → SQL Editor'de supabase/schema.sql dosyasını çalıştır (tablolar, kova, RLS). Uygulamada: üst çubuk ☁ Giriş → video sayfasında "Buluta kaydet", ana sayfada "Buluttaki videolar" (indir / güncelle / sil), Kütüphane sayfasında "Kütüphaneyi buluta kaydet / Buluttan al". Yalnızca değişen dosyalar yüklenir; yerel veri modeli aynı kalır. Oturum tarayıcıda saklanır; sunucuya sadece kendi anahtarınla erişilir (RLS).
+
 ## Maliyet
 
 - Birim fiyatlar `prices.json` dosyasında (`"tahmini": true` olanlar resmi sayfada bulunamayan değerlerdir; müzik fiyatı tahminidir). Dosya her okunuşta yenilenir.

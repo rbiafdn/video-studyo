@@ -166,6 +166,11 @@
   .asp .shape { display: block; border: 2px solid var(--muted); border-radius: 4px; margin-bottom: 6px; } .asp.on .shape { border-color: var(--gold); background: rgba(109,94,252,.15); }
   .shape.s916 { width: 18px; height: 30px; } .shape.s169 { width: 40px; height: 23px; margin-top: 7px; } .shape.s11 { width: 28px; height: 28px; margin-top: 2px; }
   @media (max-width: 760px) { .aspects { grid-template-columns: 1fr 1fr 1fr; } .asp > span { display: none; } .asp { padding: 10px; } }
+  .cloud-ui { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .modal { position: fixed; inset: 0; background: rgba(16,24,40,.45); display: flex; align-items: center; justify-content: center; z-index: 60; } .modal[hidden] { display: none; }
+  .modal .box { background: var(--panel); border: 1px solid var(--line2); border-radius: var(--r); padding: 20px; width: min(420px, 92vw); box-shadow: 0 24px 60px -20px rgba(16,24,40,.4); }
+  .modal input[type=password] { width: 100%; font: inherit; font-size: 13.5px; color: var(--ink); background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; outline: none; }
+  .cloud-list .card { padding: 12px 14px; }
 </style>
 </head>
 <body>
@@ -173,9 +178,17 @@
   <a class="brand" href="#/"><span class="logo"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l11-6.5a1 1 0 0 0 0-1.72l-11-6.5A1 1 0 0 0 8 5.5z"/></svg></span><span class="txt" style="color:var(--ink)">Video <span>Stüdyo</span></span></a>
   <div class="tabs"><a href="#/" id="tab-videos">Videolar</a><a href="#/lib" id="tab-lib">Kütüphane</a></div>
   <nav id="crumbs"></nav>
+  <div id="cloud-ui" class="cloud-ui"></div>
   <details class="conn" id="conn"><summary id="conn-sum"><span class="dot"></span><span class="lbl">Bağlantılar</span></summary><div class="pop"><div class="status-row" id="status-row">Durum yükleniyor…</div><div id="balance-row"></div></div></details>
 </header>
 <main id="app"></main>
+<div class="modal" id="cloud-modal" hidden><div class="box">
+  <h3 style="margin:0 0 4px">Bulut hesabı</h3><div class="small muted" style="margin-bottom:10px">Videolarınızı ve kütüphanenizi size özel buluta kaydedip başka bilgisayardan geri alırsınız.</div>
+  <label class="f">E-posta</label><input type="text" id="cl-email" autocomplete="username" placeholder="ornek@gmail.com">
+  <label class="f">Şifre</label><input type="password" id="cl-pass" autocomplete="current-password" placeholder="en az 6 karakter">
+  <div class="err small" id="cl-err" style="margin-top:8px"></div>
+  <div class="row mt"><button class="gold" id="cl-login">Giriş yap</button><button id="cl-signup">Kayıt ol</button><button class="ghost" id="cl-close">Kapat</button></div>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -191,8 +204,10 @@
   async function api(path, opts) {
     const o = Object.assign({ headers: {} }, opts || {});
     if (o.json !== undefined) { o.body = JSON.stringify(o.json); o.headers['Content-Type'] = 'application/json'; delete o.json; }
+    const ses = cloudSession(); if (ses) o.headers['x-sb-session'] = btoa(unescape(encodeURIComponent(JSON.stringify(ses))));
     const res = await fetch(path, o);
     let data = null; try { data = await res.json(); } catch { data = null; }
+    if (data && data.session && data.session.access_token) saveCloudSession(data.session);
     if (!res.ok) { const e = new Error((data && (data.error || data.message)) || ('İstek başarısız (' + res.status + ')')); e.status = res.status; e.data = data; throw e; }
     return data;
   }
@@ -309,9 +324,9 @@
           </div></div></details>
           <div class="row mt"><span class="act"><button class="gold big" id="nv-start" ${r ? 'disabled' : ''}>3. Çekim listesini hazırla →</button><span class="est" id="nv-est"></span></span><span class="small err">${esc(r)}</span></div>
         </section>
-        <section><h2>Videoların</h2><div class="cards" id="video-cards"></div></section>
+        <section><h2>Videoların</h2><div class="cards" id="video-cards"></div><div id="cloud-videos"></div></section>
       </div>`;
-    renderVideoCards(); updatePlanEst();
+    renderVideoCards(); updatePlanEst(); renderCloudVideos();
     S.timer = setInterval(async () => { if (S.view !== 'home') return; try { const nv = await api('/api/videos'); if (JSON.stringify(nv) !== JSON.stringify(S.videos)) { S.videos = nv; renderVideoCards(); } } catch { /* sessiz */ } }, 4000);
   }
   function renderVideoCards() {
@@ -350,6 +365,7 @@
         <section class="panel"><h3>Müzik / efekt dosyaları</h3><div id="lib-audio"></div></section>
       </div>
       <details class="set" open><summary>Yedek / başka bilgisayara taşıma</summary><div class="body">
+        <div id="cloud-lib" style="margin-bottom:10px"></div>
         <div class="row"><a class="btn" href="/api/backup">Yedek indir (zip)</a><label class="btn">Yedek yükle (zip)<input type="file" accept=".zip,application/zip" id="restore-file" hidden></label><span class="small muted">Tüm videolar, kütüphane ve ayarlar tek zip olur. Evdeki bilgisayarda projeyi GitHub'dan kurup aynı anahtarlarla <code>.env</code> oluşturun, sonra zip'i buradan yükleyin. Yükleme mevcut kayıtların üstüne yazar.</span></div>
       </div></details>
       <details class="set"><summary>Yeni videolar için varsayılan ayarlar</summary><div class="body">
@@ -362,7 +378,7 @@
           <div class="full row"><button class="xs gold" id="st-save">Kaydet</button></div>
         </div></div>
       </div></details>`;
-    renderLib();
+    renderLib(); renderCloudLib();
   }
   const photoStrip = (kind, it) => `<div class="photos">${(it.photos || []).map((p) => `<img src="/files/lib/${esc(p)}" title="Kaldırmak için tıklayın" data-pdel="${kind}:${esc(it.id)}:${esc(p)}">`).join('')}${(it.photos || []).length < 4 ? `<div class="add" data-padd="${kind}:${esc(it.id)}">+ foto</div><input type="file" accept="image/*" data-pfile="${kind}:${esc(it.id)}" hidden>` : ''}</div>`;
   function libCard(kind, it, used) {
@@ -458,6 +474,7 @@
       </div>
       <div class="actions">
         ${v.final ? `<a class="btn gold" href="${vFile(v.final, v.finalAt, true)}" download="${esc((v.name || 'video').replace(/[^\w\-ğüşöçıİĞÜŞÖÇ ]+/g, '').trim())}.mp4">Final videoyu indir</a>` : ''}
+        ${S.cloud && S.cloud.configured && cloudSession() ? `<button id="cl-push" title="${v.cloudAt ? 'Son bulut kaydı: ' + fmtDate(v.cloudAt) : 'Henüz buluta kaydedilmedi'}">☁ Buluta kaydet${v.cloudAt ? ' <span class="small muted">(' + fmtDate(v.cloudAt) + ')</span>' : ''}</button>` : ''}
         <button class="ghost danger" id="btn-del">Sil</button>
       </div>`;
     const ready = v.shots.filter((s) => s.video).length;
@@ -631,6 +648,59 @@
     S.video = await api(`/api/videos/${S.video.id}/audio`, { method: 'PATCH', json: { audio: rows } }); S.lastJson = '';
   }
   const refresh = () => updateVideo(true);
+
+  // ---------- Bulut (Supabase) ----------
+  function cloudSession() { try { const s = JSON.parse(localStorage.getItem('sbSession') || 'null'); return s && s.access_token ? s : null; } catch { return null; } }
+  function saveCloudSession(s) { try { if (s) localStorage.setItem('sbSession', JSON.stringify(s)); else localStorage.removeItem('sbSession'); } catch { /* yok */ } renderCloudUi(); }
+  async function loadCloudStatus() { try { S.cloud = await api('/api/cloud/status'); } catch { S.cloud = { configured: false }; } renderCloudUi(); }
+  function renderCloudUi() {
+    const el = $('cloud-ui'); if (!el) return;
+    if (!S.cloud || !S.cloud.configured) { el.innerHTML = ''; return; }
+    const s = cloudSession();
+    el.innerHTML = s ? `<span title="Bulut hesabı">☁ ${esc(s.user ? s.user.email : 'giriş yapıldı')}</span><button class="xs ghost" id="cl-logout">Çıkış</button>` : `<button class="xs" id="cl-open">☁ Giriş</button>`;
+  }
+  async function renderCloudVideos() {
+    const box = $('cloud-videos'); if (!box) return;
+    if (!S.cloud || !S.cloud.configured) { box.innerHTML = ''; return; }
+    if (!cloudSession()) { box.innerHTML = `<div class="small muted" style="margin-top:14px">☁ Videoları buluta kaydetmek ve başka bilgisayardan almak için <a href="#" id="cl-open2">giriş yapın</a>.</div>`; return; }
+    try {
+      const r = await api('/api/cloud/videos');
+      const items = r.videos || [];
+      box.innerHTML = `<h3 style="margin:18px 0 8px">☁ Buluttaki videolar <span class="small muted">(${items.length})</span></h3>` + (items.length ? '<div class="cards cloud-list">' + items.map((v) => `<div class="card"><div class="title">${esc(v.name)}</div><div class="sub"><span>${v.summary && v.summary.shotCount ? v.summary.shotCount + ' çekim · ' : ''}${v.files} dosya · ${(v.bytes / 1048576).toFixed(0)} MB · ${fmtDate(v.updatedAt)}</span></div>
+        <div class="row" style="margin-top:10px">${v.local ? `<a class="btn xs" href="#/v/${esc(v.id)}">Aç</a><button class="xs" data-cl-pull="${esc(v.id)}" title="Buluttaki sürümü yerelin üstüne yazar">Buluttan güncelle</button>` : `<button class="xs gold" data-cl-pull="${esc(v.id)}">Bu bilgisayara indir</button>`}<button class="xs ghost danger" data-cl-del="${esc(v.id)}">Buluttan sil</button></div></div>`).join('') + '</div>' : '<div class="small muted">Bulutta video yok. Bir videonun sayfasında "Buluta kaydet" deyin.</div>');
+    } catch (e) { box.innerHTML = `<div class="small err" style="margin-top:14px">${esc(e.message)}</div>`; }
+  }
+  async function cloudAuth(kind) {
+    const email = $('cl-email').value.trim(), password = $('cl-pass').value; $('cl-err').textContent = '';
+    if (!email || !password) { $('cl-err').textContent = 'E-posta ve şifre gerekli.'; return; }
+    try {
+      const r = await api('/api/cloud/' + kind, { method: 'POST', json: { email, password } });
+      if (kind === 'signup' && r.needsConfirm) { $('cl-err').textContent = 'Kayıt alındı. E-postanıza gelen doğrulama bağlantısına tıklayıp sonra "Giriş yap" deyin.'; return; }
+      saveCloudSession(r.session); $('cloud-modal').hidden = true; toast('Giriş yapıldı'); if (S.view === 'home') renderCloudVideos(); if (S.view === 'lib') renderCloudLib();
+    } catch (e) { $('cl-err').textContent = e.message; }
+  }
+  async function renderCloudLib() {
+    const el = $('cloud-lib'); if (!el) return;
+    if (!S.cloud || !S.cloud.configured) { el.innerHTML = ''; return; }
+    if (!cloudSession()) { el.innerHTML = '<div class="small muted">Kütüphaneyi buluta kaydetmek için üstten giriş yapın.</div>'; return; }
+    try { const r = await api('/api/cloud/library'); el.innerHTML = `<div class="row"><button class="xs gold" id="cl-lib-push">Kütüphaneyi buluta kaydet</button><button class="xs" id="cl-lib-pull" ${r.exists ? '' : 'disabled'}>Buluttan al</button><span class="small muted">${r.exists ? 'Bulutta: ' + r.files + ' dosya · ' + fmtDate(r.updatedAt) : 'Bulutta kütüphane yok.'}</span></div>`; }
+    catch (e) { el.innerHTML = `<div class="small err">${esc(e.message)}</div>`; }
+  }
+  document.addEventListener('click', async (ev) => {
+    const t = ev.target.closest('button, a'); if (!t) return;
+    try {
+      if (t.id === 'cl-open' || t.id === 'cl-open2') { ev.preventDefault(); $('cl-err').textContent = ''; $('cloud-modal').hidden = false; $('cl-email').focus(); }
+      else if (t.id === 'cl-close') $('cloud-modal').hidden = true;
+      else if (t.id === 'cl-login') await cloudAuth('login');
+      else if (t.id === 'cl-signup') await cloudAuth('signup');
+      else if (t.id === 'cl-logout') { saveCloudSession(null); toast('Çıkış yapıldı'); if (S.view === 'home') renderCloudVideos(); if (S.view === 'lib') renderCloudLib(); }
+      else if (t.id === 'cl-push') { t.disabled = true; t.textContent = 'Buluta yükleniyor…'; const r = await api(`/api/cloud/videos/${S.video.id}/push`, { method: 'POST', json: {} }); toast(`Buluta kaydedildi: ${r.uploaded} dosya yüklendi, toplam ${r.files}`); S.video = await api('/api/videos/' + S.video.id); refresh(); }
+      else if (t.dataset && t.dataset.clPull) { const id = t.dataset.clPull; const local = S.videos.some((v) => v.id === id); if (local && !confirm('Buluttaki sürüm bu bilgisayardakinin üstüne yazılacak. Devam?')) return; t.disabled = true; t.textContent = 'İndiriliyor…'; const r = await api(`/api/cloud/videos/${id}/pull`, { method: 'POST', json: {} }); toast(`İndirildi: ${r.downloaded} dosya`); S.videos = await api('/api/videos'); renderVideoCards(); renderCloudVideos(); }
+      else if (t.dataset && t.dataset.clDel) { if (!confirm('Buluttaki kopya silinecek (bu bilgisayardaki kalır). Devam?')) return; await api(`/api/cloud/videos/${t.dataset.clDel}`, { method: 'DELETE' }); toast('Buluttan silindi'); renderCloudVideos(); }
+      else if (t.id === 'cl-lib-push') { t.disabled = true; const r = await api('/api/cloud/library/push', { method: 'POST', json: {} }); toast(`Kütüphane buluta kaydedildi (${r.files} dosya)`); renderCloudLib(); }
+      else if (t.id === 'cl-lib-pull') { if (!confirm('Buluttaki kütüphane bu bilgisayardakinin üstüne yazılacak. Devam?')) return; t.disabled = true; const r = await api('/api/cloud/library/pull', { method: 'POST', json: {} }); toast(`Kütüphane alındı (${r.downloaded} yeni dosya)`); await loadBase(); renderLib(); renderCloudLib(); }
+    } catch (e) { toast(e.message); if (t.id === 'cl-push') { t.disabled = false; t.textContent = 'Buluta kaydet'; } }
+  });
   app.addEventListener('click', async (ev) => {
     const t = ev.target;
     const padd = t.closest('[data-padd]'); if (padd) { const inp = padd.parentElement.querySelector('input[data-pfile]'); if (inp) inp.click(); return; }
@@ -758,7 +828,7 @@
     if (el.dataset && el.dataset.note) S.drafts[Number(el.dataset.note)] = el.value;
   });
 
-  (async () => { await loadStatus(); route(); setInterval(loadStatus, 60000); })();
+  (async () => { await Promise.all([loadStatus(), loadCloudStatus()]); route(); setInterval(loadStatus, 60000); })();
 })();
 </script>
 </body>
